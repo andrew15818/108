@@ -10,4 +10,7 @@ homework assignments.
 - **Introduction to Graphics**: At the time of writing, I don't know exactly what we will
 cover, but we will use OpenGl for our assignments. 
 
+- **Introduction to Compiler Design**: In this course, we studied the basics of the compilation
+process. We designed a primitive lexical/syntactical analyzer.
+
 
