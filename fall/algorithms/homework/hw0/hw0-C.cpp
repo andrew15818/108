@@ -13,20 +13,25 @@ void swap(long int *n1, long int *n2){
 int main(){
 	int n,k,y;	
 	cin>>n>>k>>y;
-	long int nums[n];
+	long int nums[n],good[n];
 	for(int i=0;i<n;i++){
 		cin>>nums[i];
 	}
-	//sort(nums, nums+n);
-	for(int i=0;i<=n-y-1;i++){
+	sort(nums, nums+n);
 
-		if(nums[i] > nums[i+y] ){
-
-			swap(&nums[i], &nums[i+y]);
-		}
+	int i = 0,count=0;
+	while(count<n && i<n){
+		int j = count;
+		while(j<n){
+			good[j] = nums[i];	
+			//printf("good[%d] = nums[%d] = %ld\n",j,i,nums[i]);
+			j+=y;
+			i++;
+		}	
+		count++;
 	}
 	for(int i=0;i<n;i++){
-		printf("%ld ", nums[i]);
+		printf("%ld ", good[i]);
 	}
 	printf("\n");
 	return 0;
