@@ -17,9 +17,14 @@ int main(){
 		cin>>elements[i];	
 	}
 	long long int tuples=0;	
+
 	for(long int i=0;i<n;i++){
+			if(elements[i] == 1){
+				tuples += (n-i);
+				continue;
+			}
 		for(long int j=i;j<n;j++){
-			
+				
 			if( gcd(elements[i],elements[j]) == 1)	{
 				tuples++;			
 			}
