@@ -1,0 +1,38 @@
+FAQ for the scanner project.
+
+Tokens are defined in the document 00README.txt. The example code may not inlcude all the tokens. So you need to check the complete list of tokens in the file 00README.txt.
+
+A single slash / means division.  Two slashes // mean comments. They are different.  They have to be handled separately.
+
+You also need to read two other files: semantics-of-mini-pascal.txt and MINI-PASCAL-GRAMMAR.txt. You will have to decide other details if you think the details are not defined in the speficiation. And you may change your decisions later when you need to modify your design. Come talk to me or the TA if you need.
+
+When you define identifiers with a regular expression, you may allow an identifier to include underscores.
+
+You may define strings with a regular expression. When the scanner finds a string, it should return the stringconst token. You may modify the rules for factor in the MINI-PASCAL-GRAMMAR.txt file:
+
+factor ::= id tail
+	| id ( expression_list )
+	| num
+        | stringconstant
+	| ( expression )
+	| not factor
+
+
+You also need to define floating-point numbers in the scientific notations. A scientific notation should be considered to be a float-point number. When the scanner finds an integer number or a floating-point number, it should return the num token.
+
+In the first project, you need to implement a scanner using the lex tool. You should write your own lex specification or you may start from the given simplified lex specification and add your own modifications. 
+
+An input string such as "123.456EBCD" should be scanned as two tokens: "123.456" (as a num token) and "EBCD" (as an indentifier). In the parsing stage, the parser will report this error.
+
+A lexical error is usually an illegal character, that is, a character that cannot appear in any token except in a string. For example, '@' is an illegal character in a C program. When encountering an illegal character, the scanner can simply post an error message, throw away that character, and re-start scanning from the next character.
+
+For the 1st (scanner) project, you need to turn in your lex files, yacc files (if you have one), semantic routine files, test cases, and the executable code. You also need to write a readme.txt file for the project, telling the TA how to run your program. You also need to turn in a file output.txt showing the output of your program. For the output, you can also show the screen dump (as a jpg file) when running your program.
+
+Put all of the above files in a single zip file which will be named "DDDDDDD-scanner.zip", where
+DDDDDDD is your student id. Upload the zip to the new e3 platform.
+
+Deadline of the scanner project is October 2, 2019, 23:59 pm.
+
+----
+
+

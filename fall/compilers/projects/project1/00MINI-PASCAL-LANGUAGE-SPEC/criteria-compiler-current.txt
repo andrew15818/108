@@ -1,0 +1,70 @@
+Code generation checklist.  201807064 revision.
+
+
+The evaluation criteria:  Name:                         email:                               Student id:
+   
+You may use and modify the test cases provided in the course web page. You may make up new test cases fitting your compiler. You can also introduce new features into your compiler.
+
+You will need to implement three "library" routines:
+
+	printInt( a+15 );
+        printReal( b+c/3.14 );
+        printString( "The size of the graph is" );
+
+The three library routines can be implemented in C or uses the existing java.lang.System class.
+
+We will use the Java Virtual Machine for code generation. If you generate code for other platforms, please tell the instructor. There might be extra credits for other platforms.
+
+Each item below will earn 1 point.  A scaling formula will be used to translate your total points to a numerical score.
+
+0.  (part 1) Filter out comments. (no point for this item)
+0.  (part 1) Use the longest-match rule in scanning. (no point for this item)
+
+1.   (part 3) check for duplicated declarations.
+2.  Addition and subtraction operations (for integer type).
+3.  Addition and subtraction operations (for both integer and real types).
+4.  Multiplication and division operations (for integer type).
+5.  Multiplication and division operations (for both integer and real types).
+6.  Comparision operations, ==, >, >=, <, <=, !=, (for integer type).
+7.  Comparision operations (for both integer and real types).
+8.  Arithmetic operations (addition, subtraction, multiplication, division, comparison) for variables of one-dimension arrays, such as 
+	array [ x+3 .. y*4 ] of integer
+        array [ x+3 .. y*4 ] of real
+9.   Arithmetic operations (addition, subtraction, multiplication, division, comparison) for variables of multi-dimension arrays, such as 
+	array [ x+3 .. y*4 ] of array [ z+6 .. w/7 ] of integer
+        array [ x+3 .. y*4 ] of array [ z+6 .. w/7 ] of real
+10.  Evaluate constant expressions, such as 2+5*4/2, in the compiler.
+
+11.  assignment statements of simple types (integer and real)
+12.  assignment of 1-dimensional arrays
+13.  assignment of multi-dimensional arrays
+14.  check out-of-bound array indices at compile time
+15.  Generate code to check out-of-bound array indices at run time
+16.  simple if statements
+17.  simple while loops
+18.  nested if statements 
+19.  nested while loops
+20.  arbitrary combination of assignment statements, if statements, and while loops
+
+21.  subprograms (procedures and functions, including recursive ones) without parameters and without return values
+     We will use the Java Virtual Machine for code generation. If you generate code for other platforms, please tell the instructor. There might be extra credits for other platforms.
+22.  subprograms with (integer and real) parameters and with (integer and real) return values (including recursive ones)
+23.  PrintInt, PrintReal, and PrintString.
+
+24.  There could be constant folding of various degrees of difficulty.
+     For example,      a = 3 + 4 + b;     a = 3 + b - 4;     a = 3 + b - 4 + c + 5;
+--
+Extensions:
+
+41. add structure/record and related operations
+42. add static variables similar to C
+43. add modular structure similar to Modula-2 or Java Classes.
+44. add && and || logical operators
+45. add for-loops
+46. add repeat-until loops
+47.  Check if a variable is initialized. (You will need to draw the control flor diagram for this item.)
+48. Add overload resolution for Minipascal.
+--
+
+
+
