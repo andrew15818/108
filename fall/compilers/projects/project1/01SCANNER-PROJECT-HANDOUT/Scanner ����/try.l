@@ -1,0 +1,32 @@
+%{
+	#include<stdio.h>
+	#define PROG 1
+	#define IDENTIFIER_LIST 2
+	#define DECLARATIONS 3
+	#define TYPE 4
+	#define STANDARD_TYPE 5
+	#define SUBPROGRAM_DECLARATIONS 6
+	#define SUBPROGRAM_DECLARATION 7
+	#define SUBPROGRAM_HEAD 8
+
+	#define ARGUMENTS 9
+	#define PARAMETER_LIST 10
+	#define OPTIONAL_VAR 11
+	#define COMPOUND_STATEMENTS 12
+	#define OPTONAL_STATEMENTS 13
+	#define STATEMENT_LIST 14
+	#define STATEMENT 15
+	#define	VARIABLE 16
+	#define TAIL 17
+	#define PROCEDURE_STATEMENT 18
+
+	#define EXPRESSION_LIST 19
+	#define EXPRESSION 20
+	#define SIMPLE_EXPRESSION 21
+	#define TERM 22
+	#define FACTOR 23
+
+	#define ADDOP 24
+	#define MULLOP 25
+	#define RELLOP 26
+%}
