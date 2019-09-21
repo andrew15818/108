@@ -6,13 +6,15 @@
 #include<cmath>
 #define OPS 1000000000
 #define PWR 1.5
+#define LOGO log(2)
 using namespace std;
 //Let's see if this is equivalent to the membership problem? 
 double equation(const long long int& maxOps, const long long int& guess ){
-	return ((maxOps)/(guess * floor(sqrt(guess)) * floor(log(guess)/log(2)) ));
+	return ((maxOps)/(guess * floor(sqrt(guess)) * floor(log(guess)/LOGO) ));
 }
 long long int biSearch(long long int maxOps, long long int low, /*long long int mid,*/ long long int high){
-		long long int mid = low+ ((high - low)/2);		
+		//printf("executing\n");
+		long long int mid = low+ ((high - low)>>1);		
 			double result = equation(maxOps, mid);
 			if( result > 1 &&  (equation(maxOps, mid+1) < 1)){
 				return mid;
@@ -32,17 +34,17 @@ int main(){
 	for(int i=0;i<cases;i++){	
 		cin>>seconds;
 		long long unsigned int maxOps = OPS * seconds;
-		long long int currGuess = 10;
+		long long int currGuess = 1000000;
 		while(1){
 			currGuess*=10;
 			long long int result = equation(maxOps, currGuess );	
 			if(result<=1){
-
 				break;	
 			}	
 		}	
 		//cout<<biSearch(maxOps, 0, currGuess*10)<<endl;
-		printf("%lld\n", biSearch(maxOps, 0, currGuess*10));	
+		//printf("Current guess for upper bound %lld\n", currGuess);
+		printf("%lld\n", biSearch(maxOps, 100000, currGuess*10));	
 	}
 	return  0;
 }

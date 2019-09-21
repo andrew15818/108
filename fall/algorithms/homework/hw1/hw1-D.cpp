@@ -7,7 +7,22 @@ long long int gcd(long long int n1,long long int n2){
 	}
 	return gcd(n2,n1%n2);
 }
-
+long long int tuples(long long int* arr, long long int lower, long long int upper ){
+	if(upper<0 || lower<0){
+		return 1;
+	}
+	if(upper  == lower){
+		//return gcd(arr[lower], arr[upper] ); //base case
+		return lower;
+	}
+		
+	printf("Calcing the tuples for :  %lld and %lld \n", lower, upper);
+	long long int mid = lower + (upper - lower) >> 1, result = 1;	
+	if( gcd(tuples(arr, lower, mid), tuples(arr, mid, upper))  == 1 ){
+			return upper*lower;
+	}
+	return result;
+}
 int main(){
 	long int n;
 	cin>>n;
@@ -16,22 +31,10 @@ int main(){
 	for(long int i=0;i<n;i++){
 		cin>>elements[i];	
 	}
-	long long int tuples=0;	
-
-	for(long int i=0;i<n;i++){
-			if(elements[i] == 1){
-				tuples += (n-i);
-				continue;
-			}
-		for(long int j=i;j<n;j++){
-				
-			if( gcd(elements[i],elements[j]) == 1)	{
-				tuples++;			
-			}
-			
-			//printf("gcd(%lld,%lld)= %lld\n",elements[i],elements[j],gcd(elements[i],elements[j]));
-		}
-	}
-	printf("%lld\n",tuples);
+	long long int testo=0;	
+	//we have to think of a way to split the array recursively, and if the gcd is one between the pairs, 
+	//then we multiply the number of elements in each pair, since it means that they all have gcd=1
+	//
+	tuples(elements, 0, n-1);
 	return 0;
 }
