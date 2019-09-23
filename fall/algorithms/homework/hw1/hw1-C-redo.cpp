@@ -56,23 +56,22 @@ int main(){
 		}
 	}
 */
-	
+	//Don't know what to fix to get it under the time limit :(	
 	for(int i=0;i<lim;i++){
 		for(int j=0;j<lim;j++){
-			int intermediate = 0, interDown = 0, interRight = 0, interDiag = 0; // we have to calc values under, right, and diag
-			cout<<"for "<<i+lim<<","<<j<<endl;
+			//int intermediate = 0, interDown = 0, interRight = 0, interDiag = 0; // we have to calc values under, right, and diag
+			int upperLeft=0,lowerLeft=0, upperRight=0,lowerRight=0;
+			//cout<<"for "<<i+lim<<","<<j<<endl;
 			for(int k=0; k<lim; k++){
-				intermediate += ((field[i][k] * input[k][j]) + (field[i+lim][k]*input[k+lim][j]));	
-				interDown+= ((field[i+lim][k] * input[k][j+lim]) + (field[i+lim][k+lim] * input[k+lim][j+lim]));
-				
-				cout<<"\t"<<field[i+lim][k]<<" * "<<input[k][j+lim]<<", "<<field[i+lim][k+lim]<<" * "<<input[k+lim][j+lim]<<endl;
-
-				//interRight+=;
-				//interDiag+=;
+				upperLeft += ((field[i][k] * input[k][j]) + (field[i+lim][k] * input[k+lim][j]));	
+				upperRight += ((field[i][k] * input[k][j+lim]) + (field[i][k+lim] * input[k+lim][j+lim]));
+				lowerLeft +=((field[i+lim][k] * input[k][j]) + (field[i+lim][k+lim] * input[k+lim][j]) );				
+				lowerRight +=((field[i+lim][k] * input[k][j+lim]) + (field[i+lim][k+lim] * input[k+lim][j+lim]));
 			}		
-			result[i][j] = intermediate; 
-			result[i+lim][j] = interDown;
-			//cout<<result[i][j]<<" ";
+			result[i][j] = upperLeft; 
+			result[i][j+lim] = upperRight;
+			result[i+lim][j] = lowerLeft;
+			result[i+lim][j+lim] = lowerRight;
 			if(j==n-1){cout<<endl;}
 		}
 	}
