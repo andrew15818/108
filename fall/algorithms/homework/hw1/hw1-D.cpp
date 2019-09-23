@@ -26,15 +26,22 @@ long long int tuples(long long int* arr, long long int lower, long long int uppe
 int main(){
 	long int n;
 	cin>>n;
-	long long int elements[n];
+	long long int arr[n];
 
 	for(long int i=0;i<n;i++){
-		cin>>elements[i];	
+		cin>>arr[i];	
 	}
-	long long int testo=0;	
+	//regular O(n^2) way
+	for(long int i=0;i<n;i++){
+		for(long int j=i;j<n;j++){
+			if(gcd(arr[i],arr[j]) == 1){
+				printf("(%lld,%lld)\n", arr[i], arr[j]);
+			}
+		}
+	}
 	//we have to think of a way to split the array recursively, and if the gcd is one between the pairs, 
 	//then we multiply the number of elements in each pair, since it means that they all have gcd=1
 	//
-	tuples(elements, 0, n-1);
+	//tuples(elements, 0, n-1);
 	return 0;
 }
