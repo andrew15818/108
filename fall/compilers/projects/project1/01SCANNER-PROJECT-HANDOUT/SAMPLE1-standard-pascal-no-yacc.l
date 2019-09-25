@@ -138,7 +138,7 @@ NQUOTE [^']
 {N}{O}{T}                    return(NOT);
 {O}{F}                       return(OF); 
 {O}{R}                       return(OR);
-{O}{T}{H}{E}{R}{W}{I}{S}{E}  return(OTHERWISE);
+{O}{T}{H}{E}{R}{W}{I}{S}{E}return  return(OTHERWISE);
 {P}{A}{C}{K}{E}{D}           return(PACKED);
 {B}{E}{G}{I}{N}              return(PBEGIN);
 {F}{I}{L}{E}                 return(PFILE);
