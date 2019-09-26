@@ -2,7 +2,7 @@
 %{
 
 	#include<stdio.h>
-	#include<y.tab.h>
+	//#include<y.tab.h>
 	int line_no = 1;
 
 	#define PROGRAM 1
@@ -27,7 +27,7 @@
 
 	#define FUNCTION 18
 	#define PROCEDURE 19
-	#define BEGIN 20
+	#define PBEGIN 20
 	#define END 21
 	#define ASSIGNOP 22
 
@@ -48,10 +48,10 @@
 	#define PLUS 34
 	#define MINUS 35
 	#define MULTIPLY 36
-	#define SLASH 37
+	#define DIVIDE 37
 	#define NOT 38
 	#define RANGE 39
-
+	#define BLANK 40
 	/*Next we define the character classes*/
 %} 
 
@@ -83,18 +83,55 @@ Y [yY]
 Z [zZ]
 
 %%
+(" ")			return BLANK; /* does this effectively delete whitespaces? */
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
 "."				return PERIOD;
 ","				return COMMA;
 
-{V}{A}{R}		return VAR:
-":"				return COLON:
+{V}{A}{R}		return VAR;
+":"				return COLON;
 {A}{R}{R}{A}{Y} return ARRAY;
 "["				return LBRACKET;
 "]"				return RBRACKET;
-[0-9]+			return NUM;
+"\"" { 			/*defining the string constant*/
+				/*still incomplete*/
+	register int c;
+	while( (c=input()) )
+	{
+		if(c=='0'){
+			fprintf(stderr,"Unexpected EOF in line %d\n", line_no);
+		}
+		else if(c=='\n'){
 
+		}
+		else if(c=='\"'){
+			break; /*succcessfully closed quote*/
+		}
+	}
+}			
+[0-9]+			return INTEGER; /*I'm trying two overlapping re's for ints and floats, 
+								 * if it doesn't work remember to change */
+[0-9]+"."[0-9]+E?[0-9]* return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
+									 * if not present just consider all the other numbers.*/
+":=" 			return ASSIGNOP;
+{I}{F} 			return IF;
+{T}{H}{E}{N} 	return THEN;
+{E}{L}{S}{E}	return ELSE;
+{W}{H}{I}{L}{E} return WHILE;
+{D}{O}			return DO;
 
+"<"				return LESSTHAN;
+">" 			return GREATERTHAN;
+"<="			return LEQ;
+">="			return GEQ;
+"="				return EQUAL;
+"!="			return NOTEQUAL;
+"+" 			return PLUS;
+"-"				return MINUS;
+"*"				return MULTIPLY;
+"/"				return DIVIDE;		
+{N}{O}{T}		return NOT;
+".."			return RANGE;
 %%
