@@ -83,7 +83,8 @@ Y [yY]
 Z [zZ]
 
 %%
-(" ")			return BLANK; /* does this effectively delete whitespaces? */
+	/* make the code more readable when you're sure it works*/
+(" ")+			return BLANK; /* does this effectively delete whitespaces? */
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
@@ -113,7 +114,7 @@ Z [zZ]
 }			
 [0-9]+			return INTEGER; /*I'm trying two overlapping re's for ints and floats, 
 								 * if it doesn't work remember to change */
-[0-9]+"."[0-9]+E?[0-9]* return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
+[0-9]+"."[0-9]+E?[0-9]+ return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
 									 * if not present just consider all the other numbers.*/
 ":=" 			return ASSIGNOP;
 {I}{F} 			return IF;
@@ -134,4 +135,10 @@ Z [zZ]
 "/"				return DIVIDE;		
 {N}{O}{T}		return NOT;
 ".."			return RANGE;
+
+.				{fprintf(stderr,"Lexical analyzer error at line %d\n",line_no);} /*catchall term*/
 %%
+
+int main(int argc, char ** argv[]){
+	
+}
