@@ -86,7 +86,7 @@ Z [zZ]
 
 %%
 	/* make the code more readable when you're sure it works*/
-(" ")+			return BLANK; /* does this effectively delete whitespaces? */
+ /*(" ")+			return BLANK; */ /* does this effectively delete whitespaces? */
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
@@ -134,23 +134,34 @@ Z [zZ]
 "+" 			return PLUS;
 "-"				return MINUS;
 "*"				return MULTIPLY;
+"//".*\n		return COMMENT; /*This is a single- line comment, ends in either \n or EOF*/
 "/"				return DIVIDE;		
 {N}{O}{T}		return NOT;
 ".."			return RANGE;
 
-"//*" {
+"/*" {
 	register int c;
-	while( (c=input()) ){
-		if(c =='*'){
-			if(c == '/'){
+
+	while( (c = input()) ){
+		
+		if(c == '*'){
+			c=input();
+			if(c == '/'){	 /*If the end of the comment is closed correctly*/
 				break;
 			}
-		}
-		else if (c=='0'){
+			else{
+				unput(c);
+			}
+		}		
+		else if( c == '\n'){
 			line_no++;
+		}
+		else if(c == 0){
+			fprintf(stderr,"Unexpected EOF inside comment at line %d\n",line_no);
 		}
 	}
 }
+
 
 \n				line_no++;
 .				{fprintf(stderr,"Lexical analyzer error at line %d\n",line_no);} /*catchall term*/
