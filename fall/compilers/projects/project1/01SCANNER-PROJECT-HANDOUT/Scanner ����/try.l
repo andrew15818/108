@@ -52,6 +52,8 @@
 	#define NOT 38
 	#define RANGE 39
 	#define BLANK 40
+
+	#define COMMENT 41
 	/*Next we define the character classes*/
 %} 
 
@@ -135,10 +137,35 @@ Z [zZ]
 "/"				return DIVIDE;		
 {N}{O}{T}		return NOT;
 ".."			return RANGE;
+"\\"* 			return COMMENT;
+"\\*" {
+	register int c;
+	while( (c=input()) ){
+		if(c =='*'){
+			if(c == '/'){
+				break;
+			}
+		}
+		else if (c=='0'){
+			line_no++;
+		}
+	}
+}
+
 
 .				{fprintf(stderr,"Lexical analyzer error at line %d\n",line_no);} /*catchall term*/
 %%
 
 int main(int argc, char ** argv[]){
-	
+	int i,tok;	
+	yyin = fopen("test.txt", "r");
+	for(i = 0;1==1; i ++){
+		tok = yylex();
+		fprintf(stderr,"%3d-th token(type:%d) on line %d: %s\n", i, tok, line_no, yytext);
+	}
+	return(0);
+}
+yywrap(){
+	fclose(yyin);
+	exit(1);
 }
