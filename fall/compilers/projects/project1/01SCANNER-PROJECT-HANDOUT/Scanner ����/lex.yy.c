@@ -897,6 +897,7 @@ YY_RULE_SETUP
 #line 101 "try.l"
 { 			/*defining the string constant*/
 				/*still incomplete*/
+	fprintf(stderr,"Found the beginning of a stringorini\n");
 	register int c;
 	while( (c=input()) )
 	{
@@ -904,7 +905,7 @@ YY_RULE_SETUP
 			fprintf(stderr,"Unexpected EOF in line %d\n", line_no);
 		}
 		else if(c=='\n'){
-
+			line_no++;
 		}
 		else if(c=='\"'){
 			break; /*succcessfully closed quote*/
@@ -912,117 +913,118 @@ YY_RULE_SETUP
 	}
 }			
 	YY_BREAK
+/*Numbers can be preceded by either a positive or negative sign,need to account for that*/
 case 12:
 YY_RULE_SETUP
-#line 117 "try.l"
+#line 119 "try.l"
 return INTEGER; /*I'm trying two overlapping re's for ints and floats, 
 								 * if it doesn't work remember to change */
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 119 "try.l"
+#line 121 "try.l"
 return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
 									 * if not present just consider all the other numbers.*/
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 121 "try.l"
+#line 123 "try.l"
 return ASSIGNOP;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 122 "try.l"
+#line 124 "try.l"
 return IF;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 123 "try.l"
+#line 125 "try.l"
 return THEN;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 124 "try.l"
+#line 126 "try.l"
 return ELSE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 125 "try.l"
+#line 127 "try.l"
 return WHILE;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 126 "try.l"
+#line 128 "try.l"
 return DO;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 128 "try.l"
+#line 130 "try.l"
 return LESSTHAN;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 129 "try.l"
+#line 131 "try.l"
 return GREATERTHAN;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 130 "try.l"
+#line 132 "try.l"
 return LEQ;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 131 "try.l"
+#line 133 "try.l"
 return GEQ;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 132 "try.l"
+#line 134 "try.l"
 return EQUAL;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 133 "try.l"
+#line 135 "try.l"
 return NOTEQUAL;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 134 "try.l"
+#line 136 "try.l"
 return PLUS;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 135 "try.l"
+#line 137 "try.l"
 return MINUS;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 136 "try.l"
+#line 138 "try.l"
 return MULTIPLY;
 	YY_BREAK
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 137 "try.l"
+#line 139 "try.l"
 return COMMENT; /*This is a single- line comment, ends in either \n or EOF*/
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 138 "try.l"
+#line 140 "try.l"
 return DIVIDE;		
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 139 "try.l"
+#line 141 "try.l"
 return NOT;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 140 "try.l"
+#line 142 "try.l"
 return RANGE;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 142 "try.l"
+#line 144 "try.l"
 {
 	register int c;
 
@@ -1049,20 +1051,20 @@ YY_RULE_SETUP
 case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
-#line 166 "try.l"
+#line 168 "try.l"
 line_no++;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 167 "try.l"
+#line 169 "try.l"
 {fprintf(stderr,"Lexical analyzer error at line %d\n",line_no);} /*catchall term*/
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 168 "try.l"
+#line 170 "try.l"
 ECHO;
 	YY_BREAK
-#line 1066 "lex.yy.c"
+#line 1068 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2063,7 +2065,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 168 "try.l"
+#line 170 "try.l"
 
 
 

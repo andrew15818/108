@@ -98,8 +98,9 @@ Z [zZ]
 {A}{R}{R}{A}{Y} return ARRAY;
 "["				return LBRACKET;
 "]"				return RBRACKET;
-"\"" { 			/*defining the string constant*/
+"\"" {			/*string onstants can't have EOL, but can have properly escaped things*/	
 				/*still incomplete*/
+	fprintf(stderr,"Found the beginning of a stringorini\n");
 	register int c;
 	while( (c=input()) )
 	{
@@ -107,13 +108,22 @@ Z [zZ]
 			fprintf(stderr,"Unexpected EOF in line %d\n", line_no);
 		}
 		else if(c=='\n'){
-
+			line_no+
 		}
 		else if(c=='\"'){
 			break; /*succcessfully closed quote*/
 		}
 	}
-}			
+}	/* Still need TODO:
+	 * 1. handle stringorinos properly,allowing for properly escaped sequences
+	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
+	 * 3. Do mutli-line comments need to print the comment? README not clear
+	 * 
+	 *
+	 *
+	 *
+	*/	
+	/*Numbers can be preceded by either a positive or negative sign,need to account for that*/
 [0-9]+			return INTEGER; /*I'm trying two overlapping re's for ints and floats, 
 								 * if it doesn't work remember to change */
 [0-9]+"."[0-9]+|(E?[0-9]+) return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
