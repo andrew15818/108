@@ -84,7 +84,11 @@ X [xX]
 Y [yY]
 Z [zZ]
 
+%x parse_comment
+int comment_nesting = 0;
 %%
+
+ 	/**/
 	/* make the code more readable when you're sure it works*/
  /*(" ")+			return BLANK; */ /* does this effectively delete whitespaces? */
 "("				return LPAR;
@@ -98,26 +102,19 @@ Z [zZ]
 {A}{R}{R}{A}{Y} return ARRAY;
 "["				return LBRACKET;
 "]"				return RBRACKET;
-"\"" {			/*string onstants can't have EOL, but can have properly escaped things*/	
-				/*still incomplete*/
-	fprintf(stderr,"Found the beginning of a stringorini\n");
-	register int c;
-	while( (c=input()) )
-	{
-		if(c=='0'){
-			fprintf(stderr,"Unexpected EOF in line %d\n", line_no);
-		}
-		else if(c=='\n'){
-			line_no+
-		}
-		else if(c=='\"'){
-			break; /*succcessfully closed quote*/
-		}
-	}
-}	/* Still need TODO:
+"\""[^"\""].*"\"" 	return STRINGCONST; /*Can't promise anything for the string*/
+"/*"			{BEGIN(parse_comment);}
+	/*Checking the comments, output doesnt include the /*  */
+<parse_comment>"*/" {BEGIN(INITIAL);}
+<parse_comment>(.|%n);
+	/*stringorinos*/
+"\""[(.* | \n)]*"\"" return STRINGCONST;
+ 
+
+	/* Still need TODO:
 	 * 1. handle stringorinos properly,allowing for properly escaped sequences
 	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
-	 * 3. Do mutli-line comments need to print the comment? README not clear
+	 * X3. Do mutli-line comments need to print the comment? README not clear
 	 * 
 	 *
 	 *
@@ -144,37 +141,15 @@ Z [zZ]
 "+" 			return PLUS;
 "-"				return MINUS;
 "*"				return MULTIPLY;
-"//".*\n		return COMMENT; /*This is a single- line comment, ends in either \n or EOF*/
+"//".*(\n|0)	return COMMENT; /*This is a single- line comment, ends in either \n or EOF*/
 "/"				return DIVIDE;		
 {N}{O}{T}		return NOT;
 ".."			return RANGE;
 
-"/*" {
-	register int c;
-
-	while( (c = input()) ){
-		
-		if(c == '*'){
-			c=input();
-			if(c == '/'){	 /*If the end of the comment is closed correctly*/
-				break;
-			}
-			else{
-				unput(c);
-			}
-		}		
-		else if( c == '\n'){
-			line_no++;
-		}
-		else if(c == 0){
-			fprintf(stderr,"Unexpected EOF inside comment at line %d\n",line_no);
-		}
-	}
-}
 
 
 \n				line_no++;
-.				{fprintf(stderr,"Lexical analyzer error at line %d\n",line_no);} /*catchall term*/
+.				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
 int main(int argc, char ** argv[]){
