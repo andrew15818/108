@@ -54,6 +54,7 @@
 	#define BLANK 40
 
 	#define COMMENT 41
+	#define IDENTIFIER 42
 	/*Next we define the character classes*/
 %} 
 
@@ -85,53 +86,50 @@ Y [yY]
 Z [zZ]
 
 %x parse_comment
+%x parse_string
 int comment_nesting = 0;
 %%
 
  	/**/
 	/* make the code more readable when you're sure it works*/
- /*(" ")+			return BLANK; */ /* does this effectively delete whitespaces? */
+(" ")			return BLANK;  /* does this effectively delete whitespaces? */
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
 "."				return PERIOD;
 ","				return COMMA;
-
-{V}{A}{R}		return VAR;
 ":"				return COLON;
-{A}{R}{R}{A}{Y} return ARRAY;
 "["				return LBRACKET;
 "]"				return RBRACKET;
-"\""[^"\""].*"\"" 	return STRINGCONST; /*Can't promise anything for the string*/
-"/*"			{BEGIN(parse_comment);}
-	/*Checking the comments, output doesnt include the /*  */
-<parse_comment>"*/" {BEGIN(INITIAL);}
-<parse_comment>(.|%n);
-	/*stringorinos*/
-"\""[(.* | \n)]*"\"" return STRINGCONST;
- 
+["][^"]*["]		return STRINGCONST;
 
-	/* Still need TODO:
-	 * 1. handle stringorinos properly,allowing for properly escaped sequences
-	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
-	 * X3. Do mutli-line comments need to print the comment? README not clear
-	 * 
-	 *
-	 *
-	 *
-	*/	
-	/*Numbers can be preceded by either a positive or negative sign,need to account for that*/
-[0-9]+			return INTEGER; /*I'm trying two overlapping re's for ints and floats, 
-								 * if it doesn't work remember to change */
-[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; /*seems sketchy. Reasoning: the 'E' char is optional,
-									 * if not present just consider all the other numbers.*/
-":=" 			return ASSIGNOP;
-{I}{F} 			return IF;
-{T}{H}{E}{N} 	return THEN;
+{V}{A}{R}		return VAR;
+{A}{R}{R}{A}{Y} return ARRAY;
+{I}{F}			return IF;
+{T}{H}{E}{N}	return THEN;
 {E}{L}{S}{E}	return ELSE;
 {W}{H}{I}{L}{E} return WHILE;
 {D}{O}			return DO;
+{N}{O}{T}		return NOT;
 
+ /*Checking for comments, including multiple lines*/
+"//".*			return COMMENT;
+
+"/*"			{BEGIN(parse_comment);}
+<parse_comment>"*/" {BEGIN(INITIAL);}
+<parse_comment>(.|%n)*;
+
+
+	/* Still need TODO:
+	 * X1. handle stringorinos properly,allowing for properly escaped sequences
+	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
+	 * X3. Do mutli-line comments need to print the comment? README not clear
+	*/	
+([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
+("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; 
+("+"|"-")?[0-9]+			return INTEGER; 
+ /*Regular operators*/
+":=" 			return ASSIGNOP;
 "<"				return LESSTHAN;
 ">" 			return GREATERTHAN;
 "<="			return LEQ;
@@ -141,13 +139,8 @@ int comment_nesting = 0;
 "+" 			return PLUS;
 "-"				return MINUS;
 "*"				return MULTIPLY;
-"//".*(\n|0)	return COMMENT; /*This is a single- line comment, ends in either \n or EOF*/
 "/"				return DIVIDE;		
-{N}{O}{T}		return NOT;
 ".."			return RANGE;
-
-
-
 \n				line_no++;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
