@@ -90,25 +90,27 @@ Z [zZ]
 %x parse_string
 
 %%
-{V}{A}{R}		return VAR;
-{A}{R}{R}{A}{Y} return ARRAY;
-{I}{F}			return IF;
-{T}{H}{E}{N}	return THEN;
-{E}{L}{S}{E}	return ELSE;
-{W}{H}{I}{L}{E} return WHILE;
-{D}{O}			return DO;
-{N}{O}{T}		return NOT;
-([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
-("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; 
-("+"|"-")?[0-9]+			return INTEGER; 
- 
- ["][^"]*["]		return STRINGCONST;
+
+ 	/**/
+	/* make the code more readable when you're sure it works*/
+(" ")			return BLANK;  /* does this effectively delete whitespaces? */
+"("				return LPAR;
+")"				return RPAR;
+";"				return SEMICOLON;
+"."				return PERIOD;
+","				return COMMA;
+":"				return COLON;
+"["				return LBRACKET;
+"]"				return RBRACKET;
+ /*["][^"]*["]		return STRINGCONST;*/
+
   /*
   In case the other way of parsing strings is incorrect, try this one
  "\"" {           
     BEGIN(parse_string);
  }
- 
+  
+  In case the other way of parsing strings is incorrect, try this one
 <parse_string>{
     "\"" {       
         //return STRINGCONST;
@@ -120,44 +122,50 @@ Z [zZ]
      }
 }
  */
-
+{V}{A}{R}		return VAR;
+{A}{R}{R}{A}{Y} return ARRAY;
+{I}{F}			return IF;
+{T}{H}{E}{N}	return THEN;
+{E}{L}{S}{E}	return ELSE;
+{W}{H}{I}{L}{E} return WHILE;
+{D}{O}			return DO;
+{N}{O}{T}		return NOT;
 
  /*Checking for comments, including multiple lines*/
 "//".*			return COMMENT;
- 
+
+ /*
 "/*"			{BEGIN(parse_comment);}
 <parse_comment>"/* " {BEGIN(INITIAL);}
-<parse_comment>(.|%n)*;
-  /* 
+ <parse_comment>(.|%n)*;
+ */
  "/*" {
     comment_nesting++;
 	BEGIN(parse_comment);
  }
-*/
+
 <parse_comment>{
-	"/*" {
-		 //printf("finding nested comment at line %d\n", line_no);
+	"*/" {
          comment_nesting++;
 	}
-	/*
-	"*/
-	/* {
-		//printf("Comment content: %s\n",yytext);
+	"/*" {
         comment_nesting--;
+		/*yy_push_state(parse_comment);*/
         if(comment_nesting<=0){
-			comment_nesting=0;
             BEGIN (INITIAL);
         }
 	}
-	\n	line_no++;
-	 /*.}	;*/
-
+   
+}
 
 	/* Still need TODO:
 	 * X1. handle stringorinos properly,allowing for properly escaped sequences
 	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
 	 * X3. Do mutli-line comments need to print the comment? README not clear
 	*/	
+([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
+("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; 
+("+"|"-")?[0-9]+			return INTEGER; 
  /*Regular operators*/
 ":=" 			return ASSIGNOP;
 "<"				return LESSTHAN;
@@ -171,16 +179,6 @@ Z [zZ]
 "*"				return MULTIPLY;
 "/"				return DIVIDE;		
 ".."			return RANGE;
-" "			/*return BLANK;   does this effectively delete whitespaces? */
-"("				return LPAR;
-")"				return RPAR;
-";"				return SEMICOLON;
-"."				return PERIOD;
-","				return COMMA;
-":"				return COLON;
-"["				return LBRACKET;
-"]"				return RBRACKET;
- 
 \n				line_no++;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
