@@ -99,7 +99,8 @@ Z [zZ]
 {D}{O}			return DO;
 {N}{O}{T}		return NOT;
 ([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
-("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; 
+ /*("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; Maybe need to find a better way to define REALs :(*/
+("+"|"-")?[0-9]+(".")?[0-9]+(E[0-9]+)	return REAL; /*<=Start again here*/
 ("+"|"-")?[0-9]+			return INTEGER; 
  
  ["][^"]*["]		return STRINGCONST;
@@ -126,19 +127,18 @@ Z [zZ]
 "//".*			return COMMENT;
  
 "/*"			{BEGIN(parse_comment);}
-<parse_comment>"/* " {BEGIN(INITIAL);}
+<parse_comment>"*/ " {BEGIN(INITIAL);}
 <parse_comment>(.|%n)*;
   /* 
- "/*" {
+
     comment_nesting++;
 	BEGIN(parse_comment);
  }
 */
-<parse_comment>{
-	"/*" {
-		 //printf("finding nested comment at line %d\n", line_no);
-         comment_nesting++;
-	}
+ /*		 //printf("finding nested comment at line %d\n", line_no);
+
+*/
+
 	/*
 	"*/
 	/* {
