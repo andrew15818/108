@@ -2,7 +2,6 @@
 %{
 
 	#include<stdio.h>
-	//#include<y.tab.h>
 	int line_no = 1;
 
 	#define PROGRAM 1
@@ -55,8 +54,8 @@
 
 	#define COMMENT 41
 	#define IDENTIFIER 42
-	/*Next we define the character classes*/
-       int comment_nesting = 0; /*the intorino we are going to use when stacking comments*/
+
+
 %} 
 
 A [aA]
@@ -87,7 +86,7 @@ Y [yY]
 Z [zZ]
 
 %x parse_comment
-%x parse_string
+
 
 %%
 {V}{A}{R}		return VAR;
@@ -98,67 +97,6 @@ Z [zZ]
 {W}{H}{I}{L}{E} return WHILE;
 {D}{O}			return DO;
 {N}{O}{T}		return NOT;
-([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
- /*("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; */
-("+"|"-")?[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return REAL;
-("+"|"-")?[0-9]+			return INTEGER; 
- 
-["][^"]*["]		return STRINGCONST;
-  /*
-  In case the other way of parsing strings is incorrect, try this one
- "\"" {           
-    BEGIN(parse_string);
- }
- 
-<parse_string>{
-    "\"" {       
-        //return STRINGCONST;
-        BEGIN(INITIAL);
-     }
-
-    "\n" {         
-        line_no++;
-     }
-}
- */
-
-
- /*Checking for comments, including multiple lines*/
-"//".*			return COMMENT;
- 
-"/*"			{BEGIN(parse_comment);}
-<parse_comment>"*/ " {BEGIN(INITIAL);}
-<parse_comment>(.|%n)*;
-  /* 
-
-    comment_nesting++;
-	BEGIN(parse_comment);
- }
-*/
- /*		 //printf("finding nested comment at line %d\n", line_no);
-
-*/
-
-	/*
-	"*/
-	/* {
-		//printf("Comment content: %s\n",yytext);
-        comment_nesting--;
-        if(comment_nesting<=0){
-			comment_nesting=0;
-            BEGIN (INITIAL);
-        }
-	}
-	\n	line_no++;
-	 /*.}	;*/
-
-
-	/* Still need TODO:
-	 * X1. handle stringorinos properly,allowing for properly escaped sequences
-	 * 2. allo for integer decalrations as well as the values, i.e. int x = 2
-	 * X3. Do mutli-line comments need to print the comment? README not clear
-	*/	
- /*Regular operators*/
 ":=" 			return ASSIGNOP;
 "<"				return LESSTHAN;
 ">" 			return GREATERTHAN;
@@ -171,7 +109,7 @@ Z [zZ]
 "*"				return MULTIPLY;
 "/"				return DIVIDE;		
 ".."			return RANGE;
-" "			/*return BLANK;   does this effectively delete whitespaces? */
+" "								//deleting all the blanks	
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
@@ -181,6 +119,18 @@ Z [zZ]
 "["				return LBRACKET;
 "]"				return RBRACKET;
  
+
+([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
+("+"|"-")?[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return REAL;
+("+"|"-")?[0-9]+			return INTEGER;  
+["][^"]*["]		return STRINGCONST;
+
+
+"//".*			return COMMENT; 
+"/*"			{BEGIN(parse_comment);}
+<parse_comment>"*/ " {BEGIN(INITIAL);}
+<parse_comment>(.|%n)*;
+
 \n				line_no++;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
