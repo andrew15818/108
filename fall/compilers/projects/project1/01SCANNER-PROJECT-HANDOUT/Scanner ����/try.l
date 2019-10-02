@@ -99,11 +99,11 @@ Z [zZ]
 {D}{O}			return DO;
 {N}{O}{T}		return NOT;
 ([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
- /*("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; Maybe need to find a better way to define REALs :(*/
-("+"|"-")?[0-9]+(".")?[0-9]+(E[0-9]+)	return REAL; /*<=Start again here*/
+ /*("+"|"-")?[0-9]+"."[0-9]+|(E?[0-9]+) return REAL; */
+("+"|"-")?[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return REAL;
 ("+"|"-")?[0-9]+			return INTEGER; 
  
- ["][^"]*["]		return STRINGCONST;
+["][^"]*["]		return STRINGCONST;
   /*
   In case the other way of parsing strings is incorrect, try this one
  "\"" {           
