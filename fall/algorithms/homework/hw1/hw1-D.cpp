@@ -7,6 +7,7 @@ long long int gcd(long long int n1,long long int n2){
 	}
 	return gcd(n2,n1%n2);
 }
+
 long long int tuples(long long int* arr, long long int lower, long long int upper ){
 	if(upper<0 || lower<0){
 		return 1;
@@ -16,13 +17,14 @@ long long int tuples(long long int* arr, long long int lower, long long int uppe
 		return lower;
 	}
 		
-	printf("Calcing the tuples for :  %lld and %lld \n", lower, upper);
+	//printf("Calcing the tuples for :  %lld and %lld \n", lower, upper);
 	long long int mid = lower + (upper - lower) >> 1, result = 1;	
 	if( gcd(tuples(arr, lower, mid), tuples(arr, mid, upper))  == 1 ){
 			return upper*lower;
 	}
 	return result;
 }
+
 int main(){
 	long int n;
 	cin>>n;
