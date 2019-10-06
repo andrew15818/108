@@ -44,6 +44,6 @@ int main(){
 	//we have to think of a way to split the array recursively, and if the gcd is one between the pairs, 
 	//then we multiply the number of elements in each pair, since it means that they all have gcd=1
 	//
-	//tuples(elements, 0, n-1);
+	tuples(arr, 0, n-1);
 	return 0;
 }
