@@ -1,6 +1,7 @@
 //find the number of testcases possible in a given time
 //given the program takes n x floor(sqrt(n)) x floor(log2(n))
 //still TLE on 3 testcases
+//Accepted :D
 #include<iostream>
 #include<cstdio>
 #include<cmath>
