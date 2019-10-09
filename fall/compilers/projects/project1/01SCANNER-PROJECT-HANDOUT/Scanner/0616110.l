@@ -56,6 +56,7 @@
 	#define IDENTIFIER 42
 
 	char* code;
+	char buferino[1000];
 %} 
 
 A [aA]
@@ -120,34 +121,15 @@ Z [zZ]
 "]"				return RBRACKET;
  
 
-([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER;
+([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER; 
 ("+"|"-")?[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return REAL;
 ("+"|"-")?[0-9]+			return INTEGER;  
 
- /*["][^"]*["]		return STRINGCONST; Use this if you can't think of another way*/
- /*We need to think of another way of managing stringorinis*/
-["]			BEGIN(parse_string);
-<parse_string>{
-	 char* code = yytext; 
-
-	[\\] {
-			
-		if(input() =='\n'){
-			//ECHO;
-			code='\n';	
-			unput(code);
-			yytext++;
-		}
-		//yymore();
-		code=yytext;
-		//printf("vale of yytext after yymore: %s\n",code);
-		BEGIN(INITIAL);
-	   }
-}
+["][^"]*["]		return STRINGCONST; 
+ 
 "//".*			return COMMENT; 
-"/*"			{BEGIN(parse_comment);}
-<parse_comment>"*/ " {BEGIN(INITIAL);}
-<parse_comment>(.|%n)*;
+ 
+"/*"[^"*/"]*"*/" return COMMENT;
 
 \n				line_no++;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
