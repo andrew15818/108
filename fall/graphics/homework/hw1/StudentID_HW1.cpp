@@ -8,6 +8,7 @@ using namespace std;
 void drawSun();
 void drawEarth();
 void drawMars();
+void handlePlanet(GLfloat*, GLfloat*); //rotate and tranlsate the planet
 void display();
 void reshape(int _width, int _height);
 void keyboard(unsigned char key, int x, int y);
@@ -18,6 +19,7 @@ int X = 1; //default degree value, you can adjust it
 //we declare these as global becuase we will change them later
 int earthSlices = 360;
 int earthStacks = 180; 
+GLfloat rtri = 0, rquad; //test values i'll be using for the rotations
 GLfloat Y = 0.5; //default radius value, you can adjust it
 
 void lighting()
@@ -82,40 +84,51 @@ void display()
 
 	//you have to draw the shapes large enough so that they show :/
 	//maybe try to use the vertex buffers so we dont render the spheres always ? 
-
 	glMatrixMode(GL_MODELVIEW);
-	//glColor3s(1.0f, 0.0f, 0.0f);
-	drawSun();	
+
+	//drawSun();	
 	glPushMatrix();
 
 	/*Handling the earth*/
-	glRotatef(0.0f, 1.0f, 1.0f, 1.0f);
-	glTranslatef(10.0f, 10.0f ,0.0f);
-	drawEarth();
+	glTranslatef(18*X*cos(rtri),  18*Y*sin(rtri), 0.0f);
+	glRotatef(rtri+=(X*0.0365), 0.0f,0.0f ,0.0f);		
+	drawEarth();	
+	
+	//positioning the cylinder through the earth
+	//what transformations do i use?
+	GLUquadric *quad = gluNewQuadric();
+	glRotatef(-90, 0.0f, 0.0f, 1.0f);
+	glRotatef(23.5f, 1.0f,1.0f, 0.0f );
 
-	//creating the axis on the earth
-	//GLUquadric *quadric= gluNewQuadric();
-	//gluCylinder(quadric,10.0f, 10.0f, 0.0f,10, 10);
-	//glPopMatrix();	
+	gluCylinder(quad, .2,.2,4,10,10);
+	
 
-	//popping the earth matrix to create and transform mars
+	//popping the earth matrix to create and transform moon
 	glPopMatrix();	
 
 	//pushing the sun's array, isn't this already in the stack?  
 	glPushMatrix();
 
 	/*Handling Mars*/
-	glRotatef(0.0f, 1.0f, 1.0f, 1.0f);
-	glTranslatef(5.0f, 15.0f, 0.0f);
-	//glColor3f(1.0f, 0.0f, 0.0f);
+	//glRotatef(0.0f, 1.0f, 1.0f, 1.0f);
+	
 	/*alterantively, we could just write a drawPlanet() function? Instead of having the same function three times*/
-	drawMars();
+	//drawMars();
 	glPopMatrix();
 	glutSwapBuffers();
+}
+void handlePlanet(GLfloat* rtri, GLfloat* rquad)
+{
+	*rtri += 0.2f;
+	glTranslatef(10,10,0);
+	glRotatef(*rtri, 0.0f, 0.0f, 0.0f);
+	
+	return;
 }
 void drawSun(){
 	const double radius = 7 * Y;
 	int stacks = 60, slices = 240;
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for(int i=0; i<=stacks;i++){
 		//need to create the triangles that we will be using
@@ -126,23 +139,23 @@ void drawSun(){
 		double p2Latitude = M_PI * (-0.5 + (double)i/stacks);
 		double p2sinx = sin(p2Latitude);
 		double p2cosx = cos(p2Latitude);
-		glBegin(GL_QUAD_STRIP);
-	
+		//glColor3f(0.0f, 1.0f, 0.0f);
+		glBegin(GL_QUAD_STRIP);	
 		for(int j=0; j<=slices; j++){	
 			double longitude = 2 * M_PI * (-0.5+(double )(j-1)/slices);
 			double longSinx = sin(longitude);
 			double longCosx = cos(longitude);
 			//first point of the quadrilateral
-			glColor3f(1.0f, 0.0f, 0.0f );			
+
+			glColor3f(0.0f, 1.0f, 0.0f);	
 			glVertex3f(radius * longSinx  * p1cosx, radius *longCosx * p1cosx , radius * p1sinx);	
+		
 			glNormal3f(radius * longSinx  * p1cosx, radius *longCosx * p1cosx , radius * p1sinx);	
 		
 			//second point of the quadrialteral
-			//glColor3f(1.0f, 0.0f, 0.0f );		
-			glVertex3f(radius * longSinx  * p2cosx, radius *longCosx * p2cosx , radius * p2sinx);	
-			glNormal3f(radius * longSinx  * p2cosx, radius *longCosx * p2cosx , radius * p2sinx);	
-			
 
+			glVertex3f(radius * longSinx  * p2cosx, radius *longCosx * p2cosx , radius * p2sinx);	
+			glNormal3f(radius * longSinx  * p2cosx, radius *longCosx * p2cosx , radius * p2sinx);		
 		}
 		glEnd();
 	}
@@ -159,6 +172,7 @@ void drawEarth(){
 		double p2sinx = sin(p2Latitude);
 		double p2cosx = cos(p2Latitude);
 		glBegin(GL_QUAD_STRIP);
+		glColor3f(1.0f, 0.0f, 0.0f);
 		for(int j = 0; j <= earthSlices; j++){
 			double longitude =  2* M_PI * (-0.5 + (double)(j-1)/earthSlices);
 			double longSinx = sin(longitude);
@@ -173,7 +187,6 @@ void drawEarth(){
 		glEnd();
 	}
 	//drawing the cylinder accross the pole	
-	
 }
 void drawMars(){
 	int slices = 240;
