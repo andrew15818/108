@@ -14,13 +14,15 @@ void reshape(int _width, int _height);
 void keyboard(unsigned char key, int x, int y);
 void idle();
 
+/****Variables requied to create spheres and keep track of their attributes****/
 int width = 400, height = 400;
 int X = 1; //default degree value, you can adjust it
 
 //we declare these as global becuase we will change them later
-int earthSlices = 360;
-int earthStacks = 180; 
+int earthSlices = 360;const int earthSlicesMod = 4, earthSlicesOrig = 360;
+int earthStacks = 180;const int earthStacksMod = 2, earthStacksOrig = 180; 
 
+GLfloat earthPrev = 0, moonPrev = 0;
 //color vertices for the different bodies
 float earthColors[] = {0.0f, 0.0f, 1.0f, 0.0f};
 float sunColors[] = {1.0f, 0.0f, 0.0f, 0.0f};
@@ -66,13 +68,14 @@ int main(int argc, char** argv)
 GLUquadric *quad = gluNewQuadric();
 void display()
 {   	
+	
 	// TO DO: Set the MVP transform
 	// Modeling/Viewing Transformation
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();	
 
-	//gluLookAt(0.0f, 30.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);	//actual view we're supposed to use
-	gluLookAt(0.0f, 0.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);	//horizontal view for debugging only
+	gluLookAt(0.0f, 30.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);	//actual view we're supposed to use
+
 
 	//Proejction Transformation	
 	
@@ -92,42 +95,42 @@ void display()
     
 	// TO DO: Draw the Sun, Earth, Moon
 
-	//you have to draw the shapes large enough so that they show :/
-	//maybe try to use the vertex buffers so we dont render the spheres always ? 
-	glMatrixMode(GL_MODELVIEW);
 
-			drawSun();	
-			//glPushMatrix();
+		/*checking if we are supposed to be paused or not*/
+		earthPrev = eAngle;
+		moonPrev = mAngle;
+		eAngle=(simulating)? (eAngle += (X*0.365) ):earthPrev;
+		mAngle=(simulating)? (mAngle += (X*0.280) ): moonPrev;
 
-			/*Handling the earth*/
-			glTranslatef(18*Y*cos((eAngle*M_PI)/180),  0.0f,18*Y*sin((M_PI*eAngle)/180));
-			glRotatef(eAngle+=(X*0.365), 0.0f,1.0f ,0.0f);		
-			glPushMatrix();	//push the matrix now so we dont save the axis tilt for later
-			glRotatef(23.5f, 1.0f, 0.0f, 0.0f);
-			drawEarth();	
+		glMatrixMode(GL_MODELVIEW);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, sunColors);
+		drawSun();	
 
-			/*Handling the axis cylinder, set the color directly here*/
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, cylinderColors);
-			glTranslatef(0,3*Y,0);
-			glRotatef(90, 1.0f, 0.0f, 0.0f);	
-			gluCylinder(quad, .2,.2,5*Y,4,10);
+		/*Handling the earth*/
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, earthColors);
+		glTranslatef(18*cos((eAngle*M_PI)/180),  0.0f,18*sin((M_PI*eAngle)/180));	
+		glPushMatrix();	//push the matrix now so we dont save the axis tilt for later	
+		glRotatef(23.5f,0.0f, 0.0f, 1.0f);
+		glRotatef(eAngle, 0.0f,1.0f ,0.0f);		
+
+		drawEarth();	
+
+		/*Handling the axis cylinder, set the color directly here*/
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, cylinderColors);
+		glTranslatef(0,3*Y,0);
+		glRotatef(90, 1.0f, 0.0f, 0.0f);	
+		gluCylinder(quad, .2,.2,5*Y,4,10);
 				
 
-			/*handling the moon/mars */	
-			glPopMatrix();	//removing the changes we made for the axis, use earth's position	
-			glTranslatef(3*Y*cos((mAngle*M_PI)/180),  0.0f,3*Y*sin((mAngle*M_PI)/180)); //cos, sin, use radians, not degrees
-			glRotatef(mAngle+=(X*0.280),20*Y*cos(eAngle), 0.0f, 20*Y*sin(eAngle));	
-			drawMars();
+		/*handling the moon/mars */	
+		glPopMatrix();	//removing the changes we made for the axis, use earth's position	
+		glTranslatef(3.0f*cos((mAngle*M_PI)/180),  0.0f,3.0f*sin((mAngle*M_PI)/180)); //cos, sin, use radians, not degrees
+		glTranslatef(cos((mAngle*M_PI)/180),0.0f, 0.0f);
+
+		
+		drawMars();
 	
 	glutSwapBuffers();
-}
-void handlePlanet(GLfloat* eAngle, GLfloat* rquad)
-{
-	*eAngle += 0.2f;
-	glTranslatef(10,10,0);
-	glRotatef(*eAngle, 0.0f, 0.0f, 0.0f);
-	
-	return;
 }
 void drawSun(){
 	const double radius = 7 * Y;
@@ -144,7 +147,7 @@ void drawSun(){
 		double p2sinx = sin(p2Latitude);
 		double p2cosx = cos(p2Latitude);
 
-		glMaterialfv(GL_FRONT, GL_DIFFUSE,  sunColors);	
+		//glMaterialfv(GL_FRONT, GL_DIFFUSE,  sunColors);	
 		glBegin(GL_QUAD_STRIP);	
 		for(int j=0; j<=slices; j++){	
 			double longitude = 2 * M_PI * (-0.5+(double )(j-1)/slices);
@@ -166,6 +169,8 @@ void drawSun(){
 }
 void drawEarth(){
 	//creating the earth	
+	cout<<"value of the stacks and slices: "<<earthStacks<<" "<<earthSlices<<endl;
+
 	double radius = 2 * Y;
 	for(int i =0; i<=earthStacks; i++){
 		double p1Latitude = M_PI * (-0.5 + (double)(i-1)/earthStacks);
@@ -177,7 +182,7 @@ void drawEarth(){
 		double p2cosx = cos(p2Latitude);
 		glBegin(GL_QUAD_STRIP);
 
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, earthColors);
+		//glMaterialfv(GL_FRONT, GL_DIFFUSE, earthColors);
 		for(int j = 0; j <= earthSlices; j++){
 			double longitude =  2* M_PI * (-0.5 + (double)(j-1)/earthSlices);
 			double longSinx = sin(longitude);
@@ -231,22 +236,13 @@ void keyboard(unsigned char key, int x, int y) {
 	// TO DO: Set the keyboard control
 	switch(key){
 			case 'o':
-				earthStacks = x;
-				earthSlices = y;
+				earthStacks = (earthStacks==earthStacksMod)?earthStacksOrig:earthStacksMod;
+				earthSlices = (earthSlices==earthSlicesMod)?earthSlicesOrig:earthSlicesMod;
 				break;
 			case 'p':
 				simulating = !simulating;
+				break;
 	}
-	/*
-	if(key == 'O'){
-		int temp  = earthSlices;
-		earthSlices = earthStacks;
-		earthStacks = temp;
-	}
-	if(key =='p'){
-		simulating = !simulating;	
-	}	
-*/	
 }
 
 void idle() {	
