@@ -15,17 +15,30 @@ int main(){
 		//insertion = deletion = substitution = 1;
 		cin>>s1>>s2;
 		int s1length = s1.length(), s2length = s2.length();
-		long long int dp[s1length][s2length];
+		long long int dp[s1length+1][s2length+1];
 	
-		dp[0][0] = (s1[0] == s2[0])?0:substitution;
-		//dp[0][0] = 0 ;
-		for(int i=1;i<s1length;i++){
+		//dp[0][0] = (s1[0] == s2[0])?0:substitution;
+		dp[0][0] = 0 ;
+		for(int i=1;i<=s1length;i++){
 			dp[i][0] = dp[i-1][0] + deletion;
 		}
-		for(int j=1; j<s2length; j++){
+		for(int j=1; j<=s2length; j++){
 			dp[0][j] = dp[0][j-1] + insertion;
 		}
-		for(int i=1; i<s1length; i++){
+		for(int i = 1; i <= s1length; i++){
+			for(int j=1; j <= s2length; j++){
+				if(s1[i-1] == s2[j-1]){
+					dp[i][j] = dp[i-1][j-1];
+				}
+				else{
+					dp[i][j] = min(dp[i-1][j-1] + substitution, dp[i-1][j] + deletion, dp[i][j-1] + insertion);
+				}
+				//printf("%lld ", dp[i][j]);
+				//if(j==s2length){printf("\n");}
+			}
+		}
+		/*
+		for(int i=1; i<=s1length; i++){
 			for(int j=1; j<s2length; j++){
 				if(s1[i] == s2[j]){
 					dp[i][j] = dp[i-1][j-1];
@@ -37,7 +50,8 @@ int main(){
 
 			}
 		}
-		printf("%lld\n", dp[s1length-1][s2length-1]);
+		*/
+		printf("%lld\n", dp[s1length][s2length]);
 		counter++;
 	}
 	return 0;
