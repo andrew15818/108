@@ -12,12 +12,13 @@ int main(){
 		int insertion, deletion, substitution;
 		string s1, s2;
 		cin>>insertion>>deletion>>substitution;
+		//insertion = deletion = substitution = 1;
 		cin>>s1>>s2;
 		int s1length = s1.length(), s2length = s2.length();
 		long long int dp[s1length][s2length];
 	
-		//dp[0][0] = (s1[0] == s2[0])?0:substitution;
-		dp[0][0] = 0 ;
+		dp[0][0] = (s1[0] == s2[0])?0:substitution;
+		//dp[0][0] = 0 ;
 		for(int i=1;i<s1length;i++){
 			dp[i][0] = dp[i-1][0] + deletion;
 		}
