@@ -32,23 +32,18 @@ long long int knap(long long int* best,const  doll* dolls, long long int index,
 	if(prevWeight/2 < dolls[index].weight){
 		return knap(best,dolls, index-1, weight, prevWeight);	
 	}
-	//return max( knap(dolls,index-1, weight-dolls[index].weight, dolls[index].weight)+dolls[index].value,
-	//			knap(dolls,index-1, weight, prevWeight);
-	/*long long int temp = max(knap(best,dolls, index-1, weight-dolls[index].weight, dolls[index].weight )
-					+dolls[index].value
-	
-					, knap(best, dolls, index-1, weight,prevWeight));
-					*/
+
 	long long int test1 = knap(best, dolls, index-1, weight-dolls[index].weight,dolls[index].weight)
 			+dolls[index].value;
 	long long int test2 = knap(best,dolls, index-1, weight, prevWeight);
 	long long int temp = max(test1, test2);
 	/*
-	printf("for %lld %lld: if we include it: %lld \t if we dont include it: %lld\n",dolls[index].weight,
-						dolls[index].value,test1, test2);	
+	if(test1 > test2){
+		printf("can include %lld %lld\n", dolls[index].weight, dolls[index].value);	
+	}
 	*/
-	//printf("The best we can do for %lld is %lld\n",index, temp);
 	best[index] = temp;
+	return best[index];
 }
 int main(){
 	long long int n,k;
