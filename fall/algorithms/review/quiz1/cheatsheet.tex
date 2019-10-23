@@ -1,0 +1,86 @@
+\documentclass[portrait,10pt,a4paper]{article}
+
+%translates other encodings into Latex internal ones
+\usepackage[utf8]{inputenc}
+\usepackage[portrait,margin=0.3in]{geometry}
+
+
+
+
+
+%create graphic elements in latex: shapes, lines, etc
+\usepackage{xparse}
+\usepackage{tikz}
+%pretty self explanatory
+\usepackage{mathtools}
+%\usepackage{shapes,positioning,arrows,filt,calc,graphs,graphs.standard}
+\usepackage{multicol}
+
+
+\usepackage{ifthen}
+
+\ifthenelse{\lengthtest {\paperwidth = 11in}}
+	{ \geometry{top=.5in, left=.5in, right=.5in, bottom=.5in}}
+		{\ifthenelse{ \lengthtest{\paperwidth = 297mm} }
+		{\geometry{top=1cm, left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0.5ex}
+
+
+\begin{document}
+\raggedright
+\begin{multicols*}{3}
+\subsection{Chapter 1: basics}
+
+\subsubsection{What is an algorithm?}
+By definition, an algorithm is just a procedure to turn some input into some output through some
+calculations.
+
+\subsubsection{Selection Sort}
+\textbf{The Champion Problem:}
+The champion problem inputs an array \textit{A} of n integers.
+
+The program outputs an index such that A[k] is the minimum value.
+
+We can solve this problem by looping through the array and selecting the least element as we find.
+This takes $4n+c$ comparisons.
+\subsubsection{sorting problem}
+Given a matrix of n integers, output the elements of the array in non-decrementing order.
+\subsubsection{Selection Sort}
+The idea behind selection sort is to use the \texttt{findMin()} procedure described above to sort an array.
+With an array of n elements, we find the min of n elements and place it in A[0]. Then, we find the min of 
+n-1 elements and place it in A[1],... For each element $a_{i}$ in the array, we loop over the remaining
+n-i elements, which means that we have to perfom $n(4n+c+3)$ calculations. 
+
+\textbf{Why does no. of calculations matter?} Means that for bigger n, the number of calculations grows 
+significantly.
+\subsection{Insertion Sort}
+The main idea is that we maintain a sorted array of length \textit{i}, and then we take an element from 
+the unsorted part of the array and insert it into its corresponding place in the sorted part. However,
+when the array is sorted backwards, we will perform many, many more calculations.
+
+\subsection{Asymptotic notation: O-Notation}
+$f(n) = O(g(n))$ means that: 
+
+		\[ \in (h(n) : \exists n_{0},c \text{ such that}
+		\forall n\geq n_{0}, ch(n)\geq f(n))\]
+
+Basically, there exists a constant n and c such that $\forall n\geq n_{0}$,
+$c \times h(n)\geq f(n)$
+
+Essentially, $h(n)$ describes some sort of upper bound for the number of calculations fro a given input n.
+Then, they also specify how the number of calculations grow as a function fo the input size. The def 
+for $\Omega(n)$ and $\Theta(n)$ is the same, exept $\Omega(n)$ is just a lower bound and $\Theta$(n) is 
+a lower bound.
+\subsection{Merge Sort}
+Merge sort recursively breaks down the array into two halves, sorts the lower halves, and then merges the two 
+sorted arrays into one. The complexity is $T(n) = T(n/2) + O(n)$,= $O(n \log(n))$, because we split
+the array down a total of $\log_{2}(n)$ times,a= and each time we operate n times over the array.
+
+\section{2: Lower Bounds}
+\subsection{Membership Query}
+\end{multicols*}
+
+\end{document}
