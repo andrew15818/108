@@ -3,4 +3,5 @@ a.out
 *.log
 
 *.aux
-
+ 
+*.swp
