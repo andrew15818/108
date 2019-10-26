@@ -11,9 +11,9 @@ long long int max(long long int n1, long long int n2){
 	return (n1>=n2)?n1:n2;
 }
 long int knap(long long int* weights, long long int* values , long long int index, long long int weightLeft,
-				long long int smallest, long long int largest)
+				long long int smallest, long long int largest, bool isLargest)
 {
-	if(index<0){
+	if(index<0 || weightLeft<0){
 		return 0;	
 	}
 
@@ -24,14 +24,26 @@ long int knap(long long int* weights, long long int* values , long long int inde
 		return dp[index][weightLeft];
 	}
 	//else if the item is twice as small as the current smallest
-	else if(weights[index]<=(smallest/2)){
+	long int temp;
+	if(weights[index]<=(smallest/2) && !isLargest){
 		//another recursive call	
+	temp = values[index]+knap(weights, values, index-1, weightLeft-values[index], weights[index], -1000, false);
+				
 	}
-	else if(weights[index]>(largest*2)){
-		//yet another recursive call	
-	}
-	
 	//else if the item is twice as big as the current biggest
+	else if(weights[index]>=(largest*2) && isLargest){
+		//yet another recursive call	
+		temp = values[index]+knap(weights, values, index-1, weightLeft-weights[index], -1000, weights[index],true);	
+	}	
+	//else if neither, return the max	
+	else{
+		temp = max(
+				knap(weights, values, index-1, weightLeft, -1000,  1000, false),
+				knap(weights, values, index-1, weightLeft, -1000, 1000, true)
+				);	
+	}
+	dp[index][weightLeft] = temp;
+	return temp;
 }
 int main(){
 	int dolls, totalWeight;
@@ -48,6 +60,6 @@ int main(){
 			if(j==SIZE-1){printf("\n");}
 		}	
 	}*/
-	printf("%lld\n",knap(weights, values, dolls-1, totalWeight));
+	printf("%lld\n",knap(weights, values, dolls-1, totalWeight, ));
 	return 0;
 }
