@@ -1,105 +1,111 @@
 %{
-/*
-* This is my first attempt
-*
-*/
+/* * This is my first attempt * */
 %}
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
 %token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST
-%token OF INTEGER REAL FUNCTION PROCEDURE PBEGIN
+%token OF INTEGER REAL FUNCTION PROCEDURE PBEGIN AND OR
 %token END ASSIGNOP IF THEN ELSE WHILE DO LESSTHAN
 %token GREATERTHAN LEQ GEQ EQUAL NOTEQUAL PLUS MINUS
 %token MULTIPLY DIVIDE NOT RANGE BLANK COMMENT IDENTIFIER
+/*not sure if i should just include the following tokens*/
+
 
 %%
 /*grammar file doesnt't specify wheter | between each thing here*/
-prog : program id(identifier_list)
+prog : PROGRAM ID LPAR identifier_list RPAR
 	declarations 
 	subprogram_declarations
 	compound_statement
-	.
+	PERIOD
 ;
 
-identifier_list : id
-| identifier_list , id 
+identifier_list : ID 
+| identifier_list COMMA ID 
 ;
 
-delcarations : declarations var identifier_list : type 
-| lambda
+declarations : declarations VAR identifier_list COLON type SEMICOLON
+| /* empty */
 ;
 
-type : standart_type
-| ARRAY [num .. num] OF type
+type : standard_type
+| ARRAY LBRACKET NUM PERIOD PERIOD  NUM RBRACKET OF type
 ;
 
-standard_type : integer
-|real
-| string
+standard_type : INTEGER 
+| REAL
+| STRINGCONST 
 ;
 
-subprogram_declarations : subprogram_declarations  
-						subprogram_declaration
+subprogram_declarations : subprogram_declarations
+						subprogram_declaration SEMICOLON
+| /* empty */ 
 ;
 
 subprogram_declaration : subprogram_head
 					   declarations
+					   subprogram_declarations
 					   compound_statement
 ;
 
-subprogram_head : function id arguments : standard_type
-| procedure id arguments
+subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON
+| PROCEDURE ID arguments
 ;
 
-arguments : (pararmeter_list)
-| lambda
+arguments : LPAR parameter_list RPAR
+|/* empty */ 
 ;
 
 /*still not super clear on this one either*/
 parameter_list : optional_var identifier_list : type
-| optional_var identifier_list : type  parameter_list
+| optional_var identifier_list COLON  type SEMICOLON  parameter_list
 ;
 
-optional_var : var
-| lambda
+optional_var : VAR 
+| /* empty */
 ;
 
-compound_statement : begin
+compound_statement : 
 				   optional_statements
-				   end
+				  	END 
 ; 
 
 optional_statements : statement_list
-| lambda
+| /* empty  */ 
 ;
 
 /*not really sure what ; means inside a declaration*/
 statement_list : statement
-|statement_list statement;
+|statement_list SEMICOLON statement
 
-statement : variable := expression
+statement : variable COLON EQUAL expression
 | procedure_statement
 | compound_statement
-| if expression then statement else statement
-| while expression do statement
-| lambda
+| IF expression THEN statement ELSE statement
+| WHILE expression DO statement
+| /* empty */ 
 ;
 
-variable : id tail
+variable : ID tail
 ;
 
-tail : [ expression ] tail
-| lambda	
+tail : LBRACKET expression RBRACKET tail
+| /* empty */ 
 ;
 
-procedure_statement : id
-| id (expression list)
+procedure_statement :  ID
+| ID LPAR expression_list RPAR
 ;
 
 expression_list : expression
-| expression_list , expression
+| expression_list COMMA  expression
 ;
 
-expression : simple_expression
+expression : boolexpression 
+| boolexpression AND boolexpression
+| boolexpression OR boolexpression
+;
+
+boolexpression : simple_expression
 | simple_expression relop simple_expression
 ;
 
@@ -111,25 +117,36 @@ term : factor
 | term mulop factor
 ;
 
-factor : id tail
-| id (expression_list)
-| num
-| stringconstant
-| ( expression )
-| not factor
+factor : ID tail
+| ID LPAR expression_list RPAR
+| NUM 
+| STRINGCONST 
+| LPAR expression RPAR
+| NOT factor
 ;
 
-addop : + | -
+addop : PLUS | MINUS
 ;
 
-mulop : * | /
+mulop : MULTIPLY | DIVIDE
 ;
 
-relop : < 
-| > 
-| = 
-| <=
-| >=
-| !=
+relop : LESSTHAN
+| GREATERTHAN 
+| EQUAL
+| LEQ 
+| GEQ
+| NOTEQUAL
 ;
 /*end of grammerino*/
+%%
+
+void yyeror(const char* str){
+	fpritnf(stderr, "error: %s\n", str);
+}
+int yywrap(){
+	return 1;
+}
+main(){
+	yyparse();
+}
