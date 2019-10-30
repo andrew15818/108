@@ -1,5 +1,13 @@
 %{
 /* * This is my first attempt * */
+#include<stdio.h>
+#include<stdlib.h>
+extern char* yytext;
+extern int line_no;
+void yyerror(){
+	printf("Error here %d: %s\n", line_no, yytext);
+	exit(-1);
+}
 %}
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
 %token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST
@@ -12,11 +20,12 @@
 
 %%
 /*grammar file doesnt't specify wheter | between each thing here*/
-prog : PROGRAM ID LPAR identifier_list RPAR
+prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
 	declarations 
 	subprogram_declarations
 	compound_statement
 	PERIOD
+
 ;
 
 identifier_list : ID 
@@ -28,7 +37,7 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON
 ;
 
 type : standard_type
-| ARRAY LBRACKET NUM PERIOD PERIOD  NUM RBRACKET OF type
+| ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type 
 ;
 
 standard_type : INTEGER 
@@ -61,7 +70,8 @@ parameter_list : optional_var identifier_list COLON  type
 | optional_var identifier_list COLON  type SEMICOLON  parameter_list
 ;
 
-optional_var : VAR | /* empty */ ;
+optional_var : VAR
+| /* empty */ ;
 
 compound_statement : PBEGIN 
 					optional_statements
@@ -76,7 +86,7 @@ statement_list : statement
 |statement_list SEMICOLON statement
 ;
 
-statement : variable COLON EQUAL expression
+statement : variable  ASSIGNOP expression
 | procedure_statement
 | compound_statement
 | IF expression THEN statement ELSE statement
@@ -119,10 +129,11 @@ term : factor
 | term mulop factor
 ;
 
-/*and another one*/
+
 factor : ID tail
 | ID LPAR expression_list RPAR
 | NUM 
+| addop NUM
 | STRINGCONST 
 | LPAR expression RPAR
 | NOT factor
@@ -153,5 +164,9 @@ int yywrap(){
 }
 */
 int main(){
-	return yyparse();
+	int hola = yyparse();
+	if(hola == 0){
+		printf("Ok.\n");
+	}
+	return hola;
 }
