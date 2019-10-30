@@ -2,8 +2,10 @@
 %{
 
 	#include<stdio.h>
+	#include<stdlib.h>
+	#include"y.tab.h"
 	int line_no = 1;
-
+/*
 	#define PROGRAM 1
 	#define ID 2
 
@@ -54,7 +56,7 @@
 
 	#define COMMENT 41
 	#define IDENTIFIER 42
-
+*/
 	char* code;
 	char buferino[1000];
 %} 
@@ -122,7 +124,9 @@ Z [zZ]
  
 
 ([a-zA-Z]|_)[a-zA-Z0-9_]*	return IDENTIFIER; 
+
 ("+"|"-")?[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return REAL;
+
 ("+"|"-")?[0-9]+			return INTEGER;  
 
 ["][^"]*["]		return STRINGCONST; 
@@ -135,16 +139,10 @@ Z [zZ]
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
-int main(int argc, char ** argv[]){
-	int i,tok;	
-	yyin = fopen("test.txt", "r");
-	for(i = 0;1==1; i ++){
-		tok = yylex();
-		fprintf(stderr,"%3d-th token(type:%d) on line %d: %s\n", i, tok, line_no, yytext);
-	}
-	return(0);
-}
 yywrap(){
+/*
 	fclose(yyin);
 	exit(1);
+*/
+	return 1;
 }

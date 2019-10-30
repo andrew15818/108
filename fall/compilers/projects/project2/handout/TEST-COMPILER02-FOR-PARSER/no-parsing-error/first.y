@@ -48,7 +48,7 @@ subprogram_declaration : subprogram_head
 ;
 
 subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON
-| PROCEDURE ID arguments
+| PROCEDURE ID arguments SEMICOLON
 ;
 
 arguments : LPAR parameter_list RPAR
@@ -56,26 +56,25 @@ arguments : LPAR parameter_list RPAR
 ;
 
 /*still not super clear on this one either*/
-parameter_list : optional_var identifier_list : type
+/*cnoflict here*/
+parameter_list : optional_var identifier_list COLON  type
 | optional_var identifier_list COLON  type SEMICOLON  parameter_list
 ;
 
-optional_var : VAR 
-| /* empty */
-;
+optional_var : VAR | /* empty */ ;
 
-compound_statement : 
-				   optional_statements
-				  	END 
+compound_statement : PBEGIN 
+					optional_statements
+					END 
 ; 
 
 optional_statements : statement_list
-| /* empty  */ 
 ;
 
-/*not really sure what ; means inside a declaration*/
+
 statement_list : statement
 |statement_list SEMICOLON statement
+;
 
 statement : variable COLON EQUAL expression
 | procedure_statement
@@ -92,6 +91,7 @@ tail : LBRACKET expression RBRACKET tail
 | /* empty */ 
 ;
 
+/*another shift-reduce conflict*/
 procedure_statement :  ID
 | ID LPAR expression_list RPAR
 ;
@@ -100,23 +100,26 @@ expression_list : expression
 | expression_list COMMA  expression
 ;
 
+
 expression : boolexpression 
 | boolexpression AND boolexpression
 | boolexpression OR boolexpression
 ;
+
 
 boolexpression : simple_expression
 | simple_expression relop simple_expression
 ;
 
 simple_expression : term
-| simple_expression relop simple_expression
+| simple_expression addop term
 ;
 
 term : factor
 | term mulop factor
 ;
 
+/*and another one*/
 factor : ID tail
 | ID LPAR expression_list RPAR
 | NUM 
@@ -140,13 +143,15 @@ relop : LESSTHAN
 ;
 /*end of grammerino*/
 %%
-
+/*
 void yyeror(const char* str){
 	fpritnf(stderr, "error: %s\n", str);
 }
+
 int yywrap(){
 	return 1;
 }
-main(){
-	yyparse();
+*/
+int main(){
+	return yyparse();
 }
