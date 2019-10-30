@@ -6,11 +6,10 @@ extern char* yytext;
 extern int line_no;
 void yyerror(){
 	printf("Error here %d: %s\n", line_no, yytext);
-	exit(-1);
 }
 %}
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
-%token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST
+%token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST STRING
 %token OF INTEGER REAL FUNCTION PROCEDURE PBEGIN AND OR
 %token END ASSIGNOP IF THEN ELSE WHILE DO LESSTHAN
 %token GREATERTHAN LEQ GEQ EQUAL NOTEQUAL PLUS MINUS
@@ -25,11 +24,11 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
 	subprogram_declarations
 	compound_statement
 	PERIOD
-
 ;
 
 identifier_list : ID 
 | identifier_list COMMA ID 
+
 ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON
@@ -37,7 +36,7 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON
 ;
 
 type : standard_type
-| ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type 
+| ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type
 ;
 
 standard_type : INTEGER 
@@ -71,7 +70,8 @@ parameter_list : optional_var identifier_list COLON  type
 ;
 
 optional_var : VAR
-| /* empty */ ;
+| 
+			 /* empty */ ;
 
 compound_statement : PBEGIN 
 					optional_statements
@@ -86,7 +86,7 @@ statement_list : statement
 |statement_list SEMICOLON statement
 ;
 
-statement : variable  ASSIGNOP expression
+statement : variable ASSIGNOP expression
 | procedure_statement
 | compound_statement
 | IF expression THEN statement ELSE statement
@@ -129,11 +129,10 @@ term : factor
 | term mulop factor
 ;
 
-
+/*and another one*/
 factor : ID tail
 | ID LPAR expression_list RPAR
 | NUM 
-| addop NUM
 | STRINGCONST 
 | LPAR expression RPAR
 | NOT factor
@@ -165,8 +164,8 @@ int yywrap(){
 */
 int main(){
 	int hola = yyparse();
-	if(hola == 0){
-		printf("Ok.\n");
+	if(hola==0){
+		printf("Ok.\n");	
 	}
 	return hola;
 }

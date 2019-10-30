@@ -63,36 +63,37 @@ extern int yydebug;
     RBRACKET = 269,
     NUM = 270,
     STRINGCONST = 271,
-    OF = 272,
-    INTEGER = 273,
-    REAL = 274,
-    FUNCTION = 275,
-    PROCEDURE = 276,
-    PBEGIN = 277,
-    AND = 278,
-    OR = 279,
-    END = 280,
-    ASSIGNOP = 281,
-    IF = 282,
-    THEN = 283,
-    ELSE = 284,
-    WHILE = 285,
-    DO = 286,
-    LESSTHAN = 287,
-    GREATERTHAN = 288,
-    LEQ = 289,
-    GEQ = 290,
-    EQUAL = 291,
-    NOTEQUAL = 292,
-    PLUS = 293,
-    MINUS = 294,
-    MULTIPLY = 295,
-    DIVIDE = 296,
-    NOT = 297,
-    RANGE = 298,
-    BLANK = 299,
-    COMMENT = 300,
-    IDENTIFIER = 301
+    STRING = 272,
+    OF = 273,
+    INTEGER = 274,
+    REAL = 275,
+    FUNCTION = 276,
+    PROCEDURE = 277,
+    PBEGIN = 278,
+    AND = 279,
+    OR = 280,
+    END = 281,
+    ASSIGNOP = 282,
+    IF = 283,
+    THEN = 284,
+    ELSE = 285,
+    WHILE = 286,
+    DO = 287,
+    LESSTHAN = 288,
+    GREATERTHAN = 289,
+    LEQ = 290,
+    GEQ = 291,
+    EQUAL = 292,
+    NOTEQUAL = 293,
+    PLUS = 294,
+    MINUS = 295,
+    MULTIPLY = 296,
+    DIVIDE = 297,
+    NOT = 298,
+    RANGE = 299,
+    BLANK = 300,
+    COMMENT = 301,
+    IDENTIFIER = 302
   };
 #endif
 /* Tokens.  */
@@ -110,36 +111,37 @@ extern int yydebug;
 #define RBRACKET 269
 #define NUM 270
 #define STRINGCONST 271
-#define OF 272
-#define INTEGER 273
-#define REAL 274
-#define FUNCTION 275
-#define PROCEDURE 276
-#define PBEGIN 277
-#define AND 278
-#define OR 279
-#define END 280
-#define ASSIGNOP 281
-#define IF 282
-#define THEN 283
-#define ELSE 284
-#define WHILE 285
-#define DO 286
-#define LESSTHAN 287
-#define GREATERTHAN 288
-#define LEQ 289
-#define GEQ 290
-#define EQUAL 291
-#define NOTEQUAL 292
-#define PLUS 293
-#define MINUS 294
-#define MULTIPLY 295
-#define DIVIDE 296
-#define NOT 297
-#define RANGE 298
-#define BLANK 299
-#define COMMENT 300
-#define IDENTIFIER 301
+#define STRING 272
+#define OF 273
+#define INTEGER 274
+#define REAL 275
+#define FUNCTION 276
+#define PROCEDURE 277
+#define PBEGIN 278
+#define AND 279
+#define OR 280
+#define END 281
+#define ASSIGNOP 282
+#define IF 283
+#define THEN 284
+#define ELSE 285
+#define WHILE 286
+#define DO 287
+#define LESSTHAN 288
+#define GREATERTHAN 289
+#define LEQ 290
+#define GEQ 291
+#define EQUAL 292
+#define NOTEQUAL 293
+#define PLUS 294
+#define MINUS 295
+#define MULTIPLY 296
+#define DIVIDE 297
+#define NOT 298
+#define RANGE 299
+#define BLANK 300
+#define COMMENT 301
+#define IDENTIFIER 302
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

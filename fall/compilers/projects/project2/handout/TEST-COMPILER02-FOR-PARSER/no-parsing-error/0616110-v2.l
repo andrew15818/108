@@ -108,10 +108,11 @@ Z [zZ]
 {E}{N}{D}		return END;
 {P}{R}{O}{C}{E}{D}{U}{R}{E} return PROCEDURE;
 {F}{U}{N}{C}{T}{I}{O}{N} return FUNCTION;
+{S}{T}{R}{I}{N}{G}  return STRING;
 {A}{N}{D}		return AND;
 {O}{R} 			return OR;
 
- /*{S}{T}{R}{I}{N}{G} return STRING:*/
+
 
 ":=" 			return ASSIGNOP;
 "<"				return LESSTHAN;
@@ -159,4 +160,3 @@ yywrap(){
 	*/
 	return 1;
 }
-
