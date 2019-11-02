@@ -28,7 +28,6 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
 
 identifier_list : ID 
 | identifier_list COMMA ID 
-
 ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON
@@ -71,7 +70,8 @@ parameter_list : optional_var identifier_list COLON  type
 
 optional_var : VAR
 | 
-			 /* empty */ ;
+/* empty */ 
+;
 
 compound_statement : PBEGIN 
 					optional_statements
@@ -132,7 +132,8 @@ term : factor
 /*and another one*/
 factor : ID tail
 | ID LPAR expression_list RPAR
-| NUM 
+|  NUM 
+| addop NUM
 | STRINGCONST 
 | LPAR expression RPAR
 | NOT factor
@@ -165,7 +166,7 @@ int yywrap(){
 int main(){
 	int hola = yyparse();
 	if(hola==0){
-		printf("Ok.\n");	
+		printf("Ok.\n");
 	}
 	return hola;
 }

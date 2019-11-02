@@ -20,7 +20,7 @@
 	#define LBRACKET 11
 	#define RBRACKET 12
 
-	#define NUM 13
+	#define UM 13
 	#define STRINGCONST 14
 	#define OF 15
 	#define INTEGER 16
