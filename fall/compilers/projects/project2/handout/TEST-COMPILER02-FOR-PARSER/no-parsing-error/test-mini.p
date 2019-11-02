@@ -25,7 +25,7 @@ PROGRAM Sort(input, output);
         PROCEDURE QuicksortRecur(start, stop: integer);
             VAR
                 m: integer;
-
+g
                 splitpt: integer;
 
             FUNCTION Split(start, stop: integer): integer;

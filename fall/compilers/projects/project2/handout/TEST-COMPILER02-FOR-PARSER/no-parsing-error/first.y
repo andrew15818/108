@@ -1,5 +1,12 @@
 %{
+#include <stdio.h>
+#include <stdlib.h>
 /* * This is my first attempt * */
+
+extern int line_no;
+void yyerror(char const * charo){
+	printf("You had an error here %d: %s\n",line_no, charo);
+}
 %}
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
 %token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST
@@ -12,7 +19,7 @@
 
 %%
 /*grammar file doesnt't specify wheter | between each thing here*/
-prog : PROGRAM ID LPAR identifier_list RPAR
+prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
 	declarations 
 	subprogram_declarations
 	compound_statement
@@ -92,8 +99,7 @@ tail : LBRACKET expression RBRACKET tail
 ;
 
 /*another shift-reduce conflict*/
-procedure_statement :  ID
-| ID LPAR expression_list RPAR
+procedure_statement :  ID | ID LPAR expression_list RPAR
 ;
 
 expression_list : expression
