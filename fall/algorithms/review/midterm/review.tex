@@ -81,5 +81,48 @@ Formally, an algorithm is just a procedure to turn one form of input into anothe
 			lower bound estimates are the same. If we can choose one of the $n!$ permutations, we shold then ask the 
 			evil adversary to remove  a certain number of the possible permutations based on the ordering of the elements.
 			We can show that $n\log(n)$ is asymptotically optimal.
+\section{Divide and Conquer}
+	\subsection{What exactly is D\&C?}
+		D\&C  involves recursion, or solving the same problem for a smaller instance of the problem. The idea is 
+		that to solve a problem of size $n$, we need the solutions to smaller instances of the problem and then 
+		somehow merge them together (i.e. the conquer step). In the mergesort this would be merging the two
+		arrays after they have been sorted for lower instances of the problem.
+	\subsection{Quick Sort}
+		This algo chooses a \textit{pivot} from the array (different ways of choosing it), then creates two arrays
+		, $S$ and $L$. In $S$ we place all the elements less than $k$(our pivot), and in $L$ the elements larger.
+		We then recursively call the function on these two arrays.
+
+		What is the running time? It depends on the relative sizes of S and L. If either is always empty, then
+		we will just be recursing on $(n-1)$ every time, which will lead to $O(n^{2})$. If $|S|-|L|<1$, then our 
+		recursion is \textit{balanced} and thus reaches the desired $O(n\log(n))$ time.
+
+		However, for a arbitrary ratio  $|S|:|L|$, the worst-case is $(n,n-1,...,1)$, so $O(n^{2})$
+	\subsection{Randomized Quick Sort}
+		Random selections of pivots usually result in balanced trees. Why? By the \textit{Chernov Inquality}, we
+		know that a bounded portion of the values will be a larger distance away from the mean.
+	\subsection{Selection}
+		AKA the $k-th$ order statistics, we seek to find the index of the k-th smallest number. We can split
+		the arrays into $S$ and $L$ again, and if 
+\section{Linear-Time Algorithms}
+	\subsection{Seelction}
+		The naive way to find the min element is to do a linear scan. How to find the order statistic in linear 
+		time? It depends on the selection of a good pivot. 
+\section{Geometric Problems}
+	\subsection{Bichromatic Planar Matching}
+		Given  a set of $n$ points on a plane, we want to find a pairing of points such that we can draw lines 
+		to all of them without them crossing.
+
+		\begin{tikzpicture}
+				\draw[black, thin] (-1,0) -- (0,-1);
+				\draw[black, thin] (0,1) -- (1,0);
+				\filldraw[blue] (0,1) circle (4pt) ;
+				\filldraw[blue] (-1,0) circle (4pt);
+				\filldraw[red] (1,0) circle (4pt);	
+				\filldraw[red] (0,-1) circle (4pt) node[anchor=north]{valid pairing};	
+		\end{tikzpicture}
+			
+		Notice how neither line crosses when connecting to the other points. Generalizing to $n$ points, no lines
+		should intersect when trying to find one such pairing. A possible solution: assign an arbitrary 
+		arrangement and individually fix it.
 \end{multicols*}
 \end{document}
