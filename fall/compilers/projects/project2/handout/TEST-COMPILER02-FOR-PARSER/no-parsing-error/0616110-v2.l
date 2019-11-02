@@ -2,8 +2,7 @@
 %{
 
 	#include<stdio.h>
-	#include<stdlib.h>
-	#include"y.tab.h"
+	#include "y.tab.h"
 	int line_no = 1;
 /*
 	#define PROGRAM 1
@@ -20,7 +19,7 @@
 	#define LBRACKET 11
 	#define RBRACKET 12
 
-	#define UM 13
+	#define NUM 13
 	#define STRINGCONST 14
 	#define OF 15
 	#define INTEGER 16
@@ -56,9 +55,10 @@
 
 	#define COMMENT 41
 	#define IDENTIFIER 42
-*/
+
 	char* code;
 	char buferino[1000];
+	*/
 %} 
 
 A [aA]
@@ -92,15 +92,28 @@ Z [zZ]
 %x parse_string
 
 %%
- 
+{P}{R}{O}{G}{R}{A}{M} return PROGRAM;
 {V}{A}{R}		return VAR;
 {A}{R}{R}{A}{Y} return ARRAY;
 {I}{F}			return IF;
+{O}{F}			return OF;
 {T}{H}{E}{N}	return THEN;
 {E}{L}{S}{E}	return ELSE;
 {W}{H}{I}{L}{E} return WHILE;
 {D}{O}			return DO;
 {N}{O}{T}		return NOT;
+{B}{E}{G}{I}{N}	return PBEGIN;
+{I}{N}{T}{E}{G}{E}{R} return INTEGER;
+{R}{E}{A}{L}	return REAL;
+{E}{N}{D}		return END;
+{P}{R}{O}{C}{E}{D}{U}{R}{E} return PROCEDURE;
+{F}{U}{N}{C}{T}{I}{O}{N} return FUNCTION;
+{S}{T}{R}{I}{N}{G}  return STRING;
+{A}{N}{D}		return AND;
+{O}{R} 			return OR;
+
+
+
 ":=" 			return ASSIGNOP;
 "<"				return LESSTHAN;
 ">" 			return GREATERTHAN;
@@ -112,6 +125,7 @@ Z [zZ]
 "-"				return MINUS;
 "*"				return MULTIPLY;
 "/"				return DIVIDE;		
+
 ".."			return RANGE;
 " "								//deleting all the blanks	
 "("				return LPAR;
@@ -123,6 +137,19 @@ Z [zZ]
 "["				return LBRACKET;
 "]"				return RBRACKET;
  
+
+([a-zA-Z]|_)[a-zA-Z0-9_]*	return ID; 
+[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return NUM;
+[0-9]+			return NUM;  
+
+["][^"]*["]		return STRINGCONST; 
+ 
+"//".*			;	
+ 
+"/*"[^"*/"]*"*/" ;
+
+\n				line_no++;
+[\r\t]			;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
@@ -130,6 +157,6 @@ yywrap(){
 /*
 	fclose(yyin);
 	exit(1);
-*/
+	*/
 	return 1;
 }

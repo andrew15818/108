@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.  */
+/* A Bison parser, made by GNU Bison 3.4.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -49,99 +49,95 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    PROGRAM = 258,
-    ID = 259,
-    LPAR = 260,
-    RPAR = 261,
-    SEMICOLON = 262,
-    PERIOD = 263,
-    COMMA = 264,
-    VAR = 265,
-    COLON = 266,
-    ARRAY = 267,
-    LBRACKET = 268,
-    RBRACKET = 269,
-    NUM = 270,
-    STRINGCONST = 271,
-    STRING = 272,
+    NUM = 258,
+    STRINGCONST = 259,
+    COMMENT = 260,
+    PROGRAM = 261,
+    ID = 262,
+    PARLEFT = 263,
+    PARRIGHT = 264,
+    SEMICOLON = 265,
+    PERIOD = 266,
+    COMMA = 267,
+    VAR = 268,
+    COLON = 269,
+    ARRAY = 270,
+    LSBRACKET = 271,
+    RSBRACKET = 272,
     OF = 273,
     INTEGER = 274,
     REAL = 275,
-    FUNCTION = 276,
+    FUNCTION_TOK = 276,
     PROCEDURE = 277,
-    PBEGIN = 278,
-    AND = 279,
-    OR = 280,
-    END = 281,
-    ASSIGNOP = 282,
-    IF = 283,
-    THEN = 284,
-    ELSE = 285,
-    WHILE = 286,
-    DO = 287,
-    LESSTHAN = 288,
-    GREATERTHAN = 289,
-    LEQ = 290,
-    GEQ = 291,
-    EQUAL = 292,
-    NOTEQUAL = 293,
-    PLUS = 294,
-    MINUS = 295,
-    MULTIPLY = 296,
-    DIVIDE = 297,
-    NOT = 298,
-    RANGE = 299,
-    BLANK = 300,
-    COMMENT = 301,
-    IDENTIFIER = 302
+    BEGIN_TOK = 278,
+    END = 279,
+    ASSIGNOP = 280,
+    IF = 281,
+    THEN = 282,
+    ELSE = 283,
+    WHILE = 284,
+    DO = 285,
+    LESSTHAN = 286,
+    GREATERTHAN = 287,
+    LESSTHANEQ = 288,
+    GREATERTHANEQ = 289,
+    EQUALS = 290,
+    NEQUALS = 291,
+    PLUS = 292,
+    MINUS = 293,
+    MULT = 294,
+    DIV = 295,
+    NOT = 296,
+    LDOTS = 297,
+    IDENTIFIER = 298,
+    AND = 299,
+    OR = 300
   };
 #endif
 /* Tokens.  */
-#define PROGRAM 258
-#define ID 259
-#define LPAR 260
-#define RPAR 261
-#define SEMICOLON 262
-#define PERIOD 263
-#define COMMA 264
-#define VAR 265
-#define COLON 266
-#define ARRAY 267
-#define LBRACKET 268
-#define RBRACKET 269
-#define NUM 270
-#define STRINGCONST 271
-#define STRING 272
+#define NUM 258
+#define STRINGCONST 259
+#define COMMENT 260
+#define PROGRAM 261
+#define ID 262
+#define PARLEFT 263
+#define PARRIGHT 264
+#define SEMICOLON 265
+#define PERIOD 266
+#define COMMA 267
+#define VAR 268
+#define COLON 269
+#define ARRAY 270
+#define LSBRACKET 271
+#define RSBRACKET 272
 #define OF 273
 #define INTEGER 274
 #define REAL 275
-#define FUNCTION 276
+#define FUNCTION_TOK 276
 #define PROCEDURE 277
-#define PBEGIN 278
-#define AND 279
-#define OR 280
-#define END 281
-#define ASSIGNOP 282
-#define IF 283
-#define THEN 284
-#define ELSE 285
-#define WHILE 286
-#define DO 287
-#define LESSTHAN 288
-#define GREATERTHAN 289
-#define LEQ 290
-#define GEQ 291
-#define EQUAL 292
-#define NOTEQUAL 293
-#define PLUS 294
-#define MINUS 295
-#define MULTIPLY 296
-#define DIVIDE 297
-#define NOT 298
-#define RANGE 299
-#define BLANK 300
-#define COMMENT 301
-#define IDENTIFIER 302
+#define BEGIN_TOK 278
+#define END 279
+#define ASSIGNOP 280
+#define IF 281
+#define THEN 282
+#define ELSE 283
+#define WHILE 284
+#define DO 285
+#define LESSTHAN 286
+#define GREATERTHAN 287
+#define LESSTHANEQ 288
+#define GREATERTHANEQ 289
+#define EQUALS 290
+#define NEQUALS 291
+#define PLUS 292
+#define MINUS 293
+#define MULT 294
+#define DIV 295
+#define NOT 296
+#define LDOTS 297
+#define IDENTIFIER 298
+#define AND 299
+#define OR 300
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
