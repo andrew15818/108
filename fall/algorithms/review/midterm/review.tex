@@ -5,6 +5,7 @@
 \usepackage{multicol}
 
 \usepackage{mathtools}
+\usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{ifthen}
 
@@ -124,5 +125,46 @@ Formally, an algorithm is just a procedure to turn one form of input into anothe
 		Notice how neither line crosses when connecting to the other points. Generalizing to $n$ points, no lines
 		should intersect when trying to find one such pairing. A possible solution: assign an arbitrary 
 		arrangement and individually fix it.
+	\subsection{Line Segment Intersection}
+		To decide whether two line segments intersect, we need to check for the direction between two different
+		line segments, whether we need a \textit{clockwise rotation} or \textit{counter-clockwise rotation}.
+		\begin{equation}
+				\left(\begin{array}{cc} x(q)-x(a) & y(q)-y(a) \\x(b)-x(a) & y(b)-y(a)\end{array}\right)
+		\end{equation}
+		Here, $q$ is the endpoint of the vector we're measuring $\Theta$ from, $a$ is the point
+		where the two vectors intersect, and $b$ is the other vector. If the result of the calculation is >0,
+		it is in the right halfplane, <0 is in the left halfplane, and 0 means colinear. 
+		
+	\subsection{Ham-Sandwich Cut}
+		Given a set of blue points and red points on a plane, draw a straight line so that we can split the
+		region into two containing equal amounts of red and blue points. Takes $O(n+m)$ time.
+		
+		With BMP, we can solve the HSC by joining together two points on opposite sides of the splitting line,
+		or to each other if there is just one point on the area. This way we can get a pairing og red and blue
+		points whose lines do not intersect in $O(n\log(n))$.
+	
+	\subsection{closest pair of points}
+		Given S points, find the shortest distance among any of the two points.
+
+		We have three scenarios: the shortest distance might lie on the left or right section, otherwise one 
+		of the endpoints might be across the side from the other.
+
+		We then take the min of the closest point from the two sides, and to check for the center one, we 
+		calculate the distance $\delta$ from the dividing line. The closest pair can be at most $2\delta$ away
+		if it is to be the closest point.
+	\subsection{Convex Hulls}
+		The convex hull of a ste of points is the smallest polygon which can contains the given input set.
+		We can know that the points with the largest and smallest x coordinates will be on the convex hull.
+		Once we find those, we find the longest point $L$ whose perpendicular distance to PQ is the longest.
+		We do this for the line segment PQ and QP. We iterate until no new points can be found. This algorithm
+		will run in $O(nh)$.
+	\subsection{Farthest Pair}
+		Given a set of points on the plane, output the longest distance between any two points. The two points
+		must be on opposite ends of the convex hull. If they were both inside, then we could draw them out a bit
+		farther and still be within the covnex hull. Therefore, the longest distance has to be held by two 
+		points who lie on the convex hull. This has a worst-case running time of $O(n^{2})$, when all the points
+		lie on the convex hull. How do we fix it?
+	\subsection{antipodal pair}
+
 \end{multicols*}
 \end{document}
