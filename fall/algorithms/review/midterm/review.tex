@@ -165,6 +165,85 @@ Formally, an algorithm is just a procedure to turn one form of input into anothe
 		points who lie on the convex hull. This has a worst-case running time of $O(n^{2})$, when all the points
 		lie on the convex hull. How do we fix it?
 	\subsection{antipodal pair}
+		An \textit{anitpodal pair} are two points such that two parallel lines between them can encompass all the points
+		(basically two points on opposite ends of the graph). Thus they have to be on the convex hull and can be enumerated
+		in $O(n)$..
+\section{Dynammic Programming}
+	\subsection{What is it?}
+		For DP, the main idea is to compute the problems only once, and store the solutions. This way we can bring a problem
+		from naive $O(2^{n})$ down to polynomial time. \textit{memoization} is just storing the solutions, so that when we
+		\textit{recurse}, we don't do the same problems over and over again.
+	\subsection{Fibonacci Numbers}
+		For fibs, the main recurrence is $\text{fib}(n) = \text{fib}(n-1) + \text{fib}(n-2)$. In the recursion tree, for each instance
+		of the problem, we recurse on $n-1$ and $n-2$ until the base case, so for n elements, we recurse $2^{n}$ times. This problem
+		becomes linear-time after a simple memoization.
+	\subsection{Maximum Subarray}
+		Given an n-length array, find the lower and upper bounds of the contiguous subarray with greatest sum. By naively trying all 
+		possible combinations until we find the best one, with a simple memoization we store the sum of 
+		$$ \sum_{i=1}^{j}A_{i}$$ Then, we can just compare the differences of  $A_{i}$ and $A_{j},(i\leq j)$. With guessing the y,
+		we can bring it down to $O(n)$, otherwise $O(n^{2})$.
+	\subsection{Rod-Cutting}
+		Here, we're given an array of the values per inch that we can cut the rod, and our goal is to maximize the possible
+		value.  The main recurrence relation is for every i in $(0,...,n-1)$, we take the max(currentMax, p[i]+cut(i-1)). After we
+		calculate this for i, we store it in an array and check if we've calculated the subproblem every following time we 
+		recurse.
+	\subsection{Longest Common Subsequence}
+		Given two strings, we have to find the not-necessarily contiguous longest common subsequence of characters. We need to 
+		keep track of the current letter we're checking from the first string and second string. There are 3 possibilities:
+		\begin{itemize}
+				\item{The longest common subsequence occurs in $(i-1, j)$ characters.}
+				\item{" $(i,j-1)$}
+				\item{If $s1[i]==s2[j]$, then we recurse on $(i-1, j-1)$, since i and j will both be part of the LCS.}
+		\end{itemize}
+
+		To memoize, we can just keep a 2d array for the index i and j. Or, we can use a \textit{bottom-up} approach and 
+		pre-emptively fill out an array. The time complexity is $O(nm)$, or the product of the lengths of the two strings. For a 
+		problem such as finding palindromic subsequences, we can reduce to LCS.
+		
+	\subsection{Longest Increasing Subsequence}
+		Similar to the previous ones, here we find the longest subsequence of strictly increasing numbers in an array. A clever
+		solution is to sort the original array S and find the LCS of S and the sorted version. This works because the numbers in the
+		LCS won't change places in the array.However, this takes $O(n^{2})$. 
+
+		A better solution is to mix binary search and DP. For every member of the LIS, we perform  BS to find the smallest element
+		that can fit in the array.
+	\subsection{Integer Multiplication}
+		To make the multiplication algorithm more efficient, we first attempt to recursively split the bit sequence into 
+		secitons, and multiply recursively those sections together. The karatsuba algorithm takes $O(n^{\log_{2}3})$.
+	\subsection{Matrix Multiplication}
+		Again, Strassen's algorithms uses 7 recursive splits to solve the problem in $O(n^{\log_{2}7})$
+	\subsection{Matrix-Chain Multiplication}	
+		Given a sequence of n matrices and their descriptions, we need to find the minimum cost of multiplying them all together.
+		Essentially, find the most efficient parenthesiztion. At every step, we need to check whether the current call to McMul()ether
+		the current call to McMul(a,k)+McMul(k+1,b). Again, we can memoize this problem by storing the result of multiplying
+		$A_{i}$...$A_{j}.$
+\section{Dynamic Sets}
+	\subsection{Binary Search Trees}
+		BSTs all have the property that all the elements in the left subtree are all less than the current node x, and the elements
+		in the right subtree are all greater than our current value. 
+
+		When we traverse the tree, we can do the \textit{pre-order}, \textit{in-order}, and \textit{post-order}, depending 
+		on the place where we print the root node.
+
+		The difference between the BSTs and the heaps depends on the cost of building and searching in them.
+\section{Greedy algorithms}
+		When we talk about the greedy algorithms, we always choose the most convenient step at each iteration. However, 
+		this doesn't always lead to the optimal solution, like in DP.
+
+		\subsection{Knapsack Problems}
+		Given a set of weights and values for a set of n objects, we want   the maximum sum of the elements.
+		Again, we want to maximize the cost of including vs. not including the item in the ideal combination.
+		so max(values[i] + knap(i-1, weight-weights[i]), knap(i, weight)).
+\section{Matroids}
+		\subsection{what?}
+			A matroid is a structure that contains a finite colleciton of subsets $S$. A non-empty colleciton of
+			subsets F is \textit{hereditary}, that is , if $A\subseteq B$ and $B \subset F$, then $A \subset F$.
+
+			It also posseses the \textit{exchange property}. 
+
+		\subsection{Weighted Matroid Problem}
+			Given  a  matroid and a weight function, we want a set R in F whose weight is maximum among all the sets in F.
+			(Many problems can be reduced to a weighted matroid problem).
 
 \end{multicols*}
 \end{document}
