@@ -1,0 +1,67 @@
+%I'm just writing a TeX file to review b/c I'm too lazy to review the old fashioned way haha%
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools}
+\begin{document}
+\section{Chpater 3: Geometric Objects and Transformations}
+\subsection{3.4 Frames in OpenGL}
+With OpenGL, we have six different ``frames" in which we can think about the different objects in our scene:
+
+\begin{itemize}
+	\item{Object}
+	\item{World}
+	\item{Eye(camera)}
+	\item{Clip coordinates}
+	\item{Normalized device coordinates}
+	\item{Window(or screen)}
+\end{itemize}
+
+The \textbf{object frame} involves the way the object is oriented around the world. When we operate on this frame we
+would be doing things relative to the cube's size and position in the world. Next, the \textbf{world frame} refers to
+the frame around which everything else is set up, the \textit{coordinate system} of the entire scene itself.
+
+When direclty viewing a scene, we have to use the camera's coordinate system. This means that the center of the 
+camera lens is also the origin of another frame, the \textit{camera} frame. There are \textit{affine} transformations
+which preserve the ratios and distances between the objects in the frame. With the application of these, we can, 
+with the 4x4 \textit{model-view matrix}, switch around from one to another.
+
+After we are done placing the objects in the corresponding frame for the image, we then have to calculate whether or 
+not it will be visible to the viewer. We have to see whether it fits into the \textit{window} coordinates, which 
+specify the size of the viewing window for the application.
+
+A strategy that we can pursue is place the camera at the origin. Then, we can move the object in the z direction. 
+This makes the illusion that the object is ``moving to the front". We replace the object's position by $(x, y, z-d)$, 
+where $d$ is the delta in the z direction.
+\subsection{3.7 Affine Transformations}
+A \textit{transformation} is a just a remapping of one object's coordinates to another set of coordinates. However, 
+the trannsformation function $f$ has to be \textit{linear}, that is \[f(\alpha p+ \beta q)=\alpha f(p) + \beta f(q)\].
+Essentially, we have to be able to split the overall transformation function into smaller pieces.
+
+We can think of transformations as multiplying a 4x4 identity matrix $C$ and a sort of displacement vector $u$.
+	\subsection{3.8 Transformaiton, Rotation, and Scaling}
+
+		\subsubsection{Translation}
+			With translation, we only need to specify the displacement vector by which we are to move. We don't really need 
+			a frame around which to translate, only the displacement $\delta$.
+		\subsubsection{Rotation}
+			Rotation might be a little harder to describe than translation because we also have to specify an axis around 
+			which we rotate. We also have to describe the difference in angle between the positions we are rotating in.
+			For example, if our point is at position $(x,y)$, then $(x', y')$ is :
+			\[ x=\rho\cos(\phi)\]
+			\[ y=\rho\sin(\phi)\]
+			\[ x'=\rho\cos(\theta + \phi)\]
+			\[ y'=\rho\sin(\theta + \phi)\]
+
+			Here, $\phi$ is is the angle between the axis and our original position, and $\theta$ is the angle between $\phi$
+			and the new position. Thus, to derive the new point we are just adding the difference in angle between the angles, 
+			and add that to our original calculation for the original point.
+			
+			These types of transformations are \textbf{rigid-body transformations}, because no amount of them can change the 
+			dimensions of the object, after all, theyre \textit{affine} and preserve the relations between the lines.
+		\subsubsection{Scaling}
+			Scaling is a \textbf{non-rigid-body transormation} since it changes the angles and relations between the different
+			points. Here, we make something either bigger or smaller by the desired ratio. If the scaling ratio is $\alpha$ is
+			negative, then we will be \textit{reflecting} the image over a certain axis.
+\end{document}
+
