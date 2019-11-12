@@ -9,13 +9,15 @@ long int max(long int n1, long int n2){
 }
 int solve(int rows, int cols, int curRow, int curCol, int state, int prevNum, int monoCount){
 	if(curRow<0 || curRow>=rows || curCol<0 || curCol>=cols || monoCount<=0){
+		cout<<"out of bounds, returning 0"<<endl;
 		return 0;
 	}
-	
+	//cout<<"calling "<<curRow<<" "<<curCol<<" with mono "<<monoCount<<endl;
 	if(sol[curRow][curCol] != -1){
+		cout<<"already seen "<<curRow<<" "<<curCol<<", returning "<<sol[curRow][curCol]<<endl;
 		return sol[curRow][curCol];
 	}
-	//cout<<"calling "<<curRow<<" "<<curCol<<" with mono "<<monoCount<<endl;
+	
 	if(state == INCREASING){
 		//monoCount=(arr[curRow][curCol]>prevNum)?monoCount:monoCount--;	
 		if(arr[curRow][curCol] < prevNum){
@@ -30,31 +32,32 @@ int solve(int rows, int cols, int curRow, int curCol, int state, int prevNum, in
 			state = INCREASING;
 		}
 	}
-
+	cout<<"final mono for "<<curRow<<" "<<curCol<<" is "<<monoCount<<endl;
 	sol[curRow][curCol] = monoCount; 
-	if(monoCount<0){
+	if(monoCount<=0){
+		cout<<"no monocount left, returning 0"<<endl;
 		return 0;
 	}
 	//sol[curRow][curCol] = monoCount; 
 	if(curRow == rows-1 && curCol == cols-1 && monoCount>0){
-		//cout<<"reached the end successfully with count "<<monoCount<<endl;
+		cout<<"reached the end successfully with count "<<monoCount<<endl;
 		return 1;
 	}
 	else if(curRow == rows-1 && curCol == cols-1 && monoCount<=0){
-		//cout<<"reached the end unsuccesfullly"<<endl;
+		cout<<"reached the end unsuccesfullly"<<endl;
 		return 0;
 	}
-	/*
+	cout<<"recursing normaly "<<endl;	
 	return (solve(rows, cols, curRow,curCol+1, state, arr[curRow][curCol], monoCount )
 			 ||  solve(rows, cols, curRow+1, curCol, state, arr[curRow][curCol], monoCount)
 			);
-*/
 
+/*
 	return max(
 			solve(rows, cols, curRow+1, curCol, state, arr[curRow][curCol], monoCount),
 			solve(rows, cols, curRow, curCol+1, state, arr[curRow][curCol], monoCount)
 			);
-
+*/
 }
 void printArray(int dimensions){
 		for(int i=0;i<dimensions;i++){
@@ -88,9 +91,9 @@ int main(){
 		return 0;
 	}	
 
-	init(dimensions, dimensions, maxSwitch);
-	string result = (sol[dimensions-1][dimensions-1]==0)?"No":"Yes";
-	cout<<result<<endl;
+	int hola = init(dimensions, dimensions, maxSwitch);
+	string result = (sol[dimensions-1][dimensions-1]<=0)?"No":"Yes";
+	cout<<result<<" and the original result: "<<hola<<endl;
 	//cout<<"result "<<result<<endl;
 	//printArray(dimensions);
 	return 0;
