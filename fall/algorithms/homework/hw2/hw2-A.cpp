@@ -10,10 +10,14 @@ long int max(long int n1, long int n2){
 }
 
 
-long int solve(int rows, int cols, int curRow, int curCol, int state, int prevElement, int monoCount)
+int solve(int rows, int cols, int curRow, int curCol, int state, int prevElement, int monoCount)
 {
+<<<<<<< HEAD
 	//static int counter =0;
 	if(curRow < 0 || curRow >= rows || curCol < 0 || curCol >= cols || monoCount <=0){
+=======
+	if(curRow < 0 || curRow >= rows || curCol < 0 || curCol >= cols){
+>>>>>>> 60a853907b22cd91e0f1b9520fabaa4346183fba
 		return 0;
 	}
 	//printf("calling %dth time \n",counter++);
@@ -22,17 +26,30 @@ long int solve(int rows, int cols, int curRow, int curCol, int state, int prevEl
 	}
 
 	if(state == INCREASING){
+<<<<<<< HEAD
 		//printf("state is increasing at %d %d\n", curRow, curCol);
 		if( arr[curRow][curCol] < prevElement){
 			//printf("changing state from inc to dec at %ld %ld\n",curRow, curCol);
+=======
+
+		if( arr[curRow][curCol] < prevElement){
+
+>>>>>>> 60a853907b22cd91e0f1b9520fabaa4346183fba
 			state = DECREASING;
 			monoCount--;
 		}
 	}
+
 	if(state == DECREASING){
+<<<<<<< HEAD
 		//printf("state is decreasing at %d %d\n", curRow, curCol);
 		if( arr[curRow][curCol] > prevElement ){
 			//printf("changing state from dec to inc  at %ld %ld\n",curRow, curCol);
+=======
+
+		if( arr[curRow][curCol] > prevElement ){
+
+>>>>>>> 60a853907b22cd91e0f1b9520fabaa4346183fba
 			state = INCREASING;
 			monoCount--;
 		}
@@ -41,8 +58,12 @@ long int solve(int rows, int cols, int curRow, int curCol, int state, int prevEl
 		return (monoCount>0)?1:0;
 	}
 	sol[curRow][curCol] = max(sol[curRow][curCol], monoCount);
-	return solve(rows, cols, curRow-1, curCol, state, arr[curRow][curCol], monoCount) ||
-	solve(rows, cols, curRow, curCol-1, state, arr[curCol][curCol], monoCount);
+	if(curRow == 0 && curCol == 0 && monoCount >0){
+		return 1;	
+	}			
+
+	return (solve(rows, cols, curRow-1, curCol, state, arr[curRow][curCol], monoCount) ||
+	solve(rows, cols, curRow, curCol-1, state, arr[curCol][curCol], monoCount));
 }
 long int initSolve(int dimensions, int monoCount)
 {
@@ -54,7 +75,7 @@ long int initSolve(int dimensions, int monoCount)
 	return (solve(dimensions, dimensions, curRow-1, curCol, state1, arr[curRow][curCol], monoCount) || 
 			solve(dimensions, dimensions, curRow, curCol-1, state2, arr[curRow][curCol], monoCount));
 	*/
-	return (solve(dimensions, dimensions, curRow, curCol-1, state1, arr[curRow][curCol], monoCount) || 
+	return (solve(dimensions, dimensions, curRow, curCol-1, state1, arr[curRow][curCol], monoCount) ||
 			solve(dimensions, dimensions, curRow-1, curCol, state2, arr[curRow][curCol], monoCount));
 	
 }
@@ -80,8 +101,13 @@ int main()
 	}
 	//solve(dimensions, dimensions, dimensions-1, dimensions-1, DECREASING, 2*arr[dimensions][dimensions], monoCount);
 	initSolve(dimensions, monoCount);
+<<<<<<< HEAD
 	string result = (sol[0][0] >0)?"Yes":"No";
 	cout<< result <<endl;
+=======
+	string result = (sol[0][0]>0)?"Yes":"No";
+	cout<<result<<endl;
+>>>>>>> 60a853907b22cd91e0f1b9520fabaa4346183fba
 	//printArray(dimensions);
 	return 0;
 }
