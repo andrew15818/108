@@ -110,7 +110,7 @@ Z [zZ]
 "*"				return MULTIPLY;
 "/"				return DIVIDE;		
 ".."			return RANGE;
-" "				;								//deleting all the blanks	
+" "								//deleting all the blanks	
 "("				return LPAR;
 ")"				return RPAR;
 ";"				return SEMICOLON;
@@ -132,7 +132,6 @@ Z [zZ]
 "/*"[^"*/"]*"*/" return COMMENT;
 
 \n				line_no++;
-[\r\t]			;
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
@@ -147,5 +146,5 @@ int main(int argc, char ** argv[]){
 }
 yywrap(){
 	fclose(yyin);
-exit(1);
+	exit(1);
 }
