@@ -7,6 +7,7 @@ extern int line_no;
 void yyerror(){
 	printf("Error here %d: %s\n", line_no, yytext);
 }
+int burner=0;
 %}
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
 %token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST STRING
@@ -19,15 +20,18 @@ void yyerror(){
 
 %%
 /*grammar file doesnt't specify wheter | between each thing here*/
-prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
+prog : PROGRAM{
+		fprintf(stdout, "open file.\n");
+	}
+	ID LPAR identifier_list RPAR SEMICOLON
 	declarations 
 	subprogram_declarations
 	compound_statement
 	PERIOD
 ;
 
-identifier_list : ID 
-| identifier_list COMMA ID 
+identifier_list : ID 	
+| identifier_list COMMA ID{fprintf(stdout, " puta: %d\n",$$);}
 ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON
@@ -39,6 +43,7 @@ type : standard_type
 ;
 
 standard_type : INTEGER 
+			  {fprintf(stdout, "declaring an integer %d\n", yylval);}
 | REAL
 | STRINGCONST 
 ;
@@ -126,7 +131,7 @@ simple_expression : term
 ;
 
 term : factor
-| term mulop factor
+| term{fprintf(stdout, "declaring a term");} mulop factor
 ;
 
 /*and another one*/
