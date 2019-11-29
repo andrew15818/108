@@ -19,19 +19,54 @@
 #define MULTIPLY_NODE 15
 #define DIVIDE_NODE 16
 
+enum Nodetype{
+	type_program,
+	type_identifier_list,
+	type_declarations,
+	type_type,
+	type_standard_type,
+	type_subprogram_declarations,
+	type_subprogram_declaration,
+	type_subprogram_head,
+	type_arguments,
+	type_parameter_list,
+	type_optional_var,
+	type_compound_statement,
+	type_optional_statements,
+	type_statement_list,
+	type_statement,
+	type_variable,
+	type_tail,
+	type_procedure_statement,
+	type_expression_list,
+	type_expression,
+	type_boolexpression,
+	type_simple_expression,
+	type_term,
+	type_factor,
+	type_addop,
+	type_mulop,
+	type_relop,
+};
 struct Node{
+	//pointer info to related nodes
 	struct Node* parent;
-	struct Node* leftmostChild;
+	struct Node* leftMostChild;
+	struct Node* leftMostSibling;
 	struct Node* rightSibling;
 	struct Node* leftSibling;
 
+	//different node values depending on the type of node this is
 	int type;
+
+	int value;
 
 	char* name;
 	
 	char op;
 };
 
-struct Node* newNode();
-
+struct Node* newNode(int NodeType);
+struct Node* makeSibling(struct Node* x, struct Node* node);
+void addNewChild(struct Node* child);
 #endif

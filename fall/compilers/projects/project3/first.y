@@ -4,17 +4,19 @@
 #include<stdlib.h>
 //still to define this one
 #include "symbolTable.h"
+#include "node.h"
 
 extern char* yytext;
 extern int line_no;
 void yyerror(){
 	printf("Error here %d: %s\n", line_no, yytext);
 }
-int burner=0;
+extern struct Node* root;
 %}
 
 %union{
 	//here we're supposed to add the node info from our other files
+	struct Node* node;
 }
 %token PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
 %token COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST STRING
@@ -81,8 +83,7 @@ parameter_list : optional_var identifier_list COLON  type
 ;
 
 optional_var : VAR
-| 
-/* empty */ 
+| /* empty */ 
 ;
 
 compound_statement : PBEGIN 
