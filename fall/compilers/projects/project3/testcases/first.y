@@ -24,6 +24,9 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON
 	subprogram_declarations
 	compound_statement
 	PERIOD
+	{
+		printf("que puts\n");
+	}
 ;
 
 identifier_list : ID 
@@ -142,7 +145,7 @@ factor : ID tail
 addop : PLUS | MINUS
 ;
 
-mulop : MULTIPLY | DIVIDE
+mulop : MULTIPLY {printf("I'm here!\n");}| DIVIDE
 ;
 
 relop : LESSTHAN

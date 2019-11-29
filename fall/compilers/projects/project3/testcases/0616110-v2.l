@@ -153,10 +153,6 @@ Z [zZ]
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
-yywrap(){
-/*
-	fclose(yyin);
-	exit(1);
-	*/
+int yywrap(){
 	return 1;
 }
