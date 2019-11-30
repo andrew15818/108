@@ -78,6 +78,8 @@ struct Node{
 
 struct Node* newNode(int NodeType);
 struct Node* makeSibling(struct Node* x, struct Node* node);
+void deleteNode(struct Node* node);
 void addNewChild(struct Node* parent, struct Node* child);
 void printTree(struct Node* node);
+
 #endif

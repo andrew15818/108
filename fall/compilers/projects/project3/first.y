@@ -34,7 +34,10 @@ extern struct Node* root;
 %%
 
 /*grammar file doesnt't specify wheter | between each thing here*/
-prog : PROGRAM {fprintf(stdout, "opening file:\n");}
+prog : PROGRAM {
+		struct Node* nodito = newNode(PROGRAM_NODE);
+		deleteNode(nodito);
+	}
 	ID LPAR identifier_list RPAR SEMICOLON
 	declarations 
 	subprogram_declarations

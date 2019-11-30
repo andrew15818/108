@@ -61,6 +61,10 @@ void addNewChild(struct Node* parent, struct Node* child)
 		tmp->rightSibling = child;
 }
 
+void deleteNode(struct Node* node)
+{
+	free(node);	
+}
 void printTree(struct Node* node)
 {
 	if(node == NULL){return;}
@@ -68,8 +72,8 @@ void printTree(struct Node* node)
 	switch(node->type){
 			//TODO: probably have to change this later
 			case DECLARATION_NODE:
-					fprintf(stdout, "%s" node->name);
+					fprintf(stdout, "%s" ,node->name);
 					break;
-			case
+
 	}
 }
