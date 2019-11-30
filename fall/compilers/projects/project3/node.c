@@ -41,7 +41,35 @@ struct Node* makeSiblings(struct Node* x, struct Node* y)
 	}
 	free(xsibs);
 }
-void addNewChild(struct Node* child)
+/*add new node as the child of the parent node, will be added to the 
+ * rightmost side of the parents' children nodes.*/
+void addNewChild(struct Node* parent, struct Node* child)
 {
+		child->parent = parent;
+		if(parent->leftMostChild == NULL){
+			parent->leftMostChild = child;		
+			return;
+		}
+	
+		child->leftMostSibling = parent->leftMostChild;
+		struct Node* tmp = parent->leftMostChild;
+		
+		//setting the previous rightmost child of parent to point to child node.
+		while(tmp->rightSibling != NULL){
+			tmp = tmp->rightSibling;	
+		}
+		tmp->rightSibling = child;
 }
 
+void printTree(struct Node* node)
+{
+	if(node == NULL){return;}
+
+	switch(node->type){
+			//TODO: probably have to change this later
+			case DECLARATION_NODE:
+					fprintf(stdout, "%s" node->name);
+					break;
+			case
+	}
+}

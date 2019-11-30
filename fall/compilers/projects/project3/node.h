@@ -2,7 +2,7 @@
 #define NODE_H
 
 //here we do macros for the types of nodes
-#define PROGRAM_NODEj 1
+#define PROGRAM_NODE 1
 #define ID_NODE 2
 #define NUM_NODE 3
 #define	STRINGCONST_NODE 4
@@ -18,6 +18,10 @@
 #define MINUS_NODE 14
 #define MULTIPLY_NODE 15
 #define DIVIDE_NODE 16
+
+//more general types for the node decalrations
+#define DECLARATION_NODE 17
+#define VAR_NAME_NODE 18	//have to distinguish these in order to print them
 
 enum Nodetype{
 	type_program,
@@ -58,15 +62,22 @@ struct Node{
 
 	//different node values depending on the type of node this is
 	int type;
+	int specificType; //once we know if it's not a node for a single symbol, we can assign 
+					  // to it one of the names of the productions
 
+
+	//in case of int 
 	int value;
 
+	//in case of string-related type, id name for example...
 	char* name;
 	
+	//in case of operator symbol
 	char op;
 };
 
 struct Node* newNode(int NodeType);
 struct Node* makeSibling(struct Node* x, struct Node* node);
-void addNewChild(struct Node* child);
+void addNewChild(struct Node* parent, struct Node* child);
+void printTree(struct Node* node);
 #endif
