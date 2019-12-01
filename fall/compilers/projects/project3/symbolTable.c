@@ -1,8 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "node.h"
 #include "symbolTable.h"
 //create a new entry to insert
-struct Entry* newEntry()
+struct Entry* newEntry(struct Node* node)
 {
 	Entry* newEntry = (Entry*)malloc(sizeof(Entry));
 	newEntry->name = NULL;
@@ -16,7 +17,7 @@ void enterSymbol(struct Node* node, int type)
 {
 }
 //retrieve element into table, have to check for scope rules
-Entry* retrieveEntry(char* name)
+struct Entry* retrieveEntry(char* name)
 {
 }
 

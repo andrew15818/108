@@ -3,10 +3,10 @@
 
 	#include<stdio.h>
 	#include "y.tab.h"
-	#include "node.c"
+	//#include "node.c"
 	#include "symbolTable.h"
 	int line_no = 1;
-	struct Node* node(int type);
+	extern struct Node* node(int type);
 /*
 	#define PROGRAM 1
 	#define ID 2

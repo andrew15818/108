@@ -50,7 +50,7 @@
 #define RPAREN_NODE 42
 #define COLON_NODE 43
 #define PERIOD_NODE 44
-#define 
+
 // remember to add all the types to the enum;
 enum Nodetype{
 	type_program,
