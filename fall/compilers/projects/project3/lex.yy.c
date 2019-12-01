@@ -531,7 +531,10 @@ char *yytext;
 
 	#include<stdio.h>
 	#include "y.tab.h"
+	#include "node.c"
+	#include "symbolTable.h"
 	int line_no = 1;
+	struct Node* node(int type);
 /*
 	#define PROGRAM 1
 	#define ID 2
@@ -587,9 +590,9 @@ char *yytext;
 	char* code;
 	char buferino[1000];
 	*/
-#line 590 "lex.yy.c"
+#line 593 "lex.yy.c"
 
-#line 592 "lex.yy.c"
+#line 595 "lex.yy.c"
 
 #define INITIAL 0
 #define parse_comment 1
@@ -808,9 +811,9 @@ YY_DECL
 		}
 
 	{
-#line 94 "0616110-v2.l"
+#line 97 "0616110-v2.l"
 
-#line 813 "lex.yy.c"
+#line 816 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -869,258 +872,333 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 95 "0616110-v2.l"
-return PROGRAM;
+#line 98 "0616110-v2.l"
+{
+	yylval.node  = newNode(PROGRAM_NODE);	
+	return PROGRAM;
+}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 96 "0616110-v2.l"
-return VAR;
+#line 102 "0616110-v2.l"
+{
+	yylval.node = newNode(VAR_NODE);
+	return VAR;
+}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 97 "0616110-v2.l"
-return ARRAY;
+#line 106 "0616110-v2.l"
+{
+		yylval.node = newNode(ARRAY_NODE);
+		return ARRAY;
+}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 98 "0616110-v2.l"
-return IF;
+#line 110 "0616110-v2.l"
+{
+	yylval.node = newNode(IF_NODE);
+	return IF;
+}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 99 "0616110-v2.l"
-return OF;
+#line 114 "0616110-v2.l"
+{
+		yylval.node = newNode(OF_NODE);
+		return OF;
+}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 100 "0616110-v2.l"
-return THEN;
+#line 118 "0616110-v2.l"
+{
+	yylval.node = newNode(THEN_NODE);
+	return THEN;
+}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 101 "0616110-v2.l"
-return ELSE;
+#line 122 "0616110-v2.l"
+{
+	yylval.node = newNode(ELSE_NODE);
+	return ELSE;
+}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 102 "0616110-v2.l"
-return WHILE;
+#line 126 "0616110-v2.l"
+{
+	yylval.node = newNode(WHILE_NODE);
+	return WHILE;
+}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 103 "0616110-v2.l"
-return DO;
+#line 130 "0616110-v2.l"
+{			
+	yylval.node = newNode(DO_NODE);
+	return DO;
+}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 104 "0616110-v2.l"
-return NOT;
+#line 134 "0616110-v2.l"
+{
+	yylval.node = newNode(NOT_NODE);		
+	return NOT;
+}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 105 "0616110-v2.l"
-return PBEGIN;
+#line 138 "0616110-v2.l"
+{
+	yylval.node = newNode(BEGIN_NODE);
+	return PBEGIN;
+}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 106 "0616110-v2.l"
-return INTEGER;
+#line 142 "0616110-v2.l"
+{
+	yylval.node = newNode(INTEGER_NODE);
+	return INTEGER;
+}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 107 "0616110-v2.l"
-return REAL;
+#line 146 "0616110-v2.l"
+{
+	yylval.node = newNode(REAL_NODE);
+	return REAL;
+}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 108 "0616110-v2.l"
-return END;
+#line 150 "0616110-v2.l"
+{
+	yylval.node = newNode(END_NODE);
+	return END;
+}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 109 "0616110-v2.l"
-return PROCEDURE;
+#line 154 "0616110-v2.l"
+{
+	yylval.node = newNode(PROCEDURE_NODE);
+	return PROCEDURE;
+}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 110 "0616110-v2.l"
-return FUNCTION;
+#line 158 "0616110-v2.l"
+{
+	yylval.node = newNode(FUNCTION_NODE);
+	return FUNCTION;
+}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 111 "0616110-v2.l"
-return STRING;
+#line 162 "0616110-v2.l"
+{
+	yylval.node = newNode(STRING_NODE);
+	return STRING;
+}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 112 "0616110-v2.l"
-return AND;
+#line 166 "0616110-v2.l"
+{
+	yylval.node = newNode(AND_NODE);
+	return AND;
+}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 113 "0616110-v2.l"
-return OR;
+#line 170 "0616110-v2.l"
+{
+	yylval.node = newNode(OR_NODE);
+	return OR;
+}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 117 "0616110-v2.l"
+#line 177 "0616110-v2.l"
 return ASSIGNOP;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 118 "0616110-v2.l"
+#line 178 "0616110-v2.l"
 return LESSTHAN;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 119 "0616110-v2.l"
+#line 179 "0616110-v2.l"
 return GREATERTHAN;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 120 "0616110-v2.l"
+#line 180 "0616110-v2.l"
 return LEQ;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 121 "0616110-v2.l"
+#line 181 "0616110-v2.l"
 return GEQ;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 122 "0616110-v2.l"
+#line 182 "0616110-v2.l"
 return EQUAL;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 123 "0616110-v2.l"
+#line 183 "0616110-v2.l"
 return NOTEQUAL;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 124 "0616110-v2.l"
+#line 184 "0616110-v2.l"
 return PLUS;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 125 "0616110-v2.l"
+#line 185 "0616110-v2.l"
 return MINUS;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 126 "0616110-v2.l"
+#line 186 "0616110-v2.l"
 return MULTIPLY;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 127 "0616110-v2.l"
+#line 187 "0616110-v2.l"
 return DIVIDE;		
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 129 "0616110-v2.l"
+#line 189 "0616110-v2.l"
 return RANGE;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 130 "0616110-v2.l"
+#line 190 "0616110-v2.l"
 //deleting all the blanks	
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 131 "0616110-v2.l"
+#line 191 "0616110-v2.l"
 return LPAR;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 132 "0616110-v2.l"
+#line 192 "0616110-v2.l"
 return RPAR;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 133 "0616110-v2.l"
+#line 193 "0616110-v2.l"
 return SEMICOLON;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 134 "0616110-v2.l"
+#line 194 "0616110-v2.l"
 return PERIOD;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 135 "0616110-v2.l"
+#line 195 "0616110-v2.l"
 return COMMA;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 136 "0616110-v2.l"
+#line 196 "0616110-v2.l"
 return COLON;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 137 "0616110-v2.l"
+#line 197 "0616110-v2.l"
 return LBRACKET;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 138 "0616110-v2.l"
+#line 198 "0616110-v2.l"
 return RBRACKET;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 141 "0616110-v2.l"
-return ID; 
+#line 201 "0616110-v2.l"
+{
+	yylval.node = newNode(ID_NODE);
+	strcpy(yylval.node->name, yytext);
+	//fprintf(stdout, "%d\n", yylval.node->value);
+	return ID;
+}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 142 "0616110-v2.l"
-return NUM;
+#line 207 "0616110-v2.l"
+{
+	yylval.node = newNode(NUM_NODE);
+	yylval.node->specificType = REAL_NODE;
+	return NUM;
+}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 143 "0616110-v2.l"
-return NUM;  
+#line 212 "0616110-v2.l"
+{
+	yylval.node = newNode(NUM_NODE);	
+	yylval.node->value = atoi(yytext);
+	yylval.node->specificType = INTEGER_CONSTANT_NODE; 
+	return NUM; 
+}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 145 "0616110-v2.l"
-return STRINGCONST; 
+#line 219 "0616110-v2.l"
+{
+	yylval.node = newNode(STRINGCONST_NODE);
+	strcpy(yylval.node->name, yytext);
+	return STRINGCONST;
+}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 147 "0616110-v2.l"
+#line 225 "0616110-v2.l"
 ;	
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 149 "0616110-v2.l"
+#line 227 "0616110-v2.l"
 ;
 	YY_BREAK
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 151 "0616110-v2.l"
+#line 229 "0616110-v2.l"
 line_no++;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 152 "0616110-v2.l"
+#line 230 "0616110-v2.l"
 ;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 153 "0616110-v2.l"
+#line 231 "0616110-v2.l"
 {fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 154 "0616110-v2.l"
+#line 232 "0616110-v2.l"
 ECHO;
 	YY_BREAK
-#line 1123 "lex.yy.c"
+#line 1201 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(parse_comment):
 case YY_STATE_EOF(parse_string):
@@ -2127,7 +2205,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 154 "0616110-v2.l"
+#line 232 "0616110-v2.l"
 
 
 int yywrap(){

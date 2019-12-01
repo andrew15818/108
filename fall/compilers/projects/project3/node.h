@@ -19,10 +19,39 @@
 #define MULTIPLY_NODE 15
 #define DIVIDE_NODE 16
 
+
+
 //more general types for the node decalrations
 #define DECLARATION_NODE 17
 #define VAR_NAME_NODE 18	//have to distinguish these in order to print them
+#define VAR_NODE 19
+#define IF_NODE 20
+#define OF_NODE 21
+#define THEN_NODE 22
+#define ELSE_NODE 23
+#define WHILE_NODE 24 
+#define DO_NODE 25
+#define NOT_NODE 26
+#define BEGIN_NODE 27
 
+
+#define END_NODE 30
+#define PROCEDURE_NODE 31
+#define FUNCTION_NODE 32
+
+#define AND_NODE 34
+#define OR_NODE 35
+#define ARRAY_NODE 37
+//for the actual integer number type
+#define INTEGER_CONSTANT_NODE 38
+#define LBRACKET_NODE 39
+#define RBRACKET_NODE 40
+#define LPAREN_NODE 41
+#define RPAREN_NODE 42
+#define COLON_NODE 43
+#define PERIOD_NODE 44
+#define 
+// remember to add all the types to the enum;
 enum Nodetype{
 	type_program,
 	type_identifier_list,

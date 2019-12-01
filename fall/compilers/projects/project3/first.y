@@ -32,11 +32,12 @@ extern struct Node* root;
 
 
 %%
-
+//$$ is the left side of the equation, $1,$i,... are the following items in each production
 /*grammar file doesnt't specify wheter | between each thing here*/
 prog : PROGRAM {
-		struct Node* nodito = newNode(PROGRAM_NODE);
-		deleteNode(nodito);
+		//struct Node* root = newNode(PROGRAM_NODE);
+		//nodito->parent = node;
+
 	}
 	ID LPAR identifier_list RPAR SEMICOLON
 	declarations 
@@ -45,7 +46,8 @@ prog : PROGRAM {
 	PERIOD{fprintf(stdout, "doneso \n");}
 ;
 
-identifier_list : ID 	
+identifier_list : ID 
+
 | identifier_list COMMA ID
 ;
 

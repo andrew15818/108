@@ -538,13 +538,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    37,    37,    37,    48,    49,    52,    53,    56,    57,
-      60,    62,    63,    66,    68,    71,    77,    78,    81,    82,
-      87,    88,    91,    92,    95,   100,   104,   105,   108,   109,
-     110,   111,   112,   113,   116,   119,   120,   124,   125,   128,
-     129,   133,   134,   135,   139,   140,   143,   144,   147,   148,
-     152,   153,   154,   155,   156,   157,   158,   161,   161,   164,
-     164,   167,   168,   169,   170,   171,   172
+       0,    37,    37,    37,    49,    51,    54,    55,    58,    59,
+      62,    64,    65,    68,    70,    73,    79,    80,    83,    84,
+      89,    90,    93,    94,    97,   102,   106,   107,   110,   111,
+     112,   113,   114,   115,   118,   121,   122,   126,   127,   130,
+     131,   135,   136,   137,   141,   142,   145,   146,   149,   150,
+     154,   155,   156,   157,   158,   159,   160,   163,   163,   166,
+     166,   169,   170,   171,   172,   173,   174
 };
 #endif
 
@@ -1416,26 +1416,27 @@ yyreduce:
   case 2:
 #line 37 "first.y"
     {
-		struct Node* nodito = newNode(PROGRAM_NODE);
-		deleteNode(nodito);
+		//struct Node* root = newNode(PROGRAM_NODE);
+		//nodito->parent = node;
+
 	}
-#line 1423 "y.tab.c"
+#line 1424 "y.tab.c"
     break;
 
   case 3:
-#line 45 "first.y"
+#line 46 "first.y"
     {fprintf(stdout, "doneso \n");}
-#line 1429 "y.tab.c"
+#line 1430 "y.tab.c"
     break;
 
   case 10:
-#line 61 "first.y"
+#line 63 "first.y"
     {fprintf(stdout, "declaring an integer %d\n", yylval);}
-#line 1435 "y.tab.c"
+#line 1436 "y.tab.c"
     break;
 
 
-#line 1439 "y.tab.c"
+#line 1440 "y.tab.c"
 
       default: break;
     }
@@ -1667,7 +1668,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 175 "first.y"
+#line 177 "first.y"
 
 /*
 void yyeror(const char* str){

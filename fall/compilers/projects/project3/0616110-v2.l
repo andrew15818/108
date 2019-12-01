@@ -3,7 +3,10 @@
 
 	#include<stdio.h>
 	#include "y.tab.h"
+	#include "node.c"
+	#include "symbolTable.h"
 	int line_no = 1;
+	struct Node* node(int type);
 /*
 	#define PROGRAM 1
 	#define ID 2
@@ -92,25 +95,82 @@ Z [zZ]
 %x parse_string
 
 %%
-{P}{R}{O}{G}{R}{A}{M} return PROGRAM;
-{V}{A}{R}		return VAR;
-{A}{R}{R}{A}{Y} return ARRAY;
-{I}{F}			return IF;
-{O}{F}			return OF;
-{T}{H}{E}{N}	return THEN;
-{E}{L}{S}{E}	return ELSE;
-{W}{H}{I}{L}{E} return WHILE;
-{D}{O}			return DO;
-{N}{O}{T}		return NOT;
-{B}{E}{G}{I}{N}	return PBEGIN;
-{I}{N}{T}{E}{G}{E}{R} return INTEGER;
-{R}{E}{A}{L}	return REAL;
-{E}{N}{D}		return END;
-{P}{R}{O}{C}{E}{D}{U}{R}{E} return PROCEDURE;
-{F}{U}{N}{C}{T}{I}{O}{N} return FUNCTION;
-{S}{T}{R}{I}{N}{G}  return STRING;
-{A}{N}{D}		return AND;
-{O}{R} 			return OR;
+{P}{R}{O}{G}{R}{A}{M} {
+	yylval.node  = newNode(PROGRAM_NODE);	
+	return PROGRAM;
+}
+{V}{A}{R} {
+	yylval.node = newNode(VAR_NODE);
+	return VAR;
+}
+{A}{R}{R}{A}{Y} {
+		yylval.node = newNode(ARRAY_NODE);
+		return ARRAY;
+}
+{I}{F}	{
+	yylval.node = newNode(IF_NODE);
+	return IF;
+}
+{O}{F}	{
+		yylval.node = newNode(OF_NODE);
+		return OF;
+}
+{T}{H}{E}{N} {
+	yylval.node = newNode(THEN_NODE);
+	return THEN;
+}
+{E}{L}{S}{E} {
+	yylval.node = newNode(ELSE_NODE);
+	return ELSE;
+}
+{W}{H}{I}{L}{E} {
+	yylval.node = newNode(WHILE_NODE);
+	return WHILE;
+}
+{D}{O} {			
+	yylval.node = newNode(DO_NODE);
+	return DO;
+}
+{N}{O}{T} {
+	yylval.node = newNode(NOT_NODE);		
+	return NOT;
+}
+{B}{E}{G}{I}{N}	{
+	yylval.node = newNode(BEGIN_NODE);
+	return PBEGIN;
+}
+{I}{N}{T}{E}{G}{E}{R} {
+	yylval.node = newNode(INTEGER_NODE);
+	return INTEGER;
+}
+{R}{E}{A}{L}	{
+	yylval.node = newNode(REAL_NODE);
+	return REAL;
+}
+{E}{N}{D} {
+	yylval.node = newNode(END_NODE);
+	return END;
+}
+{P}{R}{O}{C}{E}{D}{U}{R}{E} {
+	yylval.node = newNode(PROCEDURE_NODE);
+	return PROCEDURE;
+}
+{F}{U}{N}{C}{T}{I}{O}{N} {
+	yylval.node = newNode(FUNCTION_NODE);
+	return FUNCTION;
+}
+{S}{T}{R}{I}{N}{G}  {
+	yylval.node = newNode(STRING_NODE);
+	return STRING;
+}
+{A}{N}{D} {
+	yylval.node = newNode(AND_NODE);
+	return AND;
+}
+{O}{R} 	{
+	yylval.node = newNode(OR_NODE);
+	return OR;
+}
 
 
 
@@ -135,14 +195,33 @@ Z [zZ]
 ","				return COMMA;
 ":"				return COLON;
 "["				return LBRACKET;
-"]"				return RBRACKET;
+"]" 			return RBRACKET;
+
  
 
-([a-zA-Z]|_)[a-zA-Z0-9_]*	return ID; 
-[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return NUM;
-[0-9]+			return NUM;  
+([a-zA-Z]|_)[a-zA-Z0-9_]*	{
+	yylval.node = newNode(ID_NODE);
+	strcpy(yylval.node->name, yytext);
+	//fprintf(stdout, "%d\n", yylval.node->value);
+	return ID;
+}
+[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ {
+	yylval.node = newNode(NUM_NODE);
+	yylval.node->specificType = REAL_NODE;
+	return NUM;
+}
+[0-9]+ {
+	yylval.node = newNode(NUM_NODE);	
+	yylval.node->value = atoi(yytext);
+	yylval.node->specificType = INTEGER_CONSTANT_NODE; 
+	return NUM; 
+}
 
-["][^"]*["]		return STRINGCONST; 
+["][^"]*["]		{
+	yylval.node = newNode(STRINGCONST_NODE);
+	strcpy(yylval.node->name, yytext);
+	return STRINGCONST;
+}
  
 "//".*			;	
  
