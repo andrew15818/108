@@ -78,6 +78,7 @@
 #define ADDOP_NODE 69
 #define MULOP_NODE 70
 #define RELOP_NODE 71
+#define SUBPROGRAM_NODE 72
 //#define SUBPROGRA
 
 // remember to add all the types to the enum;

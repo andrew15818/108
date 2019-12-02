@@ -2,6 +2,7 @@
 #include"node.h"
 void traversal(struct Node* node);
 void sillyPrint(struct Node* root);
+static counter = 0;
 int main(){
 	struct Node* root = newNode(INTEGER_CONSTANT_NODE);
 	root->value = 0;
@@ -13,8 +14,10 @@ int main(){
 	}
 	
 	//printf("%d\n", );
+	//
 	//sillyPrint(root);
-	traversal(root);
+	//traversal(root);
+	printTree(root);
 	return 0;
 }
 void sillyPrint(struct Node* root)
@@ -32,9 +35,11 @@ void traversal(struct Node* node)
 	struct Node* tmp = node;	
 
 	while(tmp != NULL){
+
 		traversal(tmp->leftMostChild);	
 
 		tmp = tmp->rightSibling;
+		printf("traversing %d-th node\n", counter++);
 	}
 
 }

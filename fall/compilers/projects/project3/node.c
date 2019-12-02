@@ -74,12 +74,27 @@ void deleteNode(struct Node* node)
 void printTree(struct Node* node)
 {
 	if(node == NULL){return;}
-
+	printf("calling on a node of type : %d\n",node->type);
 	switch(node->type){
-			//TODO: probably have to change this later
-			case DECLARATION_NODE:
-					fprintf(stdout, "%s" ,node->name);
-					break;
-
+		case PROGRAM_NODE:
+				printf("PROGRAM\n");
+				break;
+		case DECLARATION_NODE:
+				printf("VAR_DECLARATION\n");
+				break;
+		case ID_NODE:
+				printf("%s\n", node->name);
+				break;
+		case INTEGER_CONSTANT_NODE:
+				printf("%d\n", node->value);
 	}
+	
+	struct Node* tmp = node->leftMostChild;
+	while(tmp != NULL){
+		printTree(tmp);	
+		//printTree(tmp);	
+		tmp = node->rightSibling;	
+	}
+	printf("currently on a node\n");
+	
 }

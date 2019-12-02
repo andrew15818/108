@@ -68,14 +68,16 @@ identifier_list : ID {
 ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
-		$$ = $1;
+		//$$ = $1;
 		addNewChild($$, $2);
 		addNewChild($$, $3);
 		addNewChild($$, $5);
 		deleteNode($4);
 		deleteNode($6);
 	  }
-| /* empty */
+| /* empty */{
+		$$ = newNode(SUBPROGRAM_NODE);	
+	  }
 ;
 
 type : standard_type{
