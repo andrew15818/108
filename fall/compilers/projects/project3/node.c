@@ -48,9 +48,10 @@ void addNewChild(struct Node* parent, struct Node* child)
 		child->parent = parent;
 		if(parent->leftMostChild == NULL){
 			parent->leftMostChild = child;		
+
 			return;
-		}
-	
+		}	
+
 		child->leftMostSibling = parent->leftMostChild;
 		struct Node* tmp = parent->leftMostChild;
 		
@@ -63,6 +64,11 @@ void addNewChild(struct Node* parent, struct Node* child)
 
 void deleteNode(struct Node* node)
 {
+	//if we have allocated memory 
+	//for a node containing a string
+	if(node->name != NULL){
+		free(node->name);
+	}
 	free(node);	
 }
 void printTree(struct Node* node)

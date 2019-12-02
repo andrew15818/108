@@ -7,61 +7,7 @@
 	#include "symbolTable.h"
 	int line_no = 1;
 	extern struct Node* node(int type);
-/*
-	#define PROGRAM 1
-	#define ID 2
 
-	#define LPAR 3
-	#define RPAR 4
-	#define SEMICOLON 5
-	#define PERIOD 6
-	#define COMMA 7
-	#define VAR 8
-	#define COLON 9
-	#define ARRAY 10
-	#define LBRACKET 11
-	#define RBRACKET 12
-
-	#define NUM 13
-	#define STRINGCONST 14
-	#define OF 15
-	#define INTEGER 16
-	#define REAL 17
-
-	#define FUNCTION 18
-	#define PROCEDURE 19
-	#define PBEGIN 20
-	#define END 21
-	#define ASSIGNOP 22
-
-
-	#define IF 23
-	#define THEN 24
-	#define ELSE 25
-	#define WHILE 26
-	#define DO 27
-
-
-	#define LESSTHAN 28
-	#define GREATERTHAN 29
-	#define LEQ 30
-	#define GEQ 31
-	#define EQUAL 32
-	#define NOTEQUAL 33
-	#define PLUS 34
-	#define MINUS 35
-	#define MULTIPLY 36
-	#define DIVIDE 37
-	#define NOT 38
-	#define RANGE 39
-	#define BLANK 40
-
-	#define COMMENT 41
-	#define IDENTIFIER 42
-
-	char* code;
-	char buferino[1000];
-	*/
 %} 
 
 A [aA]
@@ -165,44 +111,121 @@ Z [zZ]
 }
 {A}{N}{D} {
 	yylval.node = newNode(AND_NODE);
+	yylval.node->type = AND_NODE;
 	return AND;
 }
 {O}{R} 	{
 	yylval.node = newNode(OR_NODE);
+	yylval.node->type = OR_NODE;
 	return OR;
 }
 
 
 
-":=" 			return ASSIGNOP;
-"<"				return LESSTHAN;
-">" 			return GREATERTHAN;
-"<="			return LEQ;
-">="			return GEQ;
-"="				return EQUAL;
-"!="			return NOTEQUAL;
-"+" 			return PLUS;
-"-"				return MINUS;
-"*"				return MULTIPLY;
-"/"				return DIVIDE;		
+":=" {
+	yylval.node = newNode(ASSIGNOP);
+	yylval.node->type = ASSIGNOP;
+	return ASSIGNOP;
+	}
+"<"	{
+	yylval.node = newNode(LESS_THAN_NODE);		
+	yylval.node->type =  LESS_THAN_NODE;
+	return LESSTHAN;
+}
+">" {
+	yylval.node = newNode(GREATER_THAN_NODE);
+	yylval.node->type =  GREATER_THAN_NODE;
+	return GREATERTHAN;
+}
+"<=" {
+	yylval.node = newNode(LEQ_NODE);	
+	yylval.node->type =  LEQ_NODE;
+	return LEQ;
+}
+">=" {			
+	yylval.node = newNode(GEQ_NODE);
+	yylval.node->type =  GEQ_NODE;
+	return GEQ;
+}
+"="	{
+	yylval.node = newNode(EQUAL_NODE);
+	yylval.node->type =  EQUAL_NODE;
+	return EQUAL;
+}
+"!=" {
+	yylval.node = newNode(NOT_EQUAL_NODE);	
+	yylval.node->type =  NOT_EQUAL_NODE;
+	return NOTEQUAL;
+}
+"+" {
+	yylval.node = newNode(PLUS_NODE);
+	yylval.node->type =  PLUS_NODE;
+	return PLUS;
+}
+"-"	{
+	yylval.node = newNode(MINUS_NODE);
+	yylval.node->type = MINUS_NODE;
+	return MINUS;
+}
+"*" { 				
+	yylval.node = newNode(MULTIPLY_NODE);
+	yylval.node->type = MULTIPLICATION_NODE;
+	return MULTIPLY;
+}
+"/" {				
+	yylval.node = newNode(DIVIDE_NODE);
+	yylval.node->type = DIVIDE_NODE;
+	return DIVIDE;
+}
 
-".."			return RANGE;
+".." {
+	yylval.node = newNode(RANGE_NODE);
+
+	return RANGE;
+}
 " "								//deleting all the blanks	
-"("				return LPAR;
-")"				return RPAR;
-";"				return SEMICOLON;
-"."				return PERIOD;
-","				return COMMA;
-":"				return COLON;
-"["				return LBRACKET;
-"]" 			return RBRACKET;
+"(" {				
+	yylval.node = newNode(LPAREN_NODE);	
+	yylval.node->type = 
+	return LPAR;
+}
+")"	{
+	yylval.node = newNode(RPAREN_NODE);
+
+	return RPAR;
+}
+";" {				
+	yylval.node = newNode(SEMICOLON_NODE);
+	return SEMICOLON;
+}
+
+"."	{
+	yylval.node = newNode(PERIOD_NODE);
+	return PERIOD;
+}
+"," {
+	yylval.node = newNode(COMMA_NODE);
+	return COMMA;
+}
+":"	{
+	yylval.node = newNode(COLON_NODE);
+	return COLON;
+}
+"["	{
+	yylval.node = newNode(LBRACKET_NODE);	
+	return LBRACKET;
+}
+"]" {
+	yylval.node = newNode(RBRACKET_NODE);
+	return RBRACKET;
+}
 
  
 
 ([a-zA-Z]|_)[a-zA-Z0-9_]*	{
 	yylval.node = newNode(ID_NODE);
+	yylval.node->name = (char*)malloc(yyleng + 1);
 	strcpy(yylval.node->name, yytext);
-	//fprintf(stdout, "%d\n", yylval.node->value);
 	return ID;
 }
 [0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ {
@@ -219,6 +242,7 @@ Z [zZ]
 
 ["][^"]*["]		{
 	yylval.node = newNode(STRINGCONST_NODE);
+	yylval.node->name = (char*)malloc(yyleng + 1);
 	strcpy(yylval.node->name, yytext);
 	return STRINGCONST;
 }

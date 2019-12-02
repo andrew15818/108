@@ -50,6 +50,35 @@
 #define RPAREN_NODE 42
 #define COLON_NODE 43
 #define PERIOD_NODE 44
+#define ASSIGN_NODE 45
+#define GREATER_THAN_NODE 46
+#define LESS_THAN_NODE 47
+
+
+#define RANGE_NODE 50
+#define SEMICOLON_NODE 51
+#define COMMA_NODE 52
+#define SUBPROGRAM_DECLARATIONS_NODE 53
+#define SUBPROGRAM_DECLARATION_NODE 54
+#define ARGUMENTS_NODE 55
+#define PARAMETER_LIST_NODE 55
+#define OPTIONAL_VAR_NODE 56
+#define COMPOUND_STATEMENT_NODE 57
+#define OPTIONAL_STATEMENTS 58
+#define STATEMENT_NODE 59
+#define VARIABLE_NODE 60
+#define TAIL_NODE 61
+#define PROCEDURE_STATEMENT_NODE 62
+#define EXPRESSION_LIST_NODE 63
+#define EXPRESSION_NODE 64
+#define BOOLEXPRESSION_NODE 65
+#define SIMPLE_EXPRESSION_NODE 66
+#define TERM_NODE 67
+#define FACTOR_NODE 68
+#define ADDOP_NODE 69
+#define MULOP_NODE 70
+#define RELOP_NODE 71
+//#define SUBPROGRA
 
 // remember to add all the types to the enum;
 enum Nodetype{
@@ -80,6 +109,7 @@ enum Nodetype{
 	type_addop,
 	type_mulop,
 	type_relop,
+	type_integer
 };
 struct Node{
 	//pointer info to related nodes
