@@ -957,13 +957,15 @@ case 15:
 YY_RULE_SETUP
 #line 100 "0616110-v2-mierda-pura.l"
 {
-	yylval.node = newNode(PROCEDURE);
+	//yylval.node = newNode(PROCEDURE);
+	//yylval.node->name = (char*)malloc(yyleng+1);
+	//strcpy(yylval.node->name, yytext);
 	return PROCEDURE;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 104 "0616110-v2-mierda-pura.l"
+#line 106 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(FUNCTION);
 	return FUNCTION;
@@ -971,15 +973,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 108 "0616110-v2-mierda-pura.l"
+#line 110 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(string_type);
-	return STRING;
+	return STRINGCONST;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 112 "0616110-v2-mierda-pura.l"
+#line 114 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(AND);
 	yylval.node->specificType = AND;
@@ -988,7 +990,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 117 "0616110-v2-mierda-pura.l"
+#line 119 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(OR);
 	yylval.node->specificType = OR;
@@ -997,7 +999,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 125 "0616110-v2-mierda-pura.l"
+#line 127 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(ASSIGNOP);
 	yylval.node->specificType = op_assign;
@@ -1006,7 +1008,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 130 "0616110-v2-mierda-pura.l"
+#line 132 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(LESSTHAN);		
 	yylval.node->specificType =  op_lt;
@@ -1015,7 +1017,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 135 "0616110-v2-mierda-pura.l"
+#line 137 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(GREATERTHAN);
 	yylval.node->specificType =  op_gt;
@@ -1024,7 +1026,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 140 "0616110-v2-mierda-pura.l"
+#line 142 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(LEQ);	
 	yylval.node->specificType =  op_leq;
@@ -1033,7 +1035,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 145 "0616110-v2-mierda-pura.l"
+#line 147 "0616110-v2-mierda-pura.l"
 {			
 	yylval.node = newNode(GEQ);
 	yylval.node->specificType =  op_geq;
@@ -1042,7 +1044,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 150 "0616110-v2-mierda-pura.l"
+#line 152 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(EQUAL);
 	yylval.node->specificType =  op_equal;
@@ -1051,7 +1053,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 155 "0616110-v2-mierda-pura.l"
+#line 157 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(NOT);	
 	yylval.node->specificType =  op_nequal;
@@ -1060,7 +1062,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 160 "0616110-v2-mierda-pura.l"
+#line 162 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(PLUS);
 	yylval.node->specificType =  op_plus;
@@ -1069,7 +1071,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 165 "0616110-v2-mierda-pura.l"
+#line 167 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(MINUS);
 	yylval.node->specificType = op_minus;
@@ -1078,7 +1080,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 170 "0616110-v2-mierda-pura.l"
+#line 172 "0616110-v2-mierda-pura.l"
 { 				
 	yylval.node = newNode(MULTIPLY);
 	yylval.node->specificType = op_multiply;
@@ -1087,7 +1089,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 175 "0616110-v2-mierda-pura.l"
+#line 177 "0616110-v2-mierda-pura.l"
 {				
 	yylval.node = newNode(DIVIDE);
 	yylval.node->specificType = op_divide;
@@ -1096,7 +1098,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 181 "0616110-v2-mierda-pura.l"
+#line 183 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(RANGE);
 
@@ -1105,12 +1107,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 186 "0616110-v2-mierda-pura.l"
+#line 188 "0616110-v2-mierda-pura.l"
 //deleting all the blanks	
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 187 "0616110-v2-mierda-pura.l"
+#line 189 "0616110-v2-mierda-pura.l"
 {				
 	yylval.node = newNode(LPAREN);	
 	//yylval.node->specificType = LPAR
@@ -1119,7 +1121,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 192 "0616110-v2-mierda-pura.l"
+#line 194 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(RPAREN);
 
@@ -1128,7 +1130,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 197 "0616110-v2-mierda-pura.l"
+#line 199 "0616110-v2-mierda-pura.l"
 {				
 	yylval.node = newNode(SEMICOLON);
 	return SEMICOLON;
@@ -1136,7 +1138,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 202 "0616110-v2-mierda-pura.l"
+#line 204 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(PERIOD);
 	return PERIOD;
@@ -1144,7 +1146,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 206 "0616110-v2-mierda-pura.l"
+#line 208 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(COMMA);
 	return COMMA;
@@ -1152,7 +1154,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 210 "0616110-v2-mierda-pura.l"
+#line 212 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(COLON);
 	return COLON;
@@ -1160,7 +1162,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 214 "0616110-v2-mierda-pura.l"
+#line 216 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(LBRACKET);	
 	return LBRACKET;
@@ -1168,7 +1170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 218 "0616110-v2-mierda-pura.l"
+#line 220 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(RBRACKET);
 	return RBRACKET;
@@ -1176,7 +1178,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 225 "0616110-v2-mierda-pura.l"
+#line 227 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(ID_name);
 	yylval.node->name = (char*)malloc(yyleng + 1);
@@ -1187,7 +1189,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 232 "0616110-v2-mierda-pura.l"
+#line 234 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(NUM);
 	yylval.node->specificType = REAL_VALUE;
@@ -1196,7 +1198,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 237 "0616110-v2-mierda-pura.l"
+#line 239 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(NUM);	
 	yylval.node->value = atoi(yytext);
@@ -1207,7 +1209,7 @@ YY_RULE_SETUP
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 244 "0616110-v2-mierda-pura.l"
+#line 246 "0616110-v2-mierda-pura.l"
 {
 	yylval.node = newNode(STRING_VALUE);
 	yylval.node->name = (char*)malloc(yyleng + 1);
@@ -1217,37 +1219,37 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 251 "0616110-v2-mierda-pura.l"
+#line 253 "0616110-v2-mierda-pura.l"
 ;	
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 253 "0616110-v2-mierda-pura.l"
+#line 255 "0616110-v2-mierda-pura.l"
 ;
 	YY_BREAK
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 255 "0616110-v2-mierda-pura.l"
+#line 257 "0616110-v2-mierda-pura.l"
 line_no++;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 256 "0616110-v2-mierda-pura.l"
+#line 258 "0616110-v2-mierda-pura.l"
 ;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 257 "0616110-v2-mierda-pura.l"
+#line 259 "0616110-v2-mierda-pura.l"
 {fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 258 "0616110-v2-mierda-pura.l"
+#line 260 "0616110-v2-mierda-pura.l"
 ECHO;
 	YY_BREAK
-#line 1251 "lex.yy.c"
+#line 1253 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(parse_comment):
 case YY_STATE_EOF(parse_string):
@@ -2250,7 +2252,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 258 "0616110-v2-mierda-pura.l"
+#line 260 "0616110-v2-mierda-pura.l"
 
 
 

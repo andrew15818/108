@@ -68,15 +68,11 @@ identifier_list : ID {
 	  }
 ;
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
-		//$$ = $1;		
-		$$ = newNode(declarations);
-		//fprintf(stdout, "declarations  node of type %d %s\n",$1->type, $1->name );
+		$$ = $1;		
 		addNewChild($$, $2);	
-		//fprintf(stdout, " declarations node of type %d %s\n",$2->type, $2->name );
 		addNewChild($$, $3);	
-		//fprintf(stdout, " declarations node of type %d %s\n",$3->type, $3->name );
 		addNewChild($$, $5);
-		//fprintf(stdout, " declarations node of type %d %s\n",$5->type, $5->name );
+
 		deleteNode($4);
 		deleteNode($6);
 	  }
@@ -91,7 +87,7 @@ type : standard_type{
 		//addNewChild($$, $1);
 		//fprintf(stdout, "%d\n",$1->type);
 	  }
-		//not so sure about setting $$ to $8
+
 | ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type{
 		$$ = $8;
 		addNewChild($$, $1);	
@@ -117,7 +113,7 @@ standard_type : INTEGER{
 	  
 | STRINGCONST {
 		$$ = newNode(string_type);	
-		$$->specificType = STRING_VALUE ;
+		$$->specificType = STRING_VALUE;
 		addNewChild($$, $1);
 	  }
 ;
@@ -148,10 +144,16 @@ subprogram_declaration : subprogram_head
 
 subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
 			fprintf(stdout, "reached a function call\n");
+			$$ = newNode(function);
+			addNewChild($$, $2);
+			addNewChild($$, $3);
+			addNewChild($$, $5);
 	  }
 | PROCEDURE ID arguments SEMICOLON{
 		$$ = newNode(PROCEDURE);
-		
+		$$->name = (char*)malloc(strlen($2->name+1));
+		strcpy($$->name, $2->name);
+		printf("new procedure definition: %s\n", $$->name);	
 		addNewChild($$, $2);
 		addNewChild($$, $3);
 		deleteNode($1);
@@ -176,7 +178,7 @@ parameter_list : optional_var identifier_list COLON  type{
 		$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
-		printf("in parameter list: %s", $2->name);
+		printf("in parameter list: %s\n", $2->name);
 		addNewChild($$, $4);
 		deleteNode($3);
 	  }
@@ -276,7 +278,7 @@ procedure_statement :  ID{
 		addNewChild($$, $1);
 	  }
 | ID LPAR expression_list RPAR{
-		printf("in procedure statement\n");
+		printf("hello from procedure statement\n\n\n");
 		addNewChild($$, $1);
 		addNewChild($$, $3);
 		deleteNode($2);
@@ -447,7 +449,7 @@ int main(){
 	//printf("hola\n");
 	//struct Node* tmp = root;
 	//traverse(tmp);
-	printf("bout to print the tree boi\n");
+	//printf("bout to print the tree boi\n");
 	traverse(root);
 	if(hola==0){
 		printf("Ok.\n");

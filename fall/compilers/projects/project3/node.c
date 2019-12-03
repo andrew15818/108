@@ -94,7 +94,7 @@ void traverse(struct Node* node)
 			printf("prog\n");	
 			break;
 		case ID_name:
-			printf("id name: %s\n", node->name);
+			printf(" %s\n", node->name);
 			break;
 		case declarations:
 			printf("declarations\n");
@@ -124,12 +124,40 @@ void traverse(struct Node* node)
 			printf("subprogram_declarations\n");
 			break;
 		case subprogram_head:
-			printf("subrpgram_head\n");
+			printf("subprogram_head\n");
+			break;
+		case arguments:
+			printf("arguments\n");
+			break;
+		case parameter_list:
+			printf("parameter_list\n");
+			break;
+		case optional_var:
+			printf("optional_var\n");
+			break;
+		case begin:
+			printf("begin\n");
+			break;
+		case end:
+			printf("end\n");
+			break;
+		case optional_statements:
+			printf("optional_statements\n");
+			break;
+		case statement_list:
+			printf("statement_list\n");
+			break;
 		case procedure_statement:
 			printf("procedure_statement\n");
 			break;
 		case statement:
 			printf("statement\n");
+			break;
+		case variable:
+			printf("variable\n");
+			break;
+		case expression:
+			printf("expression\n");
 			break;
 		case integer_type:
 			printf("TYPE_INT\n");
@@ -141,7 +169,7 @@ void traverse(struct Node* node)
 			printf("TYPE_STRING\n");
 			break;
 		default:
-			printf("unwirtten type, ytpe: %d\n", node->type);
+			//printf("unwirtten type, ytpe: %d\n", node->type);
 			break;
 		/*
 		case :
@@ -159,12 +187,11 @@ void traverse(struct Node* node)
 	*/	
 
 	}
-	struct Node* child = node->leftMostChild;
-	if(child!=NULL){
-		do{
-			traverse(child);	
-			child = child->rightSibling;
-		}while(child != NULL);	
+	struct Node* tmp = node->leftMostChild;
+	while( tmp != NULL){
+		traverse(tmp);
+		tmp = tmp->rightSibling;
+		//raverse(node->leftMostChild);
 	}
 
 }

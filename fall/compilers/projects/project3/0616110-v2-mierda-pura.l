@@ -98,7 +98,9 @@ Z [zZ]
 	return END;
 }
 {P}{R}{O}{C}{E}{D}{U}{R}{E} {
-	yylval.node = newNode(PROCEDURE);
+	//yylval.node = newNode(PROCEDURE);
+	//yylval.node->name = (char*)malloc(yyleng+1);
+	//strcpy(yylval.node->name, yytext);
 	return PROCEDURE;
 }
 {F}{U}{N}{C}{T}{I}{O}{N} {
@@ -107,7 +109,7 @@ Z [zZ]
 }
 {S}{T}{R}{I}{N}{G}  {
 	yylval.node = newNode(string_type);
-	return STRING;
+	return STRINGCONST;
 }
 {A}{N}{D} {
 	yylval.node = newNode(AND);
