@@ -35,7 +35,7 @@ extern struct Node* root;
 %type <node> term factor addop mulop relop
 
 %%
-//$$ is the left side of the equation, $1,$i,... are the following items in each production
+/*$$ is the left side of the equation, $1,$i,... are the following items in each production*/
 /*grammar file doesnt't specify wheter | between each thing here*/
 /*I hope I am getting these declarations right at least :'(*/
 prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON declarations 
@@ -60,8 +60,6 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON declarations
 
 identifier_list : ID {
 		$$ = newNode(identifier_list);		
-		printf("%d\n", $$->type);
-		printf("porque soy tan estupido\n");
 		addNewChild($$, $1);
 	  }
 | identifier_list COMMA ID{
@@ -88,9 +86,10 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON{
 ;
 
 type : standard_type{
-		$$ = newNode(type);	
-		addNewChild($$, $1);
-		fprintf(stdout, "%d\n",$1->type);
+		//$$ = newNode(type);	
+		$$ = $1;	
+		//addNewChild($$, $1);
+		//fprintf(stdout, "%d\n",$1->type);
 	  }
 		//not so sure about setting $$ to $8
 | ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type{
@@ -106,19 +105,18 @@ type : standard_type{
 ;
 
 standard_type : INTEGER{
-		$$ = newNode(standard_type);
+		$$ = newNode(integer_type);
 		$$->specificType = INTEGER_VALUE; 
-		printf("seeing integers\n");
 		addNewChild($$, $1);
 	  }
 | REAL{
-		$$ = newNode(standard_type);
+		$$ = newNode(real_type);
 		$$->specificType= REAL_VALUE;
 		addNewChild($$, $1);
 	  }
 	  
 | STRINGCONST {
-		$$ = newNode(standard_type);	
+		$$ = newNode(string_type);	
 		$$->specificType = STRING_VALUE ;
 		addNewChild($$, $1);
 	  }
@@ -126,7 +124,6 @@ standard_type : INTEGER{
 /*also not to sure about this one*/
 subprogram_declarations : subprogram_declarations
 						subprogram_declaration SEMICOLON{
-		fprintf(stdout, "reaching subprogram declarations\n");
 		$$ = $1;		
 		addNewChild($$, $2);
 		deleteNode($3);
@@ -179,6 +176,7 @@ parameter_list : optional_var identifier_list COLON  type{
 		$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
+		printf("in parameter list: %s", $2->name);
 		addNewChild($$, $4);
 		deleteNode($3);
 	  }
@@ -192,9 +190,9 @@ parameter_list : optional_var identifier_list COLON  type{
 		deleteNode($5);
 	  }
 ;
-//will this give me trouble?
-//doubt to see how it can give me any more problems
-//than I already have with this assignment :'(
+
+
+
 optional_var : VAR{
 		//$$ = $1;
 		addNewChild($$, $1);
@@ -220,62 +218,43 @@ optional_statements : statement_list{
 		addNewChild($$, $1);
 	  }
 ;
-
-
-statement_list : statement{
-		addNewChild($$, $1);
-	  }
-
-|statement_list SEMICOLON statement{
- 		$$ = $1;
-		addNewChild($$, $3);
-		deleteNode($2);
-	  }
+statement_list: statement{
+		$$ = newNode(statement);			  
+	}
+|statement_list COLON statement{
+		$$ = $1;
+		addNewChild($1, $3);
+	}
 ;
-
 statement : variable ASSIGNOP expression{
-		 $$ = newNode(statement);	
-		 addNewChild($$, $1);
-		 
-		 addNewChild($$, $2);
-		 addNewChild($$, $3);
-	  }
+		$$ = newNode(ASSIGNOP);		  
+		addNewChild($$, $1);
+		addNewChild($$, $3);
+	}
 | procedure_statement{
-		$$ = newNode(statement);
-
-		addNewChild($$, $1);
-	  }
+		$$ = $1;
+	}
 | compound_statement{
-		$$ = newNode(statement);
-		fprintf(stdout, "pendejo: %d\n", $1->value);
-		addNewChild($$, $1);	
-	  }
-//do we only have an assignment with repeated non-terminals?
-| IF expression THEN statement ELSE statement{
-		//$$ = newNode(STATEMENT_NODE); 
-		$$ = $6;
-		addNewChild($$, $1);
+		$$ = $1;	
+	}
+|	IF expression THEN statement ELSE statement{
+		$$ = newNode(IF);
 		addNewChild($$, $2);
-		addNewChild($$, $3);
 		addNewChild($$, $4);
-		addNewChild($$, $5);
-		//addNewChild
-	  }
+		addNewChild($$, $6);
+	}
 | WHILE expression DO statement{
-		//$$ = addNewChild(STATEMENT_NODE);
-		$$ = $4;
-		addNewChild($$, $1);
+		$$ = newNode(WHILE);
 		addNewChild($$, $2);
-		addNewChild($$, $3);
-		//addNewChild($$, $4);
-	  }
-| /* empty */ {
+		addNewChild($$, $4);
+	}
+| /* empty */{
 		$$ = newNode(statement);
-	  }
+		}
 ;
-
 variable : ID tail{
 		 $$ = newNode(variable);
+		printf("in variable prod\n");
 		 addNewChild($$, $1);
 		 addNewChild($$, $2);
 	  }
@@ -293,9 +272,11 @@ tail : LBRACKET expression RBRACKET tail{
 ;
 procedure_statement :  ID{
 		$$ = newNode(procedure_statement);
+		printf("in procedure statement\n");
 		addNewChild($$, $1);
 	  }
 | ID LPAR expression_list RPAR{
+		printf("in procedure statement\n");
 		addNewChild($$, $1);
 		addNewChild($$, $3);
 		deleteNode($2);
@@ -366,11 +347,13 @@ term : factor{
 /*and another one*/
 factor : ID tail{
 		$$ = newNode(factor);
+		printf("in factor prod\n");
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 	  }
 | ID LPAR expression_list RPAR{
 		$$ = newNode(factor);
+		printf("in factor prod\n");
 		addNewChild($$, $1);
 		addNewChild($$, $3);
 		deleteNode($2);
@@ -464,7 +447,8 @@ int main(){
 	//printf("hola\n");
 	//struct Node* tmp = root;
 	//traverse(tmp);
-	printTree(root);
+	printf("bout to print the tree boi\n");
+	traverse(root);
 	if(hola==0){
 		printf("Ok.\n");
 	}

@@ -86,11 +86,11 @@ Z [zZ]
 	return PBEGIN;
 }
 {I}{N}{T}{E}{G}{E}{R} {
-	yylval.node = newNode(INTEGER);
+	yylval.node = newNode(integer_type);
 	return INTEGER;
 }
 {R}{E}{A}{L}	{
-	yylval.node = newNode(REAL);
+	yylval.node = newNode(real_type);
 	return REAL;
 }
 {E}{N}{D} {
@@ -106,7 +106,7 @@ Z [zZ]
 	return FUNCTION;
 }
 {S}{T}{R}{I}{N}{G}  {
-	yylval.node = newNode(STRING);
+	yylval.node = newNode(string_type);
 	return STRING;
 }
 {A}{N}{D} {
@@ -223,9 +223,10 @@ Z [zZ]
  
 
 ([a-zA-Z]|_)[a-zA-Z0-9_]*	{
-	yylval.node = newNode(ID);
+	yylval.node = newNode(ID_name);
 	yylval.node->name = (char*)malloc(yyleng + 1);
 	strcpy(yylval.node->name, yytext);
+	//fprintf(stdout, " name of id_node: %s\n ", yylval.node->name);
 	return ID;
 }
 [0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ {

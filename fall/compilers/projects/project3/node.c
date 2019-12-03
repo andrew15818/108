@@ -10,7 +10,7 @@ struct Node* newNode( int NodeType)
 	new->leftMostChild = NULL;
 	new->rightSibling = NULL;
 	new->parent = NULL;
-
+	new->op = NULL;
 	return new;
 
 }
@@ -78,18 +78,95 @@ void deleteNode(struct Node* node)
 void printTree(struct Node* node)
 {
 	if(node == NULL) return;
-	struct Node* tmp = node->leftMostChild;
-	printf("%d\n",node->type);
-	while(tmp != NULL){
-		printTree(tmp);	
-		tmp = tmp->rightSibling;
-	}
+
+	struct Node* tmp = node;
+	lousyPrint(tmp);
+	printTree(tmp->leftMostChild);
+
+
+
 }
 void traverse(struct Node* node)
 {
-	if(node == NULL){return;}
-	lousyPrint(node);
-	traverse(node->leftMostChild);
+	if(node == NULL) return;
+	switch(node->type){
+		case PROG:
+			printf("prog\n");	
+			break;
+		case ID_name:
+			printf("id name: %s\n", node->name);
+			break;
+		case declarations:
+			printf("declarations\n");
+			break;
+		case subprogram_declarations:
+			printf("subprogram_declarations\n");
+			break;
+		case compound_statement:
+			printf("compound statment\n");
+			break;
+		case id_value:
+			printf("id_value :%d \n",node->value);
+			break;
+		case type:
+			printf("type\n");
+			break;
+		case standard_type:
+			printf("standard_type\n");
+			break;
+		case INTEGER_VALUE:
+			printf("INTEEGER_VALUE: %d\n", node->value);
+			break;
+		case REAL_VALUE:
+			printf("real value: %d\n", node->value);
+			break;
+		case subprogram_declaration:
+			printf("subprogram_declarations\n");
+			break;
+		case subprogram_head:
+			printf("subrpgram_head\n");
+		case procedure_statement:
+			printf("procedure_statement\n");
+			break;
+		case statement:
+			printf("statement\n");
+			break;
+		case integer_type:
+			printf("TYPE_INT\n");
+			break;
+		case real_type:
+			printf("TYPE_REAL\n");
+			break;
+		case string_type:
+			printf("TYPE_STRING\n");
+			break;
+		default:
+			printf("unwirtten type, ytpe: %d\n", node->type);
+			break;
+		/*
+		case :
+			printf("\n");
+			break;
+		case :
+			printf();
+			break;
+		case :
+			printf();
+			break;
+		case :
+			printf();
+			break;
+	*/	
+
+	}
+	struct Node* child = node->leftMostChild;
+	if(child!=NULL){
+		do{
+			traverse(child);	
+			child = child->rightSibling;
+		}while(child != NULL);	
+	}
+
 }
 void lousyPrint(struct Node* node)
 {
