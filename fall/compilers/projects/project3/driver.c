@@ -4,11 +4,11 @@ void traversal(struct Node* node);
 void sillyPrint(struct Node* root);
 static counter = 0;
 int main(){
-	struct Node* root = newNode(INTEGER_CONSTANT_NODE);
+	struct Node* root = newNode(INTEGER_VALUE);
 	root->value = 0;
 	for(int i = 1; i < 10; i ++)
 	{
-		struct Node* currNode = newNode(INTEGER_CONSTANT_NODE);
+		struct Node* currNode = newNode(INTEGER_VALUE);
 		currNode->value = i;
 		addNewChild(root, currNode);
 	}
@@ -16,7 +16,7 @@ int main(){
 	//printf("%d\n", );
 	//
 	//sillyPrint(root);
-	//traversal(root);
+	traversal(root);
 	printTree(root);
 	return 0;
 }

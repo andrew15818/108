@@ -20,12 +20,12 @@ extern struct Node* root;
 	struct Node* node;
 }
 
-%token <Node> PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
-%token <Node> COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST STRING
+%token <node> PROGRAM ID LPAR RPAR SEMICOLON PERIOD COMMA VAR
+%token <node> COLON ARRAY LBRACKET RBRACKET NUM STRINGCONST STRING
 %token <node> OF INTEGER REAL FUNCTION PROCEDURE PBEGIN AND OR
 %token <node> END ASSIGNOP IF THEN ELSE WHILE DO LESSTHAN
 %token <node> GREATERTHAN LEQ GEQ EQUAL NOTEQUAL PLUS MINUS
-%token <node> MULTIPLY DIVIDE NOT RANGE BLANK COMMENT IDENTIFIER
+%token <node> MULTIPLY DIVIDE NOT RANGE BLANK COMMENT IDENTIFIER LPAREN RPAREN
 
 %type <node> prog identifier_list declarations subprogram_declarations
 %type <node> compound_statement type standard_type subprogram_declaration
@@ -42,51 +42,59 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON declarations
 	subprogram_declarations
 	compound_statement
 	PERIOD{
-		root  = newNode(PROGRAM_NODE);	
-		addNewChild(root, $2);
-		addNewChild(root, $4);
-		addNewChild(root, $7);
-		addNewChild(root, $8);
-		addNewChild(root, $9);
+		root = $$  = newNode(PROG);	
+		//$$ = $$ = newNode(S);
+		addNewChild($$, $2);
+		addNewChild($$, $4);
+		addNewChild($$, $7);
+		addNewChild($$, $8);
+		addNewChild($$, $9);
 		deleteNode($1);
 		deleteNode($3);
 		deleteNode($5);
 		deleteNode($6);
 		deleteNode($10);
 	  }
+
 ;
 
 identifier_list : ID {
-		$$ = newNode(ID_NODE);	
+		$$ = newNode(identifier_list);		
+		printf("%d\n", $$->type);
+		printf("porque soy tan estupido\n");
 		addNewChild($$, $1);
 	  }
 | identifier_list COMMA ID{
 		$$ = $1;			
-		addChild($$, $3);
-		deleteNode($2);	
+		addNewChild($$, $3);
 	  }
 ;
-
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
-		//$$ = $1;
-		addNewChild($$, $2);
-		addNewChild($$, $3);
+		//$$ = $1;		
+		$$ = newNode(declarations);
+		//fprintf(stdout, "declarations  node of type %d %s\n",$1->type, $1->name );
+		addNewChild($$, $2);	
+		//fprintf(stdout, " declarations node of type %d %s\n",$2->type, $2->name );
+		addNewChild($$, $3);	
+		//fprintf(stdout, " declarations node of type %d %s\n",$3->type, $3->name );
 		addNewChild($$, $5);
+		//fprintf(stdout, " declarations node of type %d %s\n",$5->type, $5->name );
 		deleteNode($4);
 		deleteNode($6);
 	  }
 | /* empty */{
-		$$ = newNode(SUBPROGRAM_NODE);	
+		$$ = newNode(declarations);	
 	  }
 ;
 
 type : standard_type{
-		$$ = newNode(TYPE_NODE);
+		$$ = newNode(type);	
 		addNewChild($$, $1);
+		fprintf(stdout, "%d\n",$1->type);
 	  }
 		//not so sure about setting $$ to $8
 | ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type{
-		$$ = $8	 			
+		$$ = $8;
 		addNewChild($$, $1);	
 		addNewChild($$, $3);
 		addNewChild($$, $5);
@@ -98,29 +106,34 @@ type : standard_type{
 ;
 
 standard_type : INTEGER{
-		$$ = newNode(TYPE_DECLARATION_NODE); 
-		$$->type = INTEGER_NODE; 
+		$$ = newNode(standard_type);
+		$$->specificType = INTEGER_VALUE; 
+		printf("seeing integers\n");
+		addNewChild($$, $1);
 	  }
 | REAL{
-		$$ = newNode(TYPE_DECLARATION_NODE);
-		$$->type = REAL_NODE;
+		$$ = newNode(standard_type);
+		$$->specificType= REAL_VALUE;
+		addNewChild($$, $1);
 	  }
 	  
 | STRINGCONST {
-		$$ = newNode(TYPE_DECLARATION_NODE);	
-		$$->type = STRINGCONST_NODE;
+		$$ = newNode(standard_type);	
+		$$->specificType = STRING_VALUE ;
+		addNewChild($$, $1);
 	  }
 ;
 /*also not to sure about this one*/
 subprogram_declarations : subprogram_declarations
 						subprogram_declaration SEMICOLON{
+		fprintf(stdout, "reaching subprogram declarations\n");
 		$$ = $1;		
 		addNewChild($$, $2);
 		deleteNode($3);
 	  }
 | /* empty */ {
 	//am I even sure I exist? :'(
-		$$ = newNode(SUBPROGRAM_DECLARATIONS_NODE);
+		$$ = newNode(subprogram_declarations);
 	  }
 ;
 
@@ -128,7 +141,7 @@ subprogram_declaration : subprogram_head
 					   declarations
 					   subprogram_declarations
 					   compound_statement{
-		$$ = newNode(SUBPROGRAM_DECLARATION_NODE);		
+		$$ = newNode(subprogram_declaration);		
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 		addNewChild($$, $3);
@@ -137,10 +150,11 @@ subprogram_declaration : subprogram_head
 ;
 
 subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
-
+			fprintf(stdout, "reached a function call\n");
 	  }
 | PROCEDURE ID arguments SEMICOLON{
-		$$ = newNode(FUNCTION_NODE);
+		$$ = newNode(PROCEDURE);
+		
 		addNewChild($$, $2);
 		addNewChild($$, $3);
 		deleteNode($1);
@@ -155,27 +169,27 @@ arguments : LPAR parameter_list RPAR{
 		deleteNode($3);
 	  }
 |/* empty */{
-		$$ = newNode(ARGUMENTS_NODE);
+		$$ = newNode(arguments);
 	  } 
 ;
 
 /*still not super clear on this one either*/
 /*cnoflict here*/
 parameter_list : optional_var identifier_list COLON  type{
-		$$ = newNode(PARAMETER_LIST_NODE);
+		$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 		deleteNode($3);
 	  }
 | optional_var identifier_list COLON  type SEMICOLON  parameter_list{
-		$$ = newNode(PARAMETER_LIST_NODE);
+		$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 		addNewChild($$, $6);
-		deleteChild($3);
-		deleteChild($5);
+		deleteNode($3);
+		deleteNode($5);
 	  }
 ;
 //will this give me trouble?
@@ -186,15 +200,15 @@ optional_var : VAR{
 		addNewChild($$, $1);
 	  }
 | /* empty */{
-		$$ = newNode(OPTIONAL_VAR_NODE);
+		$$ = newNode(optional_var);
 	  } 
 ;
 
 compound_statement : PBEGIN 
 					optional_statements
 					END{
-		 $$ = newNode(COMPOUND_STATEMENT_NODE);	
-		 addNewChild($2);
+		 $$ = newNode(compound_statement);	
+		 addNewChild($$, $2);
 		 deleteNode($1);
 		 deleteNode($3);
 	  }
@@ -202,8 +216,8 @@ compound_statement : PBEGIN
 //when should I just pass $$ = $1 or do
 //I create a unique node type for everything?
 optional_statements : statement_list{
-		$$ = newNode(OPTIONAL_STATEMENT_NODE);
-		addNewChild($1);
+		$$ = newNode(optional_statements);
+		addNewChild($$, $1);
 	  }
 ;
 
@@ -220,17 +234,20 @@ statement_list : statement{
 ;
 
 statement : variable ASSIGNOP expression{
-		 //$$ = newNode(STATEMENT_NODE);	
+		 $$ = newNode(statement);	
 		 addNewChild($$, $1);
+		 
 		 addNewChild($$, $2);
 		 addNewChild($$, $3);
 	  }
 | procedure_statement{
-		//$$ = newNode(STATEMENT_NODE);
+		$$ = newNode(statement);
+
 		addNewChild($$, $1);
 	  }
 | compound_statement{
-		//$$ = newNode(STATEMENT_NODE);
+		$$ = newNode(statement);
+		fprintf(stdout, "pendejo: %d\n", $1->value);
 		addNewChild($$, $1);	
 	  }
 //do we only have an assignment with repeated non-terminals?
@@ -253,29 +270,29 @@ statement : variable ASSIGNOP expression{
 		//addNewChild($$, $4);
 	  }
 | /* empty */ {
-		$$ = newNode(STATEMENT_NODE);
+		$$ = newNode(statement);
 	  }
 ;
 
 variable : ID tail{
-		 $$ = newNode(VARIABLE_NODE);
+		 $$ = newNode(variable);
 		 addNewChild($$, $1);
 		 addNewChild($$, $2);
 	  }
 ;
 
 tail : LBRACKET expression RBRACKET tail{
-		addNewNChild($$, $2);
+		addNewChild($$, $2);
 		addNewChild($$, $4);
 		deleteNode($1);
 		deleteNode($3);
 	  }
 | /* empty */ {
-		$$ = newNode(TAIL_NODE);	
+		$$ = newNode(tail);	
 	  }
 ;
 procedure_statement :  ID{
-		$$ = newNode(PROCEDURE_STATEMENT_NODE);
+		$$ = newNode(procedure_statement);
 		addNewChild($$, $1);
 	  }
 | ID LPAR expression_list RPAR{
@@ -298,7 +315,7 @@ expression_list : expression{
 
 
 expression : boolexpression{
-		$$ = newNode(EXPRESSION_NODE); 
+		$$ = newNode(expression); 
 	  } 
 | boolexpression AND boolexpression{
 		addNewChild($$, $1);
@@ -314,7 +331,7 @@ expression : boolexpression{
 
 
 boolexpression : simple_expression{
-		$$ = newNode(BOOLEXPRESSION_NODe);
+		$$ = newNode(boolexpression);
 		addNewChild($$, $1);
 	  }
 | simple_expression relop simple_expression{
@@ -325,7 +342,7 @@ boolexpression : simple_expression{
 ;
 
 simple_expression : term{
-		$$ = newNode(SIMPLE_EXPRESSION_NODE);
+		$$ = newNode(simple_expression);
 		addNewChild($$, $1);
 	  }
 | simple_expression addop term{
@@ -336,7 +353,7 @@ simple_expression : term{
 ;
 
 term : factor{
-	 	$$ = newNode(TERM_NODE);
+	 	$$ = newNode(term);
 		addNewChild($$, $1);
   	  }
 | term mulop factor{
@@ -348,28 +365,28 @@ term : factor{
 
 /*and another one*/
 factor : ID tail{
-		$$ = newNode(FACTOR_NODE);
+		$$ = newNode(factor);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 	  }
 | ID LPAR expression_list RPAR{
-		$$ = newNode(FACTOR_NODE);
+		$$ = newNode(factor);
 		addNewChild($$, $1);
 		addNewChild($$, $3);
 		deleteNode($2);
 		deleteNode($4);
 	  }
 |  NUM{	
-		$$ = newNode(FACTOR_NODE);
+		$$ = newNode(factor);
 		addNewChild($$, $1);
 	  }
 | addop NUM{
-		$$ = newNode(FACTOR_NODE);
+		$$ = newNode(factor);
 		addNewChild($$, $1);
 	}
 | STRINGCONST{
 
-		$$ = newNode(FACTOR_NODE);
+		$$ = newNode(factor);
 		addNewChild($$, $1);
 	} 
 | LPAR expression RPAR{
@@ -384,53 +401,54 @@ factor : ID tail{
 ;
 
 addop : PLUS {
-		$$ = newNode(ADDOP_NODE);
+		$$ = newNode(addop);
 		addNewChild($$, $1);	
 	  }
 | MINUS{	
-		$$ = newNode(ADDOP_NODE);
+		$$ = newNode(addop);
 		addNewChild($$, $1);	
 	  }
 ;
 
 mulop : MULTIPLY {
-		$$ = newNode(MULOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(mulop);
+		addNewChild($$, $1);
 	  }
 
 | DIVIDE{	
-		$$ = newNode(MULOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(mulop);
+		addNewChild($$, $1);
 	  }
 ;
 
 relop : LESSTHAN{
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 	  }
 | GREATERTHAN {
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 	  }
 | EQUAL{
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 	  }
 | LEQ{
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 	  }
 | GEQ{
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 	  }
 | NOTEQUAL{
-		$$ = newNode(RELOP_NODE);
-		addNewNode($$, $1);
+		$$ = newNode(relop);
+		addNewChild($$, $1);
 }
 ;
 /*end of grammerino*/
 %%
+struct Node* root;
 /*
 void yyeror(const char* str){
 	fpritnf(stderr, "error: %s\n", str);
@@ -441,7 +459,12 @@ int yywrap(){
 }
 */
 int main(){
+
 	int hola = yyparse();
+	//printf("hola\n");
+	//struct Node* tmp = root;
+	//traverse(tmp);
+	printTree(root);
 	if(hola==0){
 		printf("Ok.\n");
 	}

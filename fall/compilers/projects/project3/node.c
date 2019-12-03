@@ -4,11 +4,13 @@
 struct Node* newNode( int NodeType)
 {
 	struct Node* new = (struct Node*)malloc(sizeof(struct Node));
+	//printf("holis %d\n", NodeType);
 	new->type = NodeType;
 	new->parent = NULL;
 	new->leftMostChild = NULL;
 	new->rightSibling = NULL;
 	new->parent = NULL;
+
 	return new;
 
 }
@@ -45,6 +47,7 @@ struct Node* makeSiblings(struct Node* x, struct Node* y)
  * rightmost side of the parents' children nodes.*/
 void addNewChild(struct Node* parent, struct Node* child)
 {
+			
 		child->parent = parent;
 		if(parent->leftMostChild == NULL){
 			parent->leftMostChild = child;		
@@ -60,6 +63,7 @@ void addNewChild(struct Node* parent, struct Node* child)
 			tmp = tmp->rightSibling;	
 		}
 		tmp->rightSibling = child;
+		//lousyPrint(child->leftMostSibling);
 }
 
 void deleteNode(struct Node* node)
@@ -73,28 +77,26 @@ void deleteNode(struct Node* node)
 }
 void printTree(struct Node* node)
 {
-	if(node == NULL){return;}
-	printf("calling on a node of type : %d\n",node->type);
-	switch(node->type){
-		case PROGRAM_NODE:
-				printf("PROGRAM\n");
-				break;
-		case DECLARATION_NODE:
-				printf("VAR_DECLARATION\n");
-				break;
-		case ID_NODE:
-				printf("%s\n", node->name);
-				break;
-		case INTEGER_CONSTANT_NODE:
-				printf("%d\n", node->value);
-	}
-	
+	if(node == NULL) return;
 	struct Node* tmp = node->leftMostChild;
+	printf("%d\n",node->type);
 	while(tmp != NULL){
 		printTree(tmp);	
-		//printTree(tmp);	
-		tmp = node->rightSibling;	
+		tmp = tmp->rightSibling;
 	}
-	printf("currently on a node\n");
-	
+}
+void traverse(struct Node* node)
+{
+	if(node == NULL){return;}
+	lousyPrint(node);
+	traverse(node->leftMostChild);
+}
+void lousyPrint(struct Node* node)
+{
+	if(node  == NULL)return;
+	struct Node* tmp = node;
+	while(tmp != NULL){
+		fprintf(stdout, "node of type: %d %s\n", tmp->type, tmp->name);
+		tmp = tmp->rightSibling;
+	}
 }
