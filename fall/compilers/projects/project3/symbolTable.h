@@ -29,16 +29,16 @@ struct Entry{
 	struct Entry* nextEntry; //in the case of collisions
 };
 struct symbolTable{
-	struct Entry **entries[MAX_SIZE];
+	struct Entry *entries[MAX_SIZE];
 	int currSize, scopeCounter;
 	struct symbolTable *nextTable;
 };
 struct symbolTable* newTable();
-struct Entry* newEntry(struct Node* node);
+struct Entry* newEntry(struct symbolTable* sym, struct Node* node);
 void enterSymbol(struct symbolTable* sym, struct Node* node, int type);
 struct Node* nthChild(struct Node* node, int count);
 struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node);
 void processNode(struct symbolTable* sym, struct Node* node);
 void openScope(struct symbolTable* sym);
-
+void printSymbolTable(struct symbolTable *sym);
 #endif

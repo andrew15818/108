@@ -90,7 +90,7 @@ void printTree(struct Node* node)
 void traverse(struct Node* node)
 {
 	if(node == NULL) return;
-	printf("type; %d\t", node->type);
+	//printf("type; %d\t", node->type);
 	switch(node->type){
 		case prog:
 			printf("prog\n");	

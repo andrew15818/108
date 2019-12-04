@@ -450,16 +450,24 @@ int yywrap(){
 */
 int main(){
 
-	int hola = yyparse();
-	//printf("hola\n");
-	//traverse(tmp);
+	int hola = yyparse();	
 	traverse(root);
 	struct symbolTable* mainTable = newTable();
-	//initSymbolTable(mainTable);	
-	//printf("intitted symbol table\n");
+	
+	if(hola > 0){
+		printf("after yyparse, res = %d\n", hola);
+	}
+		printf("********************************\n"
+         	"*       No syntax error!       *\n"
+         	"********************************\n");
+
 	processNode(mainTable, root);
+	printSymbolTable(mainTable);
 	if(hola==0){
 		printf("Ok.\n");
 	}
+	 printf("********************************\n"
+         "*       No semantic error!       *\n"
+         "********************************\n");
 	return hola;
 }

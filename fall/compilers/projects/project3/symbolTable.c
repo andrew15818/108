@@ -1,95 +1,146 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "node.h"
-#include "symbolTable.h"
-void openScope(struct symbolTable* sym);
+#include"symbolTable.h"
+#include"node.h"
+#define HASH_SIZE 131 //kinda priime hash size?
+
+int hash(struct Node* node)
+{
+	long long int sum = 0;		
+	for(int i =0; i < strlen(node->name); i++)
+	{
+		sum += (node->name[i] && HASH_SIZE);	
+	}
+	return sum%HASH_SIZE;
+}
 struct symbolTable* newTable()
 {
-	struct symbolTable *new = (struct symbolTable*)malloc(sizeof(struct symbolTable));
+	struct symbolTable* new = (struct symbolTable*)malloc(sizeof(struct symbolTable));
+	new->currSize = 0;
+	new->scopeCounter = 1;
+	new->nextTable = NULL;
 	return new;
 }
-//create a new entry to insert
-struct Entry* getEntry(struct symbolTable* sym, struct Node* node)
-{
-	//placeholder 
-	struct Entry* tmp;
-	return tmp;
-}
-void initSymbolTable(struct symbolTable* sym){
-	sym->scopeCounter = 0;
-	sym->currSize = 0;
-}
+
 struct Entry* newEntry(struct symbolTable* sym, struct Node* node)
 {
-	struct Entry* newEntry = (struct Entry*)malloc(sizeof(struct Entry));
-	newEntry->name = NULL;
-
-	//maybe set it equal to the current scope when this entry is created?
-	newEntry->scopeDeclaredIn = sym->scopeCounter;
-
-	newEntry->node = node;
-	return newEntry;
-}
-
-//insert element into the table
-void enterSymbol(struct symbolTable* sym, struct Node* node, int type)
-{	
-	if(retrieveEntry(sym, node) != NULL){
-		printf("redeclaration of %s.\n",node->name);
-	}
+	struct Entry* new = (struct Entry*)malloc(sizeof(struct Entry));
 	
-	struct Entry* tmp = newEntry(sym, node);	
-	
-	sym->entries[sym->currSize] = tmp;
-	sym->currSize++;
-}
-
-//retrieve element into table, have to check for scope rules
-struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node)
-{
-	
-	for(int i = sym->currSize; i>=0 /*&& sym->entries[i]->scopeDeclaredIn == node->scope*/; i--)	
+	if(node->name != NULL)
 	{
-		if(strcmp(sym->entries[i]->node->name, node->name)){
-			return sym->entries[i];
-			printf("found element with name %s\n", hola);
-		}	
+		//not sure about this one
+		new->name = (char*)malloc(sizeof(node->name+1));	
+		strcpy(new->name, node->name);
+		//printf("new Entry name: %s\n", new->name);
 	}
-	return NULL;
+	
+	new->scopeDeclaredIn = sym->scopeCounter;	
 }
 
-void processNode(struct symbolTable* sym, struct Node* node)
-{
-		if(node == NULL) return;
-		printf("prcessing node of type: %d\n", node->type);
-		switch(node->type)
-		{
-			case prog: 
-					printf("program node\n");
-					processNode(sym, nthChild(node, 0));
-					break;
-			case declarations:
-					printf("declarations");
-					break;
-			case ID_name:
-					enterSymbol(sym, node, node->type);
-					break;
-		}
-}
-struct Node* nthChild( struct Node* node, int n)
+struct Node* nthChild(struct Node* node, int count)
 {
 	struct Node* tmp = node->leftMostChild;
-	for(int i = 0; i< n && tmp != NULL; i++){
-		tmp = tmp->rightSibling;
+	int i = 0;
+	while( i < count)
+	{
+		tmp = tmp->rightSibling;	
+		i++;
 	}
-	if(tmp != NULL){
-		return tmp;
-	}
-	return NULL;
-
+	return tmp;
 }
+
+//when we see a {, maybe open a new scope and declare a new table
 void openScope(struct symbolTable* sym)
 {
-	//should we just open an entirely new symbol table?
+	struct symbolTable* new = newTable();
+	sym->nextTable = new;
+	sym->scopeCounter++;
+}
+
+//check to see if the symbol is already in the table
+struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node)
+{		
+	int hashIndex = hash(node);	
+	
+	struct Entry* new= sym->entries[hashIndex];
+	while(new!= NULL){
+		//struct Entry* tmpEntry = sym->entries[hashIndex];
+		if(!strcmp(node->name, new->name)){
+			//printf("found %s already in our table\n", node->name);		
+			return sym->entries[hashIndex];	
+		}
+		new= new->nextEntry;
+	}
+	return NULL;	
+}
+void enterSymbol(struct symbolTable* sym, struct Node* node, int type)
+{
+	struct Entry* tmpEntry = retrieveEntry(sym, node);
+
+	//checking if the symbol is already declared
+	if(tmpEntry != NULL){
+			//how to get  the correct index? 
+		printf("Error: redeclaration of: %s\n", node->name);
+		return;
+	}
+	struct Entry* new ;//= newEntry(node);
+	//new->type = node->type;
+	new->node = node;	
+	//new->scopeDeclaredIn = sym->scopeCounter;
+	int hashIndex = hash(node);	
+	if(sym->entries[hashIndex] == NULL){
+		sym->entries[hashIndex] = new;	
+		//sym->entries[hashIndex]->name = (char*)malloc(strlen(node->name));
+		new->name = (char*)malloc(strlen(node->name));
+		strcpy(new->name,node->name);
+		//printf("undeclared variable %s\n", node->name);
+	}
+	else{
+		struct Entry* tmp = sym->entries[hashIndex];
+		while(tmp != NULL){
+			tmp = tmp->nextEntry;	
+		}
+		tmp = new;
+	}	
+	
+}
+void processNode(struct symbolTable* sym, struct Node* node)
+{
+	switch(node->type){
+		case prog:
+			printf("processing root node rn\n");	
+			for(int i = 0; i < 5; i++){
+				processNode(sym, nthChild(node, i));	
+			}
+			break;
+		case ID_name:			
+			//printf("prcessing id node with name: %s\n", node->name);
+			;
+			struct Entry* dummy = newEntry(sym, node);
+			enterSymbol(sym, node, node->type);
+			break;
+		default: ;
+			struct Node* tmp = node->leftMostChild;
+			while(tmp != NULL){
+				processNode(sym, tmp);	
+				tmp = tmp->rightSibling;
+			}
+	}
+}
+
+void printSymbolTable(struct symbolTable* sym)
+{
+	printf("\n+-------------------------------------+\n");
+	printf("name\t scope \ttype \treturn \tparameter \tDim \t Array Range\n");
+	for(int i=0; i < MAX_SIZE; i++ ){
+		if(sym->entries[i] != NULL){
+			struct Entry* tmp = sym->entries[i];
+
+			while(tmp != NULL){
+				printf("%s\t %d\t %d\n", tmp->name, tmp->scopeDeclaredIn, tmp->node->type);
+				tmp = tmp->nextEntry;
+			}
+		}
+	}
 }
