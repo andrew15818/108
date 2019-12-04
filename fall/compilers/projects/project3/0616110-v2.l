@@ -42,7 +42,7 @@ Z [zZ]
 
 %%
 {P}{R}{O}{G}{R}{A}{M} {
-	yylval.node  = newNode(PROG);	
+	yylval.node  = newNode(prog);	
 	return PROGRAM;
 }
 {V}{A}{R} {

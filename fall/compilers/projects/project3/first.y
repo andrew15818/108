@@ -43,8 +43,7 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON declarations
 	subprogram_declarations
 	compound_statement
 	PERIOD{
-		root = $$  = newNode(PROG);	
-		//$$ = $$ = newNode(S);
+		root = $$  = newNode(prog);	
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 		addNewChild($$, $7);
@@ -90,8 +89,9 @@ type : standard_type{
 	  }
 
 | ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type{
-		$$ = $8;
-		addNewChild($$, $1);	
+		$$ = newNode(array);
+		$$->specificType = array;
+		addNewChild($$, $8);	
 		addNewChild($$, $3);
 		addNewChild($$, $5);
 		deleteNode($2);
@@ -155,7 +155,8 @@ subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
 	  }
 | PROCEDURE ID arguments SEMICOLON{
 		$$ = newNode(procedure);
-		printf("procedure type is : %d\n", $$->type);
+		//printf("procedure type is : %d\n", $$->type);
+		$$->specificType = procedure;
 		$$->name = (char*)malloc(strlen($2->name+1));
 		strcpy($$->name, $2->name);
 		printf("new procedure definition: %s\n", $$->name);	
@@ -451,10 +452,12 @@ int main(){
 
 	int hola = yyparse();
 	//printf("hola\n");
-	//struct Node* tmp = root;
 	//traverse(tmp);
-	//printf("bout to print the tree boi\n");
 	traverse(root);
+	struct symbolTable* mainTable = newTable();
+	//initSymbolTable(mainTable);	
+	//printf("intitted symbol table\n");
+	processNode(mainTable, root);
 	if(hola==0){
 		printf("Ok.\n");
 	}

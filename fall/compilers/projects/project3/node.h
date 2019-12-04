@@ -20,7 +20,7 @@
 // here we place all the types of the symbols,
 // is this more right?
 enum Nodetype{
-		PROG,
+		prog,
 		ID_name,
 		identifier_list,
 		declarations,

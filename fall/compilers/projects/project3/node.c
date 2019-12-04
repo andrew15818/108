@@ -11,6 +11,7 @@ struct Node* newNode( int NodeType)
 	new->rightSibling = NULL;
 	new->parent = NULL;
 	new->op = NULL;
+	new->name = NULL;
 	return new;
 
 }
@@ -91,7 +92,7 @@ void traverse(struct Node* node)
 	if(node == NULL) return;
 	printf("type; %d\t", node->type);
 	switch(node->type){
-		case PROG:
+		case prog:
 			printf("prog\n");	
 			break;
 		case ID_name:
