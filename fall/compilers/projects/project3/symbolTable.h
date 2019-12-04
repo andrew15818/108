@@ -9,10 +9,10 @@ enum Type{
 	integer,
 	real,
 	function,
-	procedure,
-
+	procedure
+};
+struct Attributes{
 	
-	j
 };
 struct Entry{
 	char* name;
@@ -27,12 +27,15 @@ struct Entry{
 	struct Node* node;
 };
 struct symbolTable{
-	struct Entry **entries[MAX_SIZE];
-	int currSize, scopeCount;
+	struct Entry *entries[MAX_SIZE];
+	int currSize, scopeCounter;
 };
 
-struct Entry* newEntry(struct Node* node);
-void enterSymbol(struct Node* node, int type);
-struct Entry* retrieveEntry(char* name);
+struct Entry* newEntry(struct symbolTable* sym,struct Node* node);
+void enterSymbol(struct symbolTable* sym, struct Node* node, int type);
+struct Node* nthChild(int count, struct Node* node);
+struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node);
 void processNode(struct Node* node);
+void openScope(struct symbolTable* sym);
+int declaredLocally(struct symbolTable* sym, struct Node* node);
 #endif

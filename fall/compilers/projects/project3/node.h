@@ -57,7 +57,8 @@ enum Nodetype{
 		relop,
 		addop,
 		mulop,
-		other
+
+		
 };
 struct Node{
 	//pointer info to related nodes

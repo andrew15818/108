@@ -3,62 +3,11 @@
 
 	#include<stdio.h>
 	#include "y.tab.h"
+	//#include "node.c"
+	#include "symbolTable.h"
 	int line_no = 1;
-/*
-	#define PROGRAM 1
-	#define ID 2
+	extern struct Node* node(int type);
 
-	#define LPAR 3
-	#define RPAR 4
-	#define SEMICOLON 5
-	#define PERIOD 6
-	#define COMMA 7
-	#define VAR 8
-	#define COLON 9
-	#define ARRAY 10
-	#define LBRACKET 11
-	#define RBRACKET 12
-
-	#define NUM 13
-	#define STRINGCONST 14
-	#define OF 15
-	#define INTEGER 16
-	#define REAL 17
-
-	#define FUNCTION 18
-	#define PROCEDURE 19
-	#define PBEGIN 20
-	#define END 21
-	#define ASSIGNOP 22
-
-
-	#define IF 23
-	#define THEN 24
-	#define ELSE 25
-	#define WHILE 26
-	#define DO 27
-
-
-	#define LESSTHAN 28
-	#define GREATERTHAN 29
-	#define LEQ 30
-	#define GEQ 31
-	#define EQUAL 32
-	#define NOTEQUAL 33
-	#define PLUS 34
-	#define MINUS 35
-	#define MULTIPLY 36
-	#define DIVIDE 37
-	#define NOT 38
-	#define RANGE 39
-	#define BLANK 40
-
-	#define COMMENT 41
-	#define IDENTIFIER 42
-
-	char* code;
-	char buferino[1000];
-	*/
 %} 
 
 A [aA]
@@ -92,57 +41,214 @@ Z [zZ]
 %x parse_string
 
 %%
-{P}{R}{O}{G}{R}{A}{M} return PROGRAM;
-{V}{A}{R}		return VAR;
-{A}{R}{R}{A}{Y} return ARRAY;
-{I}{F}			return IF;
-{O}{F}			return OF;
-{T}{H}{E}{N}	return THEN;
-{E}{L}{S}{E}	return ELSE;
-{W}{H}{I}{L}{E} return WHILE;
-{D}{O}			return DO;
-{N}{O}{T}		return NOT;
-{B}{E}{G}{I}{N}	return PBEGIN;
-{I}{N}{T}{E}{G}{E}{R} return INTEGER;
-{R}{E}{A}{L}	return REAL;
-{E}{N}{D}		return END;
-{P}{R}{O}{C}{E}{D}{U}{R}{E} return PROCEDURE;
-{F}{U}{N}{C}{T}{I}{O}{N} return FUNCTION;
-{S}{T}{R}{I}{N}{G}  return STRING;
-{A}{N}{D}		return AND;
-{O}{R} 			return OR;
+{P}{R}{O}{G}{R}{A}{M} {
+	yylval.node  = newNode(PROG);	
+	return PROGRAM;
+}
+{V}{A}{R} {
+	yylval.node = newNode(VAR);
+	return VAR;
+}
+{A}{R}{R}{A}{Y} {
+		yylval.node = newNode(ARRAY);
+		return ARRAY;
+}
+{I}{F}	{
+	yylval.node = newNode(IF);
+	return IF;
+}
+{O}{F}	{
+		yylval.node = newNode(OF);
+		return OF;
+}
+{T}{H}{E}{N} {
+	yylval.node = newNode(THEN);
+	return THEN;
+}
+{E}{L}{S}{E} {
+	yylval.node = newNode(ELSE);
+	return ELSE;
+}
+{W}{H}{I}{L}{E} {
+	yylval.node = newNode(WHILE);
+	return WHILE;
+}
+{D}{O} {			
+	yylval.node = newNode(DO);
+	return DO;
+}
+{N}{O}{T} {
+	yylval.node = newNode(NOT);		
+	return NOT;
+}
+{B}{E}{G}{I}{N}	{
+	yylval.node = newNode(PBEGIN);
+	return PBEGIN;
+}
+{I}{N}{T}{E}{G}{E}{R} {
+	yylval.node = newNode(integer_type);
+	return INTEGER;
+}
+{R}{E}{A}{L}	{
+	yylval.node = newNode(real_type);
+	return REAL;
+}
+{E}{N}{D} {
+	yylval.node = newNode(END);
+	return END;
+}
+{P}{R}{O}{C}{E}{D}{U}{R}{E} {
+	//yylval.node = newNode(PROCEDURE);
+	//yylval.node->name = (char*)malloc(yyleng+1);
+	//strcpy(yylval.node->name, yytext);
+	return PROCEDURE;
+}
+{F}{U}{N}{C}{T}{I}{O}{N} {
+	yylval.node = newNode(FUNCTION);
+	return FUNCTION;
+}
+{S}{T}{R}{I}{N}{G}  {
+	yylval.node = newNode(string_type);
+	return STRINGCONST;
+}
+{A}{N}{D} {
+	yylval.node = newNode(AND);
+	yylval.node->specificType = AND;
+	return AND;
+}
+{O}{R} 	{
+	yylval.node = newNode(OR);
+	yylval.node->specificType = OR;
+	return OR;
+}
 
 
 
-":=" 			return ASSIGNOP;
-"<"				return LESSTHAN;
-">" 			return GREATERTHAN;
-"<="			return LEQ;
-">="			return GEQ;
-"="				return EQUAL;
-"!="			return NOTEQUAL;
-"+" 			return PLUS;
-"-"				return MINUS;
-"*"				return MULTIPLY;
-"/"				return DIVIDE;		
+":=" {
+	yylval.node = newNode(ASSIGNOP);
+	yylval.node->specificType = op_assign;
+	return ASSIGNOP;
+	}
+"<"	{
+	yylval.node = newNode(LESSTHAN);		
+	yylval.node->specificType =  op_lt;
+	return LESSTHAN;
+}
+">" {
+	yylval.node = newNode(GREATERTHAN);
+	yylval.node->specificType =  op_gt;
+	return GREATERTHAN;
+}
+"<=" {
+	yylval.node = newNode(LEQ);	
+	yylval.node->specificType =  op_leq;
+	return LEQ;
+}
+">=" {			
+	yylval.node = newNode(GEQ);
+	yylval.node->specificType =  op_geq;
+	return GEQ;
+}
+"="	{
+	yylval.node = newNode(EQUAL);
+	yylval.node->specificType =  op_equal;
+	return EQUAL;
+}
+"!=" {
+	yylval.node = newNode(NOT);	
+	yylval.node->specificType =  op_nequal;
+	return NOTEQUAL;
+}
+"+" {
+	yylval.node = newNode(PLUS);
+	yylval.node->specificType =  op_plus;
+	return PLUS;
+}
+"-"	{
+	yylval.node = newNode(MINUS);
+	yylval.node->specificType = op_minus;
+	return MINUS;
+}
+"*" { 				
+	yylval.node = newNode(MULTIPLY);
+	yylval.node->specificType = op_multiply;
+	return MULTIPLY;
+}
+"/" {				
+	yylval.node = newNode(DIVIDE);
+	yylval.node->specificType = op_divide;
+	return DIVIDE;
+}
 
-".."			return RANGE;
+".." {
+	yylval.node = newNode(RANGE);
+
+	return RANGE;
+}
 " "								//deleting all the blanks	
-"("				return LPAR;
-")"				return RPAR;
-";"				return SEMICOLON;
-"."				return PERIOD;
-","				return COMMA;
-":"				return COLON;
-"["				return LBRACKET;
-"]"				return RBRACKET;
+"(" {				
+	yylval.node = newNode(LPAREN);	
+	//yylval.node->specificType = LPAR
+	return LPAR;
+}
+")"	{
+	yylval.node = newNode(RPAREN);
+
+	return RPAR;
+}
+";" {				
+	yylval.node = newNode(SEMICOLON);
+	return SEMICOLON;
+}
+
+"."	{
+	yylval.node = newNode(PERIOD);
+	return PERIOD;
+}
+"," {
+	yylval.node = newNode(COMMA);
+	return COMMA;
+}
+":"	{
+	yylval.node = newNode(COLON);
+	return COLON;
+}
+"["	{
+	yylval.node = newNode(LBRACKET);	
+	return LBRACKET;
+}
+"]" {
+	yylval.node = newNode(RBRACKET);
+	return RBRACKET;
+}
+
  
 
-([a-zA-Z]|_)[a-zA-Z0-9_]*	return ID; 
-[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ return NUM;
-[0-9]+			return NUM;  
+([a-zA-Z]|_)[a-zA-Z0-9_]*	{
+	yylval.node = newNode(ID_name);
+	yylval.node->name = (char*)malloc(yyleng + 1);
+	strcpy(yylval.node->name, yytext);
+	//fprintf(stdout, " name of id_node: %s\n ", yylval.node->name);
+	return ID;
+}
+[0-9]+"."?[0-9]?+(E("+"|"-")?)?[0-9]+ {
+	yylval.node = newNode(NUM);
+	yylval.node->specificType = REAL_VALUE;
+	return NUM;
+}
+[0-9]+ {
+	yylval.node = newNode(NUM);	
+	yylval.node->value = atoi(yytext);
+	yylval.node->specificType = INTEGER_VALUE; 
+	return NUM; 
+}
 
-["][^"]*["]		return STRINGCONST; 
+["][^"]*["]		{
+	yylval.node = newNode(STRING_VALUE);
+	yylval.node->name = (char*)malloc(yyleng + 1);
+	strcpy(yylval.node->name, yytext);
+	return STRINGCONST;
+}
  
 "//".*			;	
  
@@ -153,10 +259,6 @@ Z [zZ]
 .				{fprintf(stderr,"Lexical analyzer error at line %d : %s\n",line_no, yytext);} /*catchall term*/
 %%
 
-yywrap(){
-/*
-	fclose(yyin);
-	exit(1);
-	*/
+int yywrap(){
 	return 1;
 }

@@ -2,6 +2,7 @@
 /* * This is my first attempt * */
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 //still to define this one
 #include "symbolTable.h"
 #include "node.h"
@@ -102,8 +103,9 @@ type : standard_type{
 
 standard_type : INTEGER{
 		$$ = newNode(integer_type);
-		$$->specificType = INTEGER_VALUE; 
-		addNewChild($$, $1);
+		$$->value = $1->value;
+		//$$->specificType = INTEGER_VALUE; 
+		//addNewChild($$, $1);
 	  }
 | REAL{
 		$$ = newNode(real_type);
@@ -143,14 +145,17 @@ subprogram_declaration : subprogram_head
 ;
 
 subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
-			fprintf(stdout, "reached a function call\n");
-			$$ = newNode(function);
+			//fprintf(stdout, "function type is : %d\n", $$->type);
+			//fprintf(stdout, "reached a function call\n");
+			$$ = newNode(function);	
+			$$->specificType = function;
 			addNewChild($$, $2);
 			addNewChild($$, $3);
 			addNewChild($$, $5);
 	  }
 | PROCEDURE ID arguments SEMICOLON{
-		$$ = newNode(PROCEDURE);
+		$$ = newNode(procedure);
+		printf("procedure type is : %d\n", $$->type);
 		$$->name = (char*)malloc(strlen($2->name+1));
 		strcpy($$->name, $2->name);
 		printf("new procedure definition: %s\n", $$->name);	
@@ -178,7 +183,6 @@ parameter_list : optional_var identifier_list COLON  type{
 		$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
-		printf("in parameter list: %s\n", $2->name);
 		addNewChild($$, $4);
 		deleteNode($3);
 	  }

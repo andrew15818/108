@@ -89,6 +89,7 @@ void printTree(struct Node* node)
 void traverse(struct Node* node)
 {
 	if(node == NULL) return;
+	printf("type; %d\t", node->type);
 	switch(node->type){
 		case PROG:
 			printf("prog\n");	
@@ -170,6 +171,7 @@ void traverse(struct Node* node)
 			break;
 		default:
 			//printf("unwirtten type, ytpe: %d\n", node->type);
+			printf("\n");
 			break;
 		/*
 		case :
