@@ -6,7 +6,9 @@
 	//#include "node.c"
 	#include "symbolTable.h"
 	int line_no = 1;
-	extern struct Node* node(int type);
+	struct Node* node(int type){
+		struct Node* node = newNode(type);
+	}
 
 %} 
 
@@ -204,6 +206,8 @@ Z [zZ]
 "."	{
 	yylval.node = newNode(PERIOD);
 	return PERIOD;
+	yylval.node = newNode(PERIOD);
+	return PERIOD;
 }
 "," {
 	yylval.node = newNode(COMMA);
@@ -260,5 +264,3 @@ Z [zZ]
 %%
 
 int yywrap(){
-	return 1;
-}
