@@ -2,6 +2,7 @@
 #include<vector>
 #include<utility>
 #include<cstdio>
+#define MAX_WEIGHT 10000000001 //ten million is the max weight
 using namespace std;
 
 struct Vertex{
@@ -9,13 +10,6 @@ struct Vertex{
 	long long int distance; //distance from the center
 	vector<pair<long long int , Vertex*> > adj;
 };
-/*
-struct Edge{
-	//long long int src, dest, weight;
-	Vertex* src, dst;
-	vector<Edge*> adjList;
-};
-*/
 class Graph{
 	protected:
 		long long int nodes, edges, src, dst; 			
@@ -29,23 +23,36 @@ class Graph{
 			this->dst = dstID;
 			vertices = new Vertex [this->nodes]; 	
 		}
+		void init();
 		void addEdge(long long int source, long long int dest, long long int weight);
+		void relax(Vertex& v1, Vertex&v2, long long int weight);
 		//for debugging purposes
 		void printGraphInfo();
 		long long int search(Vertex*);
 };
-
+void Graph::init()
+{
+	for(long long int i=0; i<nodes; i++){
+		vertices[i].distance = MAX_WEIGHT;	
+	}
+	vertices[src].distance = 0;
+}
 void Graph::addEdge(long long int source, long long int dest, long long int weight)
 {
-	//printf("\tsourve ID: %lld\t source dest:%lld\t weight:%lld\n", source, dest, weight);	
+
 	vertices[source].adj.push_back(make_pair(weight, &vertices[dest]));
 	vertices[source].id = source;
+	//vertices[source].distance = MAX_WEIGHT; //we will relax this distance later
+
 	vertices[dest].id = dest;
-	vertices[dest].distance = -1; //initializing the value	
-	vertices[source].distance = -1;
-
+	//vertices[dest].distance = MAX_WEIGHT; //initializing the value	
 }
-
+void Graph::relax(Vertex& v1, Vertex &v2, long long int weight)
+{
+	if(v2.distance > v1.distance + weight){
+		v2.distance = v1.distance + weight;	
+	}	
+}
 void Graph::printGraphInfo()
 {
 	vector<pair<long long int, Vertex*> >::iterator it;
@@ -67,6 +74,7 @@ int main(){
 	for(int i =0; i< testcases; i++){
 		cin>>nodes>>edges>>srcID>>dstID;	
 		Graph graph(nodes, edges, srcID, dstID);
+		graph.init();
 		long long int srcVertex, dstVertex, weight;
 		for(int j=0; j< edges; j++){
 			cin>>srcVertex>>dstVertex>>weight;
