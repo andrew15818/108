@@ -13,6 +13,12 @@ struct Vertex
 	Vertex* predecessor = NULL; //the predecessor of vertices along the shortest path
 	bool visited = false;
 };
+struct compare
+{
+	bool operator()(const Vertex* v1, const Vertex* v2){
+		return v1->dist > v2->dist;
+	}
+};
 class  Graph
 {
 	protected:
@@ -33,41 +39,60 @@ class  Graph
 		}
 		~Graph()
 		{
-			delete[] visited;
-			delete[] vertices;
+			//delete[] visited;
+			//delete[] vertices;
 		}
+		/*TODO: create the vertices and edges separately, otherwise, not all the vertices will be defined*/
 		void addEdge(long long int source, long long int dest, long long int weight)
 		{
 			pair< long long int, Vertex* > tmp = make_pair(weight, &vertices[dest]);
 			vertices[source].adj.push_back(tmp);
 			vertices[source].id = source;
 			vertices[dest].id = dest;
-			vertices[source].dist = (this->source == source)?0: MAX_WEIGHT;		
+			vertices[source].dist =  MAX_WEIGHT;		
 
 		}
+		/*
 		static bool compare(const Vertex* v1, const Vertex* v2)
 		{
 			return v1->dist < v2->dist;
 		}
-
-
+		*/
 		void relax(Vertex* v1, Vertex* v2, long long int weight )
 		{
-			if(v1->dist > v2->dist + weight){
-				v1->dist = v2->dist + weight;
-				v1->predecessor = v2;
+			printf("checking: %lld(%lld) and %lld(%lld) with weight %lld\n", v1->id, v1->dist, v2->id, v2->dist, weight);
+			if(v2->dist > v1->dist + weight){
+				v2->dist = v1->dist + weight;
+				
+				printf("\trelaxing: %lld->dist = %lld + %lld\n", v2->id, v1->dist, weight);
+				v2->predecessor = v1;
 			}	
 		}
 		void search()
 		{
-			list<Vertex*> nodeQueue;
-			nodeQueue.push_front(&vertices[source]);
+			//list<Vertex*> nodeQueue;
+			priority_queue<Vertex*, vector<Vertex*>, compare> nodeQueue;
+
+			nodeQueue.push(&vertices[source]);
 			vertices[source].dist = 0;
 			printf("%lld\n", vertices[source].dist);
 
 			while( !nodeQueue.empty() ){
-				make_heap(nodeQueue.begin(), nodeQueue.end(), compare);
-				nodeQueue.pop_front();
+				//make_heap(nodeQueue.begin(), nodeQueue.end(), compare);
+				Vertex* v = nodeQueue.top();
+				nodeQueue.pop();
+				
+				//cout<<"comparing: "<<v->id<<endl;
+				vector< pair<long long int, Vertex*> >::iterator it = v->adj.begin();
+				for(it; it!= v->adj.end(); it++){
+					//printf("relaxing: %lld %lld with weight: %lld\n", v->id, it->second->id, it->first);
+					relax(v, it->second, it->first);	
+					if(it->second->visited == false){
+						nodeQueue.push(it->second);
+						//printf("adding: %lld\n", it->second->id);
+					}
+				}
+				
 			}
 		}
 		void printGraph(){
@@ -81,6 +106,12 @@ class  Graph
 				printf("\n");
 			}
 			
+		}
+		void printPredecessor(long long int id)
+		{
+			Vertex *v = &vertices[id]; 
+			printf("pred of %lld is %lld\n", id, v->predecessor->id);
+			printPredecessor(v->predecessor->id);
 		}
 };
 int main(){
@@ -96,7 +127,8 @@ int main(){
 			g.addEdge(u, v, weight);
 		}
 		g.search();
-		//g.printGraph();
+		//g.printPredecessor(endId);
+		g.printGraph();
 	}
 	return 0;
 }
