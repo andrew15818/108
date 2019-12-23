@@ -6,6 +6,7 @@
 #include<algorithm>
 #define MAX_WEIGHT 10000000001
 using namespace std;
+
 struct Vertex
 {
 	long long int id, dist; //dist from the source
@@ -15,7 +16,12 @@ struct Vertex
 	Vertex* predecessor = NULL; //the predecessor of vertices along the shortest path
 	Vertex* successor = NULL; //the successor in the graph
 	bool visited = false;
+	bool isValid = false;
 };
+long long int minEdge(const Vertex* v1, const Vertex* v2)
+{
+	return v1->edgeCount < v2->edgeCount?v1->edgeCount : v2->edgeCount;
+}
 struct compare
 {
 	bool operator()(const Vertex* v1, const Vertex* v2){
@@ -60,7 +66,9 @@ class  Graph
 		void relax(Vertex* v1, Vertex* v2, long long int weight )
 		{
 			//printf("checking: %lld(%lld) and %lld(%lld) with weight %lld\n", v1->id, v1->dist, v2->id, v2->dist, weight);
-			if(v2->dist > v1->dist + weight && v2->edgeCount > v1->edgeCount
+	
+
+			if(v2->dist > v1->dist + weight && v2->edgeCount > v1->edgeCount  
 					&& weight >= v1->edgeCount+1){
 
 				v2->dist = v1->dist + weight;	
@@ -69,6 +77,11 @@ class  Graph
 				v2->predecessor = v1;
 				v1->successor = v2;
 			}
+			else if (v2->edgeCount > v1->edgeCount){
+				v2->edgeCount = minEdge(v1,v2);	
+			}
+
+			
 		}
 		void search()
 		{
@@ -102,6 +115,7 @@ class  Graph
 					//printf("There does exist a shortest path\n");	
 				}	
 				
+			
 			}
 		}
 		int printPredecessor(long long int id)
