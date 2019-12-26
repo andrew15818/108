@@ -11,13 +11,17 @@ struct Vertex
 {
 	long long int id, dist; //dist from the source
 	long int deltaDistance; //basically the weight value from predecessor to current node
-	long long int edgeCount; //how many edges we've traveled through
+	long long int edgeCount = MAX_WEIGHT; //how many edges we've traveled through
 	vector<pair<long long int, Vertex*> > adj;
 	Vertex* predecessor = NULL; //the predecessor of vertices along the shortest path
-	Vertex* successor = NULL; //the successor in the graph
+	Vertex* successor = NULL; //the successor in the graph	
 	bool visited = false;
 	bool isValid = false;
 };
+long long int min(long long int n1, long long int n2)
+{
+	return n1<=n2?n1:n2;
+}
 long long int minEdge(const Vertex* v1, const Vertex* v2)
 {
 	return v1->edgeCount < v2->edgeCount?v1->edgeCount : v2->edgeCount;
@@ -65,9 +69,27 @@ class  Graph
 		}
 		void relax(Vertex* v1, Vertex* v2, long long int weight )
 		{
-			//printf("checking: %lld(%lld) and %lld(%lld) with weight %lld\n", v1->id, v1->dist, v2->id, v2->dist, weight);
-	
+			if(v2->id == dest){
+					v2->edgeCount = (v2->edgeCount < v1->edgeCount+1)?v2->edgeCount:v1->edgeCount+1;	
+					///v2->edgeCount = 1;
+					//printf("edgeCount: %lld, %lld\n",v2->edgeCount, v1->edgeCount );
 
+				}
+
+			if(v2->dist > v1->dist + weight && weight > v1->edgeCount)
+			{
+
+				if(v2->edgeCount < v1->edgeCount +1){
+					v2->isValid = (v2->isValid == true)?true:false;
+					return;
+				}	
+				v2->isValid = true;
+				v2->edgeCount = v1->edgeCount + 1;
+				v2->dist = v1->dist + weight;
+				v2->deltaDistance = weight;
+				v2->predecessor = v1;
+			}	
+			/*
 			if(v2->dist > v1->dist + weight && v2->edgeCount > v1->edgeCount  
 					&& weight >= v1->edgeCount+1){
 
@@ -80,7 +102,7 @@ class  Graph
 			else if (v2->edgeCount > v1->edgeCount){
 				v2->edgeCount = minEdge(v1,v2);	
 			}
-
+			*/
 			
 		}
 		void search()
@@ -111,26 +133,36 @@ class  Graph
 				
 				if(v->id == dest){
 					//foundShortestPath = true;
+			
 					return;
 					//printf("There does exist a shortest path\n");	
 				}	
 				
-			
+				
 			}
 		}
 		int printPredecessor(long long int id)
 		{
+
 			Vertex* v = &vertices[id];
 			if(v->id == source){
 				printf("%lld ",v->id);	
 				return 1;
 			}
-			else if(v->predecessor == NULL){
+			else if(v->predecessor == NULL || v->isValid == false){
 				printf("-1");	
 				return 0;
 			}
 				printPredecessor(v->predecessor->id);
 				printf("%lld ",v->id);			
+			return 1;
+		}
+		void printNodeInfo(long long int id)
+		{
+			printf("hola\n");	
+			Vertex* tmp = &vertices[id];
+			printf("%lld: dist: %lld, minEdgeCount: %lld, parent:%lld, isValid: %d",
+							id, tmp->dist, tmp->edgeCount, tmp->predecessor->id,tmp->isValid);
 		}
 };
 int main(){
@@ -145,7 +177,9 @@ int main(){
 			g.addEdge(u, v, weight);
 		}
 		g.search();
+		
 		g.printPredecessor(endId);
+		//g.printNodeInfo(endId);	
 		printf("\n");
 	}
 	return 0;
