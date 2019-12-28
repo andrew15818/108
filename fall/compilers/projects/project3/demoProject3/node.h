@@ -57,8 +57,12 @@ enum Nodetype{
 		relop,
 		addop,
 		mulop,
-
-		
+		array,
+		function,	
+		procedure,
+		if_node,
+		while_node,
+		assign_op
 };
 struct Node{
 	//pointer info to related nodes
@@ -72,7 +76,7 @@ struct Node{
 	int lowerBound, upperBound;
 	//different node values depending on the type of node this is
 	int type;
-	//int specificType; //once we know if it's not a node for a single symbol, we can assign 
+	int specificType; //once we know if it's not a node for a single symbol, we can assign 
 					  // to it one of the names of the productions
 
 

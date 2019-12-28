@@ -10,7 +10,7 @@ struct Node* newNode( int NodeType)
 	new->leftMostChild = NULL;
 	new->rightSibling = NULL;
 	new->parent = NULL;
-	//new->op = NULL;
+	new->op = NULL;
 	new->name = NULL;
 	return new;
 
@@ -101,9 +101,6 @@ void traverse(struct Node* node)
 		case declarations:
 			printf("declarations\n");
 			break;
-		case subprogram_declarations:
-			printf("subprogram_declarations\n");
-			break;
 		case compound_statement:
 			printf("compound statment\n");
 			break;
@@ -123,6 +120,9 @@ void traverse(struct Node* node)
 			printf("real value: %d\n", node->value);
 			break;
 		case subprogram_declaration:
+			printf("subprogram_declaration\n");
+			break;
+		case subprogram_declarations:
 			printf("subprogram_declarations\n");
 			break;
 		case subprogram_head:
@@ -170,25 +170,55 @@ void traverse(struct Node* node)
 		case string_type:
 			printf("TYPE_STRING\n");
 			break;
-		case AND:
-			printf("AND node\n");
-			printf("\n");
+		case tail:
+			printf("tail\n");
+			break;		
+		case expression_list:
+			printf("expression_list\n");
 			break;
-		
-		case OR:
-			printf("OR\n");
+		case simple_expression:
+			printf("simple_expression\n");
 			break;
-		/*
-		case :
-			printf();
+		case boolexpression:
+			printf("boolexpression\n");
 			break;
-		case :
-			printf();
+		case term:
+			printf("term");
 			break;
-		case :
-			printf();
+		case factor:	
+			printf("factor\n");
 			break;
-	*/	
+		case relop:	
+			printf("relop\n");
+			break;
+		case addop:	
+			printf("addop\n");
+			break;
+		case mulop:	
+			printf("mulop");
+			break;
+		case array:	
+			printf("array\n");
+			break;
+		case function:
+			printf("function");
+			break;
+		case procedure:	
+			printf("procedure\n");
+			break;
+		case identifier_list:
+			printf("identifier_list\n");
+			break;
+		case assign_op:
+			printf("assign_op\n");
+			break;
+		case if_node:
+			printf("if\n");
+			break;
+		case while_node:
+			printf("while\n");
+			break;
+
 
 	}
 	struct Node* tmp = node->leftMostChild;

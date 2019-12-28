@@ -71,13 +71,21 @@
 /* * This is my first attempt * */
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+//still to define this one
+#include "symbolTable.h"
+#include "node.h"
+
 extern char* yytext;
 extern int line_no;
 void yyerror(){
 	printf("Error here %d: %s\n", line_no, yytext);
 }
 
-#line 81 "y.tab.c"
+//creating the root node from the other header files
+extern struct Node* root;
+
+#line 89 "y.tab.c"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -160,7 +168,9 @@ extern int yydebug;
     RANGE = 299,
     BLANK = 300,
     COMMENT = 301,
-    IDENTIFIER = 302
+    IDENTIFIER = 302,
+    LPAREN = 303,
+    RPAREN = 304
   };
 #endif
 /* Tokens.  */
@@ -209,10 +219,21 @@ extern int yydebug;
 #define BLANK 300
 #define COMMENT 301
 #define IDENTIFIER 302
+#define LPAREN 303
+#define RPAREN 304
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 20 "first.y"
+
+	struct Node* node;
+
+#line 234 "y.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -462,7 +483,7 @@ union yyalloc
 #define YYLAST   133
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  48
+#define YYNTOKENS  50
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  28
 /* YYNRULES -- Number of rules.  */
@@ -471,7 +492,7 @@ union yyalloc
 #define YYNSTATES  131
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   302
+#define YYMAXUTOK   304
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
@@ -512,20 +533,20 @@ static const yytype_uint8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47
+      45,    46,    47,    48,    49
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    22,    22,    32,    33,    36,    37,    40,    41,    44,
-      45,    46,    49,    51,    54,    60,    61,    64,    65,    70,
-      71,    74,    75,    79,    84,    88,    89,    92,    93,    94,
-      95,    96,    97,   100,   103,   104,   108,   109,   112,   113,
-     117,   118,   119,   123,   124,   127,   128,   131,   132,   136,
-     137,   138,   139,   140,   141,   142,   145,   145,   148,   148,
-     151,   152,   153,   154,   155,   156
+       0,    42,    42,    61,    65,    70,    79,    84,    91,   104,
+     110,   116,   123,   129,   135,   147,   156,   170,   176,   183,
+     190,   203,   207,   212,   223,   228,   232,   237,   242,   245,
+     248,   254,   259,   263,   271,   277,   281,   286,   295,   298,
+     306,   309,   314,   322,   326,   333,   337,   344,   348,   356,
+     362,   370,   374,   378,   383,   388,   394,   398,   404,   409,
+     415,   419,   423,   427,   431,   435
 };
 #endif
 
@@ -540,8 +561,8 @@ static const char *const yytname[] =
   "FUNCTION", "PROCEDURE", "PBEGIN", "AND", "OR", "END", "ASSIGNOP", "IF",
   "THEN", "ELSE", "WHILE", "DO", "LESSTHAN", "GREATERTHAN", "LEQ", "GEQ",
   "EQUAL", "NOTEQUAL", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "NOT",
-  "RANGE", "BLANK", "COMMENT", "IDENTIFIER", "$accept", "prog",
-  "identifier_list", "declarations", "type", "standard_type",
+  "RANGE", "BLANK", "COMMENT", "IDENTIFIER", "LPAREN", "RPAREN", "$accept",
+  "prog", "identifier_list", "declarations", "type", "standard_type",
   "subprogram_declarations", "subprogram_declaration", "subprogram_head",
   "arguments", "parameter_list", "optional_var", "compound_statement",
   "optional_statements", "statement_list", "statement", "variable", "tail",
@@ -559,7 +580,7 @@ static const yytype_uint16 yytoknum[] =
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296,   297,   298,   299,   300,   301,   302
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304
 };
 # endif
 
@@ -582,12 +603,12 @@ static const yytype_int8 yypact[] =
     -104,    76,    21,    81,    81,     2,     7,     7,  -104,    59,
       82,  -104,    61,  -104,  -104,    16,  -104,    83,  -104,  -104,
     -104,    84,  -104,    85,    86,    87,     7,     7,  -104,     5,
-       7,  -104,  -104,  -104,  -104,     7,    63,    19,    30,    15,
+       7,  -104,  -104,  -104,  -104,     7,    60,    19,    30,    15,
     -104,    75,    66,  -104,     4,     7,    32,    88,  -104,  -104,
       93,    74,    -3,  -104,    36,  -104,    90,     7,  -104,    94,
     -104,     4,     7,     7,  -104,  -104,  -104,  -104,  -104,  -104,
        7,     7,  -104,  -104,     7,  -104,     4,  -104,  -104,  -104,
-      49,  -104,    62,    95,  -104,     7,    92,    43,  -104,    71,
+      48,  -104,    62,    95,  -104,     7,    92,    43,  -104,    71,
     -104,  -104,    15,    35,  -104,  -104,    91,    21,  -104,  -104,
     -104,  -104,     4,    96,   100,  -104,    97,    85,    21,  -104,
     -104
@@ -643,8 +664,8 @@ static const yytype_int16 yytable[] =
       55,     4,   105,    16,    17,    18,    92,    93,    99,    90,
      125,   102,   120,    84,    85,    86,    87,    88,    89,    53,
       54,     9,     5,   117,    53,    54,   110,   111,     6,   119,
-      10,    11,    23,    24,    36,    63,    43,    34,    65,    64,
-      95,    68,    81,   116,    73,    69,    67,    72,    96,   101,
+      10,    11,    23,    24,    36,    63,    43,    34,    65,    81,
+      95,    68,   116,    64,    73,    69,    67,    72,    96,   101,
      108,   122,   118,   100,   106,    47,   123,   127,   129,    35,
      126,   103,     0,   112,   107,   128,   113,     0,     0,     0,
        0,     0,     0,    45,     0,     0,     0,     0,     0,     0,
@@ -661,8 +682,8 @@ static const yytype_int16 yycheck[] =
       43,     0,     9,    21,    22,    23,    41,    42,    66,   113,
      122,    71,   106,    33,    34,    35,    36,    37,    38,    39,
       40,     9,     5,    11,    39,    40,    82,    83,     4,   105,
-       7,     4,     4,     4,     8,    26,     5,     7,    27,     7,
-      15,     7,    29,    44,     7,    10,    13,    11,    32,     6,
+       7,     4,     4,     4,     8,    26,     5,     7,    27,    29,
+      15,     7,    44,    11,     7,    10,    13,    11,    32,     6,
        6,    30,     7,    15,    14,    13,    15,     7,   127,    20,
       14,    72,    -1,    90,    77,    18,    91,    -1,    -1,    -1,
       -1,    -1,    -1,    24,    -1,    -1,    -1,    -1,    -1,    -1,
@@ -673,32 +694,32 @@ static const yytype_int16 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    49,     4,     0,     5,     4,    50,     6,     9,
-       7,     4,    51,    10,    54,    50,    21,    22,    23,    55,
-      56,    60,    11,     4,     4,     4,    28,    31,    60,    61,
-      62,    63,    64,    66,     7,    51,     8,    12,    16,    19,
-      20,    52,    53,     5,    57,    57,     5,    13,    65,     4,
-       5,    15,    16,    39,    40,    43,    68,    69,    70,    71,
-      72,    73,    68,    26,     7,    27,    54,    13,     7,    10,
-      58,    59,    11,     7,    67,    68,    68,     5,    65,    68,
-      72,    29,    24,    25,    33,    34,    35,    36,    37,    38,
-      73,    75,    41,    42,    74,    15,    32,    63,    68,    60,
-      15,     6,    50,    53,     6,     9,    14,    67,     6,    63,
-      69,    69,    71,    70,    72,    63,    44,    11,     7,    68,
-      65,     6,    30,    15,    52,    63,    14,     7,    18,    58,
-      52
+       0,     3,    51,     4,     0,     5,     4,    52,     6,     9,
+       7,     4,    53,    10,    56,    52,    21,    22,    23,    57,
+      58,    62,    11,     4,     4,     4,    28,    31,    62,    63,
+      64,    65,    66,    68,     7,    53,     8,    12,    16,    19,
+      20,    54,    55,     5,    59,    59,     5,    13,    67,     4,
+       5,    15,    16,    39,    40,    43,    70,    71,    72,    73,
+      74,    75,    70,    26,    11,    27,    56,    13,     7,    10,
+      60,    61,    11,     7,    69,    70,    70,     5,    67,    70,
+      74,    29,    24,    25,    33,    34,    35,    36,    37,    38,
+      75,    77,    41,    42,    76,    15,    32,    65,    70,    62,
+      15,     6,    52,    55,     6,     9,    14,    69,     6,    65,
+      71,    71,    73,    72,    74,    65,    44,    11,     7,    70,
+      67,     6,    30,    15,    54,    65,    14,     7,    18,    60,
+      54
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    48,    49,    50,    50,    51,    51,    52,    52,    53,
-      53,    53,    54,    54,    55,    56,    56,    57,    57,    58,
-      58,    59,    59,    60,    61,    62,    62,    63,    63,    63,
-      63,    63,    63,    64,    65,    65,    66,    66,    67,    67,
-      68,    68,    68,    69,    69,    70,    70,    71,    71,    72,
-      72,    72,    72,    72,    72,    72,    73,    73,    74,    74,
-      75,    75,    75,    75,    75,    75
+       0,    50,    51,    52,    52,    53,    53,    54,    54,    55,
+      55,    55,    56,    56,    57,    58,    58,    59,    59,    60,
+      60,    61,    61,    62,    63,    64,    64,    65,    65,    65,
+      65,    65,    65,    66,    67,    67,    68,    68,    69,    69,
+      70,    70,    70,    71,    71,    72,    72,    73,    73,    74,
+      74,    74,    74,    74,    74,    74,    75,    75,    76,    76,
+      77,    77,    77,    77,    77,    77
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1397,21 +1418,656 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 27 "first.y"
+#line 45 "first.y"
     {
-		printf("que puts\n");
+		root = (yyval.node)  = newNode(prog);	
+		addNewChild((yyval.node), (yyvsp[-8].node));
+		addNewChild((yyval.node), (yyvsp[-6].node));
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[-9].node));
+		deleteNode((yyvsp[-7].node));
+		deleteNode((yyvsp[-5].node));
+		deleteNode((yyvsp[-4].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1436 "y.tab.c"
+    break;
+
+  case 3:
+#line 61 "first.y"
+    {
+		(yyval.node) = newNode(identifier_list);		
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1445 "y.tab.c"
+    break;
+
+  case 4:
+#line 65 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);			
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1454 "y.tab.c"
+    break;
+
+  case 5:
+#line 70 "first.y"
+    {
+		(yyval.node) = (yyvsp[-5].node);		
+		addNewChild((yyval.node), (yyvsp[-4].node));	
+		addNewChild((yyval.node), (yyvsp[-3].node));	
+		addNewChild((yyval.node), (yyvsp[-1].node));
+
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1468 "y.tab.c"
+    break;
+
+  case 6:
+#line 79 "first.y"
+    {
+		(yyval.node) = newNode(declarations);	
+	  }
+#line 1476 "y.tab.c"
+    break;
+
+  case 7:
+#line 84 "first.y"
+    {
+		//$$ = newNode(type);	
+		(yyval.node) = (yyvsp[0].node);	
+		//addNewChild($$, $1);
+		//fprintf(stdout, "%d\n",$1->type);
+	  }
+#line 1487 "y.tab.c"
+    break;
+
+  case 8:
+#line 91 "first.y"
+    {
+		(yyval.node) = newNode(array);
+		//$$->specificType = array;
+		addNewChild((yyval.node), (yyvsp[0].node));	
+		addNewChild((yyval.node), (yyvsp[-5].node));
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		deleteNode((yyvsp[-6].node));
+		deleteNode((yyvsp[-4].node));
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[-1].node));
+	  }
+#line 1503 "y.tab.c"
+    break;
+
+  case 9:
+#line 104 "first.y"
+    {
+		(yyval.node) = newNode(integer_type);
+		(yyval.node)->value = (yyvsp[0].node)->value;
+		//$$->specificType = INTEGER_VALUE; 
+		//addNewChild($$, $1);
+	  }
+#line 1514 "y.tab.c"
+    break;
+
+  case 10:
+#line 110 "first.y"
+    {
+		(yyval.node) = newNode(real_type);
+		(yyval.node)->specificType= REAL_VALUE;
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1524 "y.tab.c"
+    break;
+
+  case 11:
+#line 116 "first.y"
+    {
+		(yyval.node) = newNode(string_type);	
+		(yyval.node)->specificType = STRING_VALUE;
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1534 "y.tab.c"
+    break;
+
+  case 12:
+#line 124 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);		
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1544 "y.tab.c"
+    break;
+
+  case 13:
+#line 129 "first.y"
+    {
+	//am I even sure I exist? :'(
+		(yyval.node) = newNode(subprogram_declarations);
+	  }
+#line 1553 "y.tab.c"
+    break;
+
+  case 14:
+#line 138 "first.y"
+    {
+		(yyval.node) = newNode(subprogram_declaration);		
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1565 "y.tab.c"
+    break;
+
+  case 15:
+#line 147 "first.y"
+    {
+			//fprintf(stdout, "function type is : %d\n", $$->type);
+			//fprintf(stdout, "reached a function call\n");
+			(yyval.node) = newNode(function);	
+			(yyval.node)->specificType = function;
+			addNewChild((yyval.node), (yyvsp[-4].node));
+			addNewChild((yyval.node), (yyvsp[-3].node));
+			addNewChild((yyval.node), (yyvsp[-1].node));
+	  }
+#line 1579 "y.tab.c"
+    break;
+
+  case 16:
+#line 156 "first.y"
+    {
+		(yyval.node) = newNode(procedure);
+		//printf("procedure type is : %d\n", $$->type);
+		//$$->specificType = procedure;
+		(yyval.node)->name = (char*)malloc(strlen((yyvsp[-2].node)->name+1));
+		strcpy((yyval.node)->name, (yyvsp[-2].node)->name);
+		//printf("new procedure definition: %s\n", $$->name);	
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[-3].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1596 "y.tab.c"
+    break;
+
+  case 17:
+#line 170 "first.y"
+    {
+
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1607 "y.tab.c"
+    break;
+
+  case 18:
+#line 176 "first.y"
+    {
+		(yyval.node) = newNode(arguments);
+	  }
+#line 1615 "y.tab.c"
+    break;
+
+  case 19:
+#line 183 "first.y"
+    {
+		(yyval.node) = newNode(parameter_list);
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+		deleteNode((yyvsp[-1].node));
+	  }
+#line 1627 "y.tab.c"
+    break;
+
+  case 20:
+#line 190 "first.y"
+    {
+		(yyval.node) = newNode(parameter_list);
+		addNewChild((yyval.node), (yyvsp[-5].node));
+		addNewChild((yyval.node), (yyvsp[-4].node));
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+		deleteNode((yyvsp[-3].node));
+		deleteNode((yyvsp[-1].node));
+	  }
+#line 1641 "y.tab.c"
+    break;
+
+  case 21:
+#line 203 "first.y"
+    {
+		//$$ = $1;
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1650 "y.tab.c"
+    break;
+
+  case 22:
+#line 207 "first.y"
+    {
+		(yyval.node) = newNode(optional_var);
+	  }
+#line 1658 "y.tab.c"
+    break;
+
+  case 23:
+#line 214 "first.y"
+    {
+		 (yyval.node) = newNode(compound_statement);	
+		 addNewChild((yyval.node), (yyvsp[-1].node));
+		 deleteNode((yyvsp[-2].node));
+		 deleteNode((yyvsp[0].node));
+	  }
+#line 1669 "y.tab.c"
+    break;
+
+  case 24:
+#line 223 "first.y"
+    {
+		(yyval.node) = newNode(optional_statements);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1678 "y.tab.c"
+    break;
+
+  case 25:
+#line 228 "first.y"
+    {
+		(yyval.node) = newNode(statement_list);			  
+		addNewChild((yyval.node), (yyvsp[0].node));
 	}
-#line 1405 "y.tab.c"
+#line 1687 "y.tab.c"
+    break;
+
+  case 26:
+#line 232 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);
+		addNewChild((yyvsp[-2].node), (yyvsp[0].node));
+	}
+#line 1696 "y.tab.c"
+    break;
+
+  case 27:
+#line 237 "first.y"
+    {
+		(yyval.node) = newNode(ASSIGNOP);
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	}
+#line 1706 "y.tab.c"
+    break;
+
+  case 28:
+#line 242 "first.y"
+    {
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1714 "y.tab.c"
+    break;
+
+  case 29:
+#line 245 "first.y"
+    {
+		(yyval.node) = (yyvsp[0].node);	
+	}
+#line 1722 "y.tab.c"
+    break;
+
+  case 30:
+#line 248 "first.y"
+    {
+		(yyval.node) = newNode(IF);
+		addNewChild((yyval.node), (yyvsp[-4].node));
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	}
+#line 1733 "y.tab.c"
+    break;
+
+  case 31:
+#line 254 "first.y"
+    {
+		(yyval.node) = newNode(WHILE);
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	}
+#line 1743 "y.tab.c"
+    break;
+
+  case 32:
+#line 259 "first.y"
+    {
+		(yyval.node) = newNode(statement);
+		}
+#line 1751 "y.tab.c"
+    break;
+
+  case 33:
+#line 263 "first.y"
+    {
+		 (yyval.node) = newNode(variable);
+		printf("in variable prod\n");
+		 addNewChild((yyval.node), (yyvsp[-1].node));
+		 addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1762 "y.tab.c"
+    break;
+
+  case 34:
+#line 271 "first.y"
+    {
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+		deleteNode((yyvsp[-3].node));
+		deleteNode((yyvsp[-1].node));
+	  }
+#line 1773 "y.tab.c"
+    break;
+
+  case 35:
+#line 277 "first.y"
+    {
+		(yyval.node) = newNode(tail);	
+	  }
+#line 1781 "y.tab.c"
+    break;
+
+  case 36:
+#line 281 "first.y"
+    {
+		(yyval.node) = newNode(procedure_statement);
+		printf("in procedure statement\n");
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1791 "y.tab.c"
+    break;
+
+  case 37:
+#line 286 "first.y"
+    {
+		printf("hello from procedure statement\n\n\n");
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1803 "y.tab.c"
+    break;
+
+  case 38:
+#line 295 "first.y"
+    {
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1811 "y.tab.c"
+    break;
+
+  case 39:
+#line 298 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);
+		addNewChild((yyval.node), (yyvsp[0].node));
+		deleteNode((yyvsp[-1].node));
+	  }
+#line 1821 "y.tab.c"
+    break;
+
+  case 40:
+#line 306 "first.y"
+    {
+		(yyval.node) = newNode(expression); 
+	  }
+#line 1829 "y.tab.c"
+    break;
+
+  case 41:
+#line 309 "first.y"
+    {
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1839 "y.tab.c"
+    break;
+
+  case 42:
+#line 314 "first.y"
+    {
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1849 "y.tab.c"
+    break;
+
+  case 43:
+#line 322 "first.y"
+    {
+		(yyval.node) = newNode(boolexpression);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1858 "y.tab.c"
+    break;
+
+  case 44:
+#line 326 "first.y"
+    {
+		addNewChild((yyval.node), (yyvsp[-2].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1868 "y.tab.c"
+    break;
+
+  case 45:
+#line 333 "first.y"
+    {
+		(yyval.node) = newNode(simple_expression);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1877 "y.tab.c"
+    break;
+
+  case 46:
+#line 337 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);	
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1887 "y.tab.c"
+    break;
+
+  case 47:
+#line 344 "first.y"
+    {
+	 	(yyval.node) = newNode(term);
+		addNewChild((yyval.node), (yyvsp[0].node));
+  	  }
+#line 1896 "y.tab.c"
+    break;
+
+  case 48:
+#line 348 "first.y"
+    {
+		(yyval.node) = (yyvsp[-2].node);
+		addNewChild((yyval.node), (yyvsp[-1].node));	
+		addNewChild((yyval.node), (yyvsp[0].node));	
+	  }
+#line 1906 "y.tab.c"
+    break;
+
+  case 49:
+#line 356 "first.y"
+    {
+		(yyval.node) = newNode(factor);
+		printf("in factor prod\n");
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1917 "y.tab.c"
+    break;
+
+  case 50:
+#line 362 "first.y"
+    {
+		(yyval.node) = newNode(factor);
+		printf("in factor prod\n");
+		addNewChild((yyval.node), (yyvsp[-3].node));
+		addNewChild((yyval.node), (yyvsp[-1].node));
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1930 "y.tab.c"
+    break;
+
+  case 51:
+#line 370 "first.y"
+    {	
+		(yyval.node) = newNode(factor);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 1939 "y.tab.c"
+    break;
+
+  case 52:
+#line 374 "first.y"
+    {
+		(yyval.node) = newNode(factor);
+		addNewChild((yyval.node), (yyvsp[-1].node));
+	}
+#line 1948 "y.tab.c"
+    break;
+
+  case 53:
+#line 378 "first.y"
+    {
+
+		(yyval.node) = newNode(factor);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	}
+#line 1958 "y.tab.c"
+    break;
+
+  case 54:
+#line 383 "first.y"
+    {
+		addNewChild((yyval.node),(yyvsp[-1].node));
+		deleteNode((yyvsp[-2].node));
+		deleteNode((yyvsp[0].node));
+	  }
+#line 1968 "y.tab.c"
+    break;
+
+  case 55:
+#line 388 "first.y"
+    {
+		(yyval.node) = (yyvsp[0].node);
+		addNewChild((yyval.node), (yyvsp[-1].node));
+	  }
+#line 1977 "y.tab.c"
+    break;
+
+  case 56:
+#line 394 "first.y"
+    {
+		(yyval.node) = newNode(addop);
+		addNewChild((yyval.node), (yyvsp[0].node));	
+	  }
+#line 1986 "y.tab.c"
+    break;
+
+  case 57:
+#line 398 "first.y"
+    {	
+		(yyval.node) = newNode(addop);
+		addNewChild((yyval.node), (yyvsp[0].node));	
+	  }
+#line 1995 "y.tab.c"
     break;
 
   case 58:
-#line 148 "first.y"
-    {printf("I'm here!\n");}
-#line 1411 "y.tab.c"
+#line 404 "first.y"
+    {
+		(yyval.node) = newNode(mulop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2004 "y.tab.c"
+    break;
+
+  case 59:
+#line 409 "first.y"
+    {	
+		(yyval.node) = newNode(mulop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2013 "y.tab.c"
+    break;
+
+  case 60:
+#line 415 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2022 "y.tab.c"
+    break;
+
+  case 61:
+#line 419 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2031 "y.tab.c"
+    break;
+
+  case 62:
+#line 423 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2040 "y.tab.c"
+    break;
+
+  case 63:
+#line 427 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2049 "y.tab.c"
+    break;
+
+  case 64:
+#line 431 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+	  }
+#line 2058 "y.tab.c"
+    break;
+
+  case 65:
+#line 435 "first.y"
+    {
+		(yyval.node) = newNode(relop);
+		addNewChild((yyval.node), (yyvsp[0].node));
+}
+#line 2067 "y.tab.c"
     break;
 
 
-#line 1415 "y.tab.c"
+#line 2071 "y.tab.c"
 
       default: break;
     }
@@ -1643,8 +2299,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 159 "first.y"
+#line 441 "first.y"
 
+struct Node* root;
 /*
 void yyeror(const char* str){
 	fpritnf(stderr, "error: %s\n", str);
@@ -1655,9 +2312,25 @@ int yywrap(){
 }
 */
 int main(){
-	int hola = yyparse();
+
+	int hola = yyparse();	
+	traverse(root);
+	struct symbolTable* mainTable = newTable();
+	
+	if(hola > 0){
+		printf("after yyparse, res = %d\n", hola);
+	}
+		printf("********************************\n"
+         	"*       No syntax error!       *\n"
+         	"********************************\n");
+
+	processNode(mainTable, root);
+	printSymbolTable(mainTable);
 	if(hola==0){
 		printf("Ok.\n");
 	}
+	 printf("********************************\n"
+         "*       No semantic error!       *\n"
+         "********************************\n");
 	return hola;
 }

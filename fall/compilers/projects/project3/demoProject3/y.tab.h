@@ -93,7 +93,9 @@ extern int yydebug;
     RANGE = 299,
     BLANK = 300,
     COMMENT = 301,
-    IDENTIFIER = 302
+    IDENTIFIER = 302,
+    LPAREN = 303,
+    RPAREN = 304
   };
 #endif
 /* Tokens.  */
@@ -142,10 +144,21 @@ extern int yydebug;
 #define BLANK 300
 #define COMMENT 301
 #define IDENTIFIER 302
+#define LPAREN 303
+#define RPAREN 304
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 20 "first.y"
+
+	struct Node* node;
+
+#line 159 "y.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
