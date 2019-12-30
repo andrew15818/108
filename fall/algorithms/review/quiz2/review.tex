@@ -1,0 +1,46 @@
+\documentclass[landscape,4pt,a4paper]{article}
+\usepackage{multicol}
+\usepackage[margin=0.3in]{geometry}
+%\usepackage{algorithmicx}
+%\usepackage[noend]{algpseudocode}
+\usepackage{amsmath}
+
+\begin{document}
+	\raggedright
+	\begin{multicols*}{5}
+		\section{Graph-Traversal}
+			\subsection{Breadth-First Search}
+				Given a graph $G=(V,E)$, we want to discover all nodes a distance $dis(s,v)$.
+				For BFS, we maintain a set $S$ of all the nodes that we have travelled to. 
+				We push all of the vertices in $\text{Adj}[i]$. Also, we maintain a the parent of 
+				every node we find the shortest path of. Since we only place each node once in the set $S$,
+				in total our algorithm will take $O(n+m)$.
+			\subsection{Max trees}
+				If we run BFS algo twice from an arbitrary node, the greatest $\text{dis}[d]$ will be 
+				one of the points on the pair $(o_{1},o_{2})$. Why? If there exists a longer 
+				path than $(o_{1},o_{i2})$, then there has to be some contradiction or cycle, which is not 
+				allowed by the definition of a tree.
+			\subsection{DFS-Visit}
+				In DFS, we move through the most recent currently unexplored node. As soon as we find a node
+				that is not yet explored, we mark it as ``discovered", and immediately move to explore its
+				edges. When we finish exploring every node, we mark it as ``finished". However, DFS-visit 
+				only acts on the nodes reachable from $s$.
+			\subsection{DFS}
+				If we want to act on all the nodes of the graph, we need to consider the nodes not reachable 
+				from $s$. For two nodes $(u,v)$, if there is overlap between $[u.d,v.d]\text{and}[u.f,v.f]$,
+				then one is the ancestor of the other. Why is DFS said to create a \textit{forest}? Since 
+				not all the elements might be reached with just the initial call of DFS, we might need to 
+				call it on other nodes originally unreachable from our starting node.
+			\subsection{Edges}
+				Four types w.r.t. DFS-forest F
+				\begin{itemize}
+					\item{\textbf{tree edges}}: edges $(u,v)\in$ F.
+					\item{\textbf{back edges}}: edges $(u,v)$ connecting $u$ to an ancestor.
+					\item{\textbf{forward edges}}: edges $(u,v)$ connecting node to descendant.
+					\item{\textbf{cross edges}}: all other edges(b/w disjoint trees....)
+				\end{itemize}
+			\subsection{Topological Sort}
+				We try to find an ordering of ndoes in a DAG. We can do this by comparing the finishing 
+				times of the DFS on each node.
+	\end{multicols*}
+\end{document}
