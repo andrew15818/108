@@ -4,7 +4,7 @@
 %\usepackage{algorithmicx}
 %\usepackage[noend]{algpseudocode}
 \usepackage{amsmath}
-
+\usepackage{mathtools}
 \begin{document}
 	\raggedright
 	\begin{multicols*}{5}
@@ -42,5 +42,62 @@
 			\subsection{Topological Sort}
 				We try to find an ordering of ndoes in a DAG. We can do this by comparing the finishing 
 				times of the DFS on each node.
+		\section{Minimum Spanning Trees}
+				MSTs are ways of joining all the nodes so that the overall cost of visiting all of them is minimized.
+				Why are they MSTs?\textit{Tree} becuase the cost for every weight is > 0 $\forall$ e. \textit{Spanning}
+				becuase it includes all of the nodes in the tree.  \textit{Minimum} b/c $w(H)$ is minimal. We ``cut" two
+				from the set of included nodes and the set that we haven't included. Prim's and Kruskal's algorithms 
+				basically have two sets, $S$ and the set of unjoined nodes. For Kruskal's algorithm, we join the lowest
+				edges connecting a node in and outside the set $S$. For Prim's, we only one node from the set $S$ and the 
+				yet unjoined nodes.
+		\section{Shortest Paths}
+				Why are negative cylces not allowed when looking for shortest paths? If we choose the shortest paths with 
+				neg cycles, then we would infinitely choose the negative cycle.
+			\subsection{Bellman-Ford}
+				With this algo, we can detect the existence of negative cycles by using the \texttt{Relax(G,u,v)} method.
+				If after relaxing all the nodes we can still further relax them afterwards, then it means we still have a negative 
+				cycle, since we when we relax all edges, we are finding the shortest paths, there would have to be another one if
+				we could still relax them further. 
+			\subsection{Djikstra's Algorithm}
+				With Djikstra's Algorithm, we build on the idea of BFS, we keep a set of the sorted estimates for the distance
+				from our source node, then, we relax the edges in $\text{Adj}[u]$. Runs in $O(n^{2})$
+			\subsection{All-Pairs Shortest Paths}
+				Here, we just need to find the path from all the nodes that is the min. We can run Djikstras on all nodes. 
+				We can also use dynammic programming to solve it, since we have the equation 
+				$l_{uv}^{(t)} = l_{uk}^{(t-1)} + w_{kv}$, basically the minimum paths of lengths $l-1$ plus the weights to $v$.
+			\subsection{Floyd-Warshall Algorithm}
+				Using the previous formuls, we can also calculate the shortest path between two nodes. We take the minimum of 
+				the paths that cross node k and the paths that does not cross node k. Since we have three nested for loops, 
+				takes $O(n^{3})$.
+		\section{Maximum Flow}
+				Given a network of pipes, how do we make a graph such that it has maximum flow from source to sink? We can 
+				allow $k$ flow from $s$ to $t$. We can also build reverse pipes, which cancel the flow, if any, between 
+				a node $u$ and $v$.
+				\subsection{Ford-Fulkerson Method}
+					For the Ford-Fulkerson Algorithm, we continue while there exists an \textit{augmenting path} 
+					hrough the \textit{residual graph}. Basically, while there exists some flow that allows more efficient
+					use of the capacities at each node, we keep increasing the flow at each node. Since $f(b,a) = c(a,b) - f(a,b)$,
+					then we can show that there might be a path that allows for more flow if there is residual in any node. 
+				\subsection{Max-flow min-cut theorem}
+					Here, suppose $f$ is max flow in $G$, $G_{f}$contains no augmenting path from s to t, 
+					and $\text{abs}(f)= c(S,T)$
+				\subsection{Applications}
+				\textbf{bipartite graphs} are graphs which can be separated into two sections so that for every edge, one 
+				endpoint is in one and the other endpoint is in another section.
+		\section{linear programming}
+				With linear programming, we try and maximize the constraints on a given equation. Becuase the equations are 
+				solvable in a specific region, we have to find the \textit{feasible region}. The solution must lie in the 
+				edges of the feasible region, since those are the regions that will have the greatest or smallest numbers.
+		\section{NP completeness}
+				There are countably infinite many polynomial-time algorithms, but uncountably infinite many  problems. Why?
+				\textbf{P}:Class of problems whose output is either ``Yes" or ``No", and whose running time is polynomial. 
+
+				\textbf{NP}: A problem $L\in NP$ iff: $\exists$ polynomial-time algo and we can check the answer in 
+				polunomial-time($\exists$ Certificate). Graph connectivity, paths, etc...
+
+				\textbf{NP-hard}: $\forall$ problems in $NP$, $\exists$ polynomial-time reduction to another problem $L$. 
+
+				\textbf{NP-Complete}: If problem L$\in NP$ \&\& L$\in NP-hard$. People believe that if prob NP-hard, 
+				it requires superpolynomial time to compute, however this is unproven.
 	\end{multicols*}
 \end{document}
