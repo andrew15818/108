@@ -18,11 +18,14 @@ struct symbolTable* newTable()
 {
 	struct symbolTable* new = (struct symbolTable*)malloc(sizeof(struct symbolTable));
 	new->currSize = 0;
-	new->scopeCounter = 1;
+	new->scopeCounter = 0; //global scope
 	new->nextTable = NULL;
 	return new;
 }
-
+void setFunctionParams(struct Entry* entry, struct Node* arguments)
+{
+	return;	
+}
 struct Entry* newEntry(struct symbolTable* sym, struct Node* node)
 {
 	struct Entry* new = (struct Entry*)malloc(sizeof(struct Entry));
@@ -32,6 +35,7 @@ struct Entry* newEntry(struct symbolTable* sym, struct Node* node)
 		//not sure about this one
 		new->name = (char*)malloc(sizeof(node->name+1));	
 		strcpy(new->name, node->name);
+		new->node = node;
 		//printf("new Entry name: %s\n", new->name);
 	}
 	
@@ -59,51 +63,30 @@ void openScope(struct symbolTable* sym)
 }
 
 //check to see if the symbol is already in the table
-struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node)
+struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node, int scope)
 {		
-	int hashIndex = hash(node);	
-	
-	struct Entry* new= sym->entries[hashIndex];
-	while(new!= NULL){
-		//struct Entry* tmpEntry = sym->entries[hashIndex];
-		if(!strcmp(node->name, new->name)){
-			//printf("found %s already in our table\n", node->name);		
-			return sym->entries[hashIndex];	
+		int index = 0;
+		while(index  < sym->currSize){
+			struct Entry* tmp  = sym->entries[index];
+			if(strcmp(tmp->name, node->name) == 0 && tmp->scopeDeclaredIn == scope){
+				return sym->entries[index];
+			}
+			index--;
 		}
-		new= new->nextEntry;
-	}
-	return NULL;	
+		return NULL;
 }
 void enterSymbol(struct symbolTable* sym, struct Node* node, int type)
 {
-	struct Entry* tmpEntry = retrieveEntry(sym, node);
-
-	//checking if the symbol is already declared
+	printf("trying to insert: %s\n", node->name);
+	struct Entry* tmpEntry = retrieveEntry(sym, node, sym->scopeCounter);
 	if(tmpEntry != NULL){
-			//how to get  the correct index? 
-		printf("Error: redeclaration of: %s\n", node->name);
+		printf("redeclaration of %s\n",tmpEntry->name );	
 		return;
 	}
-	struct Entry* new ;//= newEntry(node);
-	//new->type = node->type;
-	new->node = node;	
-	//new->scopeDeclaredIn = sym->scopeCounter;
-	int hashIndex = hash(node);	
-	if(sym->entries[hashIndex] == NULL){
-		sym->entries[hashIndex] = new;	
-		//sym->entries[hashIndex]->name = (char*)malloc(strlen(node->name));
-		new->name = (char*)malloc(strlen(node->name));
-		strcpy(new->name,node->name);
-		//printf("undeclared variable %s\n", node->name);
-	}
-	else{
-		struct Entry* tmp = sym->entries[hashIndex];
-		while(tmp != NULL){
-			tmp = tmp->nextEntry;	
-		}
-		tmp = new;
-	}	
-	
+	struct Entry* new = newEntry(sym, node);
+	sym->entries[sym->currSize] = new;
+	sym->currSize++;
+
 }
 void processNode(struct symbolTable* sym, struct Node* node)
 {
@@ -115,17 +98,56 @@ void processNode(struct symbolTable* sym, struct Node* node)
 			}
 			break;
 		case ID_name:			
-			//printf("prcessing id node with name: %s\n", node->name);
+			printf("prcessing id node with name: %s\n", node->name);
 			;
 			struct Entry* dummy = newEntry(sym, node);
+			//enterSymbol(sym, node, node->type);
+			break;
+		case function:
+			printf("function node in symbol table ");
+			struct Node* id = nthChild(node, 0);
+			struct Node* type = nthChild(node, 1);
+			processNode(sym, id);	
+			processNode(sym, type);
+			node->name = (char*)malloc(sizeof(id->name) +1);
+			strcpy(node->name, id->name);
+			printf(" with name %s\n", node->name);
 			enterSymbol(sym, node, node->type);
+
+			processNode(sym, nthChild(node,2));
+			break;
+		case arguments:
+			printf("ST: analyzing arguments\n");
+			struct Node* tmporino = nthChild(node, 0);
+			break;
+		case parameter_list:
+			printf("ST: analyzing parameter_list\n");
+			break;
+		case statement:
+			;
+			printf("statement\n");
+			struct Node* target = nthChild(node, 0);
+			printf("assign target: %d\n", target->type);
+			//processNode(sym, target);
+			//processNode(sym, nthChild(node, 0));
+			//processNode(sym, target);
+			//struct Node* value = nthChild(node, 1);
+			break;
+		case optional_statements:
+			processNode(sym, nthChild(node, 0));
+			break;
+		case statement_list:
+			processNode(sym, nthChild(node, 0));
 			break;
 		default: ;
+			//printf("analyzing %d\n", node->type);	
 			struct Node* tmp = node->leftMostChild;
 			while(tmp != NULL){
 				processNode(sym, tmp);	
 				tmp = tmp->rightSibling;
 			}
+		
+			break;
 	}
 }
 

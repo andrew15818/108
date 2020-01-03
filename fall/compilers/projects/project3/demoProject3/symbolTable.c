@@ -120,6 +120,9 @@ void processNode(struct symbolTable* sym, struct Node* node)
 			struct Entry* dummy = newEntry(sym, node);
 			enterSymbol(sym, node, node->type);
 			break;
+		case function:
+			printf("processing function node\n");
+			break;
 		default: ;
 			struct Node* tmp = node->leftMostChild;
 			while(tmp != NULL){

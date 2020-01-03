@@ -19,11 +19,12 @@ struct Attributes{
 struct Entry{
 	char* name;
 
-	int scope;
+
 	int type;
 	//for arrays? 
 	int lowerBound, upperBound;
 	int scopeDeclaredIn;  //scope where we were originally declared
+	int paramNo;
 
 	struct Node* attributes;
 	struct Node* node;
@@ -38,8 +39,9 @@ struct symbolTable{
 struct symbolTable* newTable();
 struct Entry* newEntry(struct symbolTable* sym, struct Node* node);
 void enterSymbol(struct symbolTable* sym, struct Node* node, int type);
+void setFunctionParams(struct Entry* entry, struct Node* arguments);
 struct Node* nthChild(struct Node* node, int count);
-struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node);
+struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node, int scope);
 void processNode(struct symbolTable* sym, struct Node* node);
 void openScope(struct symbolTable* sym);
 void printSymbolTable(struct symbolTable *sym);

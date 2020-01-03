@@ -145,21 +145,13 @@ subprogram_declaration : subprogram_head
 ;
 
 subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
-			//fprintf(stdout, "function type is : %d\n", $$->type);
-			//fprintf(stdout, "reached a function call\n");
 			$$ = newNode(function);	
-			$$->specificType = function;
 			addNewChild($$, $2);
 			addNewChild($$, $3);
 			addNewChild($$, $5);
 	  }
 | PROCEDURE ID arguments SEMICOLON{
 		$$ = newNode(procedure);
-		//printf("procedure type is : %d\n", $$->type);
-		//$$->specificType = procedure;
-		$$->name = (char*)malloc(strlen($2->name+1));
-		strcpy($$->name, $2->name);
-		//printf("new procedure definition: %s\n", $$->name);	
 		addNewChild($$, $2);
 		addNewChild($$, $3);
 		deleteNode($1);
@@ -188,7 +180,7 @@ parameter_list : optional_var identifier_list COLON  type{
 		deleteNode($3);
 	  }
 | optional_var identifier_list COLON  type SEMICOLON  parameter_list{
-		$$ = newNode(parameter_list);
+		//$$ = newNode(parameter_list);
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
@@ -234,8 +226,9 @@ statement_list: statement{
 		addNewChild($1, $3);
 	}
 ;
+
 statement : variable ASSIGNOP expression{
-		$$ = newNode(ASSIGNOP);
+		//$$ = newNode(ASSIGNOP);
 		addNewChild($$, $1);
 		addNewChild($$, $3);
 	}
@@ -246,13 +239,13 @@ statement : variable ASSIGNOP expression{
 		$$ = $1;	
 	}
 |	IF expression THEN statement ELSE statement{
-		$$ = newNode(IF);
+		//$$ = newNode(IF);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 		addNewChild($$, $6);
 	}
 | WHILE expression DO statement{
-		$$ = newNode(WHILE);
+		//$$ = newNode(WHILE);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 	}
@@ -452,7 +445,7 @@ int yywrap(){
 int main(){
 
 	int hola = yyparse();	
-	traverse(root);
+	//traverse(root);
 	struct symbolTable* mainTable = newTable();
 	
 	if(hola > 0){
@@ -463,7 +456,7 @@ int main(){
          	"********************************\n");
 
 	processNode(mainTable, root);
-	printSymbolTable(mainTable);
+	//printSymbolTable(mainTable);
 	if(hola==0){
 		printf("Ok.\n");
 	}
