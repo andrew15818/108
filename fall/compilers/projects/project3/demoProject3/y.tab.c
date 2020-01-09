@@ -619,10 +619,10 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    42,    42,    61,    65,    70,    79,    84,    91,   104,
-     110,   116,   123,   129,   135,   147,   153,   162,   168,   175,
-     182,   195,   199,   204,   215,   220,   224,   230,   235,   238,
-     241,   248,   253,   257,   265,   271,   275,   280,   289,   292,
+       0,    42,    42,    61,    66,    72,    82,    87,    94,   107,
+     111,   116,   122,   128,   134,   146,   152,   162,   168,   175,
+     183,   196,   200,   205,   215,   220,   224,   230,   235,   238,
+     241,   248,   254,   258,   265,   271,   275,   280,   289,   292,
      300,   303,   308,   316,   320,   327,   331,   338,   342,   350,
      356,   364,   368,   372,   377,   382,   388,   392,   398,   403,
      409,   413,   417,   421,   425,   429
@@ -1527,55 +1527,58 @@ yyreduce:
 #line 61 "first.y"
                      {
 		(yyval.node) = newNode(identifier_list);		
+		printf("creating a new id List at %s\n", (yyvsp[0].node)->name);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1533 "y.tab.c"
+#line 1534 "y.tab.c"
     break;
 
   case 4:
-#line 65 "first.y"
+#line 66 "first.y"
                           {
-		(yyval.node) = (yyvsp[-2].node);			
+		printf("%s\n", (yyvsp[0].node)->name);
+		(yyval.node) = (yyvsp[-2].node);		
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1542 "y.tab.c"
+#line 1544 "y.tab.c"
     break;
 
   case 5:
-#line 70 "first.y"
+#line 72 "first.y"
                                                                     {
 		(yyval.node) = (yyvsp[-5].node);		
-		addNewChild((yyval.node), (yyvsp[-4].node));	
+		//$$ = newNode(declarations);
+		//addNewChild($$, $1);	
 		addNewChild((yyval.node), (yyvsp[-3].node));	
 		addNewChild((yyval.node), (yyvsp[-1].node));
 
 		deleteNode((yyvsp[-2].node));
 		deleteNode((yyvsp[0].node));
 	  }
-#line 1556 "y.tab.c"
+#line 1559 "y.tab.c"
     break;
 
   case 6:
-#line 79 "first.y"
+#line 82 "first.y"
              {
 		(yyval.node) = newNode(declarations);	
 	  }
-#line 1564 "y.tab.c"
+#line 1567 "y.tab.c"
     break;
 
   case 7:
-#line 84 "first.y"
+#line 87 "first.y"
                     {
 		//$$ = newNode(type);	
 		(yyval.node) = (yyvsp[0].node);	
 		//addNewChild($$, $1);
 		//fprintf(stdout, "%d\n",$1->type);
 	  }
-#line 1575 "y.tab.c"
+#line 1578 "y.tab.c"
     break;
 
   case 8:
-#line 91 "first.y"
+#line 94 "first.y"
                                                {
 		(yyval.node) = newNode(array);
 		//$$->specificType = array;
@@ -1587,25 +1590,22 @@ yyreduce:
 		deleteNode((yyvsp[-2].node));
 		deleteNode((yyvsp[-1].node));
 	  }
-#line 1591 "y.tab.c"
+#line 1594 "y.tab.c"
     break;
 
   case 9:
-#line 104 "first.y"
+#line 107 "first.y"
                        {
 		(yyval.node) = newNode(integer_type);
 		(yyval.node)->value = (yyvsp[0].node)->value;
-		//$$->specificType = INTEGER_VALUE; 
-		//addNewChild($$, $1);
 	  }
-#line 1602 "y.tab.c"
+#line 1603 "y.tab.c"
     break;
 
   case 10:
-#line 110 "first.y"
+#line 111 "first.y"
       {
 		(yyval.node) = newNode(real_type);
-		(yyval.node)->specificType= REAL_VALUE;
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
 #line 1612 "y.tab.c"
@@ -1615,33 +1615,32 @@ yyreduce:
 #line 116 "first.y"
               {
 		(yyval.node) = newNode(string_type);	
-		(yyval.node)->specificType = STRING_VALUE;
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1622 "y.tab.c"
+#line 1621 "y.tab.c"
     break;
 
   case 12:
-#line 124 "first.y"
+#line 123 "first.y"
                                                                                 {
 		(yyval.node) = (yyvsp[-2].node);		
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		deleteNode((yyvsp[0].node));
 	  }
-#line 1632 "y.tab.c"
+#line 1631 "y.tab.c"
     break;
 
   case 13:
-#line 129 "first.y"
+#line 128 "first.y"
               {
 	//am I even sure I exist? :'(
 		(yyval.node) = newNode(subprogram_declarations);
 	  }
-#line 1641 "y.tab.c"
+#line 1640 "y.tab.c"
     break;
 
   case 14:
-#line 138 "first.y"
+#line 137 "first.y"
                                                              {
 		(yyval.node) = newNode(subprogram_declaration);		
 		addNewChild((yyval.node), (yyvsp[-3].node));
@@ -1649,24 +1648,25 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1653 "y.tab.c"
+#line 1652 "y.tab.c"
     break;
 
   case 15:
-#line 147 "first.y"
+#line 146 "first.y"
                                                                       {
 			(yyval.node) = newNode(function);	
 			addNewChild((yyval.node), (yyvsp[-4].node));
 			addNewChild((yyval.node), (yyvsp[-3].node));
 			addNewChild((yyval.node), (yyvsp[-1].node));
 	  }
-#line 1664 "y.tab.c"
+#line 1663 "y.tab.c"
     break;
 
   case 16:
-#line 153 "first.y"
+#line 152 "first.y"
                                   {
-		(yyval.node) = newNode(procedure);
+		(yyval.node) = newNode(procedure);	
+		printf("procedure\n");
 		addNewChild((yyval.node), (yyvsp[-2].node));
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		deleteNode((yyvsp[-3].node));
@@ -1698,16 +1698,17 @@ yyreduce:
 #line 175 "first.y"
                                                          {
 		(yyval.node) = newNode(parameter_list);
+
 		addNewChild((yyval.node), (yyvsp[-3].node));
 		addNewChild((yyval.node), (yyvsp[-2].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 		deleteNode((yyvsp[-1].node));
 	  }
-#line 1707 "y.tab.c"
+#line 1708 "y.tab.c"
     break;
 
   case 20:
-#line 182 "first.y"
+#line 183 "first.y"
                                                                     {
 		//$$ = newNode(parameter_list);
 		addNewChild((yyval.node), (yyvsp[-5].node));
@@ -1717,35 +1718,35 @@ yyreduce:
 		deleteNode((yyvsp[-3].node));
 		deleteNode((yyvsp[-1].node));
 	  }
-#line 1721 "y.tab.c"
+#line 1722 "y.tab.c"
     break;
 
   case 21:
-#line 195 "first.y"
+#line 196 "first.y"
                   {
 		//$$ = $1;
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1730 "y.tab.c"
+#line 1731 "y.tab.c"
     break;
 
   case 22:
-#line 199 "first.y"
+#line 200 "first.y"
              {
 		(yyval.node) = newNode(optional_var);
 	  }
-#line 1738 "y.tab.c"
+#line 1739 "y.tab.c"
     break;
 
   case 23:
-#line 206 "first.y"
+#line 207 "first.y"
                                            {
 		 (yyval.node) = newNode(compound_statement);	
 		 addNewChild((yyval.node), (yyvsp[-1].node));
 		 deleteNode((yyvsp[-2].node));
 		 deleteNode((yyvsp[0].node));
 	  }
-#line 1749 "y.tab.c"
+#line 1750 "y.tab.c"
     break;
 
   case 24:
@@ -1754,7 +1755,7 @@ yyreduce:
 		(yyval.node) = newNode(optional_statements);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1758 "y.tab.c"
+#line 1759 "y.tab.c"
     break;
 
   case 25:
@@ -1763,7 +1764,7 @@ yyreduce:
 		(yyval.node) = newNode(statement_list);			  
 		addNewChild((yyval.node), (yyvsp[0].node));
 	}
-#line 1767 "y.tab.c"
+#line 1768 "y.tab.c"
     break;
 
   case 26:
@@ -1772,17 +1773,17 @@ yyreduce:
 		(yyval.node) = (yyvsp[-2].node);
 		addNewChild((yyvsp[-2].node), (yyvsp[0].node));
 	}
-#line 1776 "y.tab.c"
+#line 1777 "y.tab.c"
     break;
 
   case 27:
 #line 230 "first.y"
                                         {
-		//$$ = newNode(ASSIGNOP);
-		addNewChild((yyval.node), (yyvsp[-2].node));
-		addNewChild((yyval.node), (yyvsp[0].node));
+		(yyval.node) = newNode(ASSIGNOP);
+		addNewChild((yyval.node),(yyvsp[-2].node));
+		addNewChild((yyval.node),(yyvsp[0].node));
 	}
-#line 1786 "y.tab.c"
+#line 1787 "y.tab.c"
     break;
 
   case 28:
@@ -1790,7 +1791,7 @@ yyreduce:
                      {
 		(yyval.node) = (yyvsp[0].node);
 	}
-#line 1794 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 29:
@@ -1798,48 +1799,48 @@ yyreduce:
                     {
 		(yyval.node) = (yyvsp[0].node);	
 	}
-#line 1802 "y.tab.c"
+#line 1803 "y.tab.c"
     break;
 
   case 30:
 #line 241 "first.y"
                                                    {
-		//$$ = newNode(IF);
-
+		printf("if statement\n");
+		(yyval.node) = newNode(IF);
 		addNewChild((yyval.node), (yyvsp[-4].node));
 		addNewChild((yyval.node), (yyvsp[-2].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	}
-#line 1814 "y.tab.c"
+#line 1815 "y.tab.c"
     break;
 
   case 31:
 #line 248 "first.y"
                                {
-		//$$ = newNode(WHILE);
+		printf("while looperino\n");
+		(yyval.node) = newNode(WHILE);
 		addNewChild((yyval.node), (yyvsp[-2].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	}
-#line 1824 "y.tab.c"
+#line 1826 "y.tab.c"
     break;
 
   case 32:
-#line 253 "first.y"
+#line 254 "first.y"
              {
 		(yyval.node) = newNode(statement);
 		}
-#line 1832 "y.tab.c"
+#line 1834 "y.tab.c"
     break;
 
   case 33:
-#line 257 "first.y"
+#line 258 "first.y"
                   {
 		 (yyval.node) = newNode(variable);
-		printf("in variable prod\n");
 		 addNewChild((yyval.node), (yyvsp[-1].node));
 		 addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1843 "y.tab.c"
+#line 1844 "y.tab.c"
     break;
 
   case 34:
@@ -1850,7 +1851,7 @@ yyreduce:
 		deleteNode((yyvsp[-3].node));
 		deleteNode((yyvsp[-1].node));
 	  }
-#line 1854 "y.tab.c"
+#line 1855 "y.tab.c"
     break;
 
   case 35:
@@ -1858,7 +1859,7 @@ yyreduce:
               {
 		(yyval.node) = newNode(tail);	
 	  }
-#line 1862 "y.tab.c"
+#line 1863 "y.tab.c"
     break;
 
   case 36:
@@ -1868,7 +1869,7 @@ yyreduce:
 		printf("in procedure statement\n");
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1872 "y.tab.c"
+#line 1873 "y.tab.c"
     break;
 
   case 37:
@@ -1880,7 +1881,7 @@ yyreduce:
 		deleteNode((yyvsp[-2].node));
 		deleteNode((yyvsp[0].node));
 	  }
-#line 1884 "y.tab.c"
+#line 1885 "y.tab.c"
     break;
 
   case 38:
@@ -1888,7 +1889,7 @@ yyreduce:
                             {
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1892 "y.tab.c"
+#line 1893 "y.tab.c"
     break;
 
   case 39:
@@ -1898,7 +1899,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[0].node));
 		deleteNode((yyvsp[-1].node));
 	  }
-#line 1902 "y.tab.c"
+#line 1903 "y.tab.c"
     break;
 
   case 40:
@@ -1906,7 +1907,7 @@ yyreduce:
                            {
 		(yyval.node) = newNode(expression); 
 	  }
-#line 1910 "y.tab.c"
+#line 1911 "y.tab.c"
     break;
 
   case 41:
@@ -1916,7 +1917,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1920 "y.tab.c"
+#line 1921 "y.tab.c"
     break;
 
   case 42:
@@ -1926,7 +1927,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1930 "y.tab.c"
+#line 1931 "y.tab.c"
     break;
 
   case 43:
@@ -1935,7 +1936,7 @@ yyreduce:
 		(yyval.node) = newNode(boolexpression);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1939 "y.tab.c"
+#line 1940 "y.tab.c"
     break;
 
   case 44:
@@ -1945,7 +1946,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1949 "y.tab.c"
+#line 1950 "y.tab.c"
     break;
 
   case 45:
@@ -1954,7 +1955,7 @@ yyreduce:
 		(yyval.node) = newNode(simple_expression);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1958 "y.tab.c"
+#line 1959 "y.tab.c"
     break;
 
   case 46:
@@ -1964,7 +1965,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1968 "y.tab.c"
+#line 1969 "y.tab.c"
     break;
 
   case 47:
@@ -1973,7 +1974,7 @@ yyreduce:
 	 	(yyval.node) = newNode(term);
 		addNewChild((yyval.node), (yyvsp[0].node));
   	  }
-#line 1977 "y.tab.c"
+#line 1978 "y.tab.c"
     break;
 
   case 48:
@@ -1983,7 +1984,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));	
 		addNewChild((yyval.node), (yyvsp[0].node));	
 	  }
-#line 1987 "y.tab.c"
+#line 1988 "y.tab.c"
     break;
 
   case 49:
@@ -1994,7 +1995,7 @@ yyreduce:
 		addNewChild((yyval.node), (yyvsp[-1].node));
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 1998 "y.tab.c"
+#line 1999 "y.tab.c"
     break;
 
   case 50:
@@ -2007,7 +2008,7 @@ yyreduce:
 		deleteNode((yyvsp[-2].node));
 		deleteNode((yyvsp[0].node));
 	  }
-#line 2011 "y.tab.c"
+#line 2012 "y.tab.c"
     break;
 
   case 51:
@@ -2016,7 +2017,7 @@ yyreduce:
 		(yyval.node) = newNode(factor);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2020 "y.tab.c"
+#line 2021 "y.tab.c"
     break;
 
   case 52:
@@ -2025,7 +2026,7 @@ yyreduce:
 		(yyval.node) = newNode(factor);
 		addNewChild((yyval.node), (yyvsp[-1].node));
 	}
-#line 2029 "y.tab.c"
+#line 2030 "y.tab.c"
     break;
 
   case 53:
@@ -2035,7 +2036,7 @@ yyreduce:
 		(yyval.node) = newNode(factor);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	}
-#line 2039 "y.tab.c"
+#line 2040 "y.tab.c"
     break;
 
   case 54:
@@ -2045,7 +2046,7 @@ yyreduce:
 		deleteNode((yyvsp[-2].node));
 		deleteNode((yyvsp[0].node));
 	  }
-#line 2049 "y.tab.c"
+#line 2050 "y.tab.c"
     break;
 
   case 55:
@@ -2054,7 +2055,7 @@ yyreduce:
 		(yyval.node) = (yyvsp[0].node);
 		addNewChild((yyval.node), (yyvsp[-1].node));
 	  }
-#line 2058 "y.tab.c"
+#line 2059 "y.tab.c"
     break;
 
   case 56:
@@ -2063,7 +2064,7 @@ yyreduce:
 		(yyval.node) = newNode(addop);
 		addNewChild((yyval.node), (yyvsp[0].node));	
 	  }
-#line 2067 "y.tab.c"
+#line 2068 "y.tab.c"
     break;
 
   case 57:
@@ -2072,7 +2073,7 @@ yyreduce:
 		(yyval.node) = newNode(addop);
 		addNewChild((yyval.node), (yyvsp[0].node));	
 	  }
-#line 2076 "y.tab.c"
+#line 2077 "y.tab.c"
     break;
 
   case 58:
@@ -2081,7 +2082,7 @@ yyreduce:
 		(yyval.node) = newNode(mulop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2085 "y.tab.c"
+#line 2086 "y.tab.c"
     break;
 
   case 59:
@@ -2090,7 +2091,7 @@ yyreduce:
 		(yyval.node) = newNode(mulop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2094 "y.tab.c"
+#line 2095 "y.tab.c"
     break;
 
   case 60:
@@ -2099,7 +2100,7 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2103 "y.tab.c"
+#line 2104 "y.tab.c"
     break;
 
   case 61:
@@ -2108,7 +2109,7 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2112 "y.tab.c"
+#line 2113 "y.tab.c"
     break;
 
   case 62:
@@ -2117,7 +2118,7 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2121 "y.tab.c"
+#line 2122 "y.tab.c"
     break;
 
   case 63:
@@ -2126,7 +2127,7 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2130 "y.tab.c"
+#line 2131 "y.tab.c"
     break;
 
   case 64:
@@ -2135,7 +2136,7 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 	  }
-#line 2139 "y.tab.c"
+#line 2140 "y.tab.c"
     break;
 
   case 65:
@@ -2144,11 +2145,11 @@ yyreduce:
 		(yyval.node) = newNode(relop);
 		addNewChild((yyval.node), (yyvsp[0].node));
 }
-#line 2148 "y.tab.c"
+#line 2149 "y.tab.c"
     break;
 
 
-#line 2152 "y.tab.c"
+#line 2153 "y.tab.c"
 
       default: break;
     }
@@ -2383,15 +2384,6 @@ yyreturn:
 #line 435 "first.y"
 
 struct Node* root;
-/*
-void yyeror(const char* str){
-	fpritnf(stderr, "error: %s\n", str);
-}
-
-int yywrap(){
-	return 1;
-}
-*/
 int main(){
 
 	int hola = yyparse();	

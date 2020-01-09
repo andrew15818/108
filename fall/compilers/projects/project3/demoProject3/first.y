@@ -60,16 +60,19 @@ prog : PROGRAM ID LPAR identifier_list RPAR SEMICOLON declarations
 
 identifier_list : ID {
 		$$ = newNode(identifier_list);		
+		printf("creating a new id List at %s\n", $1->name);
 		addNewChild($$, $1);
 	  }
 | identifier_list COMMA ID{
-		$$ = $1;			
+		printf("%s\n", $3->name);
+		$$ = $1;		
 		addNewChild($$, $3);
 	  }
 ;
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
 		$$ = $1;		
-		addNewChild($$, $2);	
+		//$$ = newNode(declarations);
+		//addNewChild($$, $1);	
 		addNewChild($$, $3);	
 		addNewChild($$, $5);
 
@@ -104,18 +107,14 @@ type : standard_type{
 standard_type : INTEGER{
 		$$ = newNode(integer_type);
 		$$->value = $1->value;
-		//$$->specificType = INTEGER_VALUE; 
-		//addNewChild($$, $1);
 	  }
 | REAL{
 		$$ = newNode(real_type);
-		$$->specificType= REAL_VALUE;
 		addNewChild($$, $1);
 	  }
 	  
 | STRINGCONST {
 		$$ = newNode(string_type);	
-		$$->specificType = STRING_VALUE;
 		addNewChild($$, $1);
 	  }
 ;
@@ -151,7 +150,8 @@ subprogram_head : FUNCTION ID arguments COLON  standard_type SEMICOLON{
 			addNewChild($$, $5);
 	  }
 | PROCEDURE ID arguments SEMICOLON{
-		$$ = newNode(procedure);
+		$$ = newNode(procedure);	
+		printf("procedure\n");
 		addNewChild($$, $2);
 		addNewChild($$, $3);
 		deleteNode($1);
@@ -174,6 +174,7 @@ arguments : LPAR parameter_list RPAR{
 /*cnoflict here*/
 parameter_list : optional_var identifier_list COLON  type{
 		$$ = newNode(parameter_list);
+
 		addNewChild($$, $1);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
@@ -210,8 +211,7 @@ compound_statement : PBEGIN
 		 deleteNode($3);
 	  }
 ; 
-//when should I just pass $$ = $1 or do
-//I create a unique node type for everything?
+
 optional_statements : statement_list{
 		$$ = newNode(optional_statements);
 		addNewChild($$, $1);
@@ -228,9 +228,9 @@ statement_list: statement{
 ;
 
 statement : variable ASSIGNOP expression{
-		//$$ = newNode(ASSIGNOP);
-		addNewChild($$, $1);
-		addNewChild($$, $3);
+		$$ = newNode(ASSIGNOP);
+		addNewChild($$,$1);
+		addNewChild($$,$3);
 	}
 | procedure_statement{
 		$$ = $1;
@@ -239,13 +239,15 @@ statement : variable ASSIGNOP expression{
 		$$ = $1;	
 	}
 |	IF expression THEN statement ELSE statement{
-		//$$ = newNode(IF);
+		printf("if statement\n");
+		$$ = newNode(IF);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 		addNewChild($$, $6);
 	}
 | WHILE expression DO statement{
-		//$$ = newNode(WHILE);
+		printf("while looperino\n");
+		$$ = newNode(WHILE);
 		addNewChild($$, $2);
 		addNewChild($$, $4);
 	}
@@ -255,7 +257,6 @@ statement : variable ASSIGNOP expression{
 ;
 variable : ID tail{
 		 $$ = newNode(variable);
-		printf("in variable prod\n");
 		 addNewChild($$, $1);
 		 addNewChild($$, $2);
 	  }
@@ -433,15 +434,6 @@ relop : LESSTHAN{
 /*end of grammerino*/
 %%
 struct Node* root;
-/*
-void yyeror(const char* str){
-	fpritnf(stderr, "error: %s\n", str);
-}
-
-int yywrap(){
-	return 1;
-}
-*/
 int main(){
 
 	int hola = yyparse();	

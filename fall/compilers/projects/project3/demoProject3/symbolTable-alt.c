@@ -78,15 +78,10 @@ struct Entry* retrieveEntry(struct symbolTable* sym, struct Node* node, int scop
 void enterSymbol(struct symbolTable* sym, struct Node* node, int type)
 {
 	printf("trying to insert: %s\n", node->name);
-	struct Entry* tmpEntry = retrieveEntry(sym, node, sym->scopeCounter);
-	if(tmpEntry != NULL){
-		printf("redeclaration of %s\n",tmpEntry->name );	
-		return;
-	}
 	struct Entry* new = newEntry(sym, node);
-	sym->entries[sym->currSize] = new;
+	sym->entries[sym->currSize] = new;	
+	printf("\t just entered %s in table\n", sym->entries[sym->currSize]->node->name);
 	sym->currSize++;
-
 }
 void processNode(struct symbolTable* sym, struct Node* node)
 {
@@ -97,12 +92,23 @@ void processNode(struct symbolTable* sym, struct Node* node)
 				processNode(sym, nthChild(node, i));	
 			}
 			break;
-		case ID_name:			
-			printf("prcessing id node with name: %s\n", node->name);
-			;
-			struct Entry* dummy = newEntry(sym, node);
-			//enterSymbol(sym, node, node->type);
+		case ARRAY:
+				printf("checking array\n");
 			break;
+		case declarations:
+			if(node == NULL) break;	
+			struct Node* typeNode = nthChild(node, 1);
+			if(typeNode->type == ARRAY){printf("array type declaration\n");}
+			struct Node* idList = nthChild(node, 0);	
+			struct Node* idNode = idList->leftMostChild;	
+
+			while(idNode != NULL){
+				printf("idNode name %s\n", idNode->name);
+				enterSymbol(sym, idNode, idNode->type);
+				idNode = idNode->rightSibling;
+			}
+			break;
+
 		case function:
 			printf("function node in symbol table ");
 			struct Node* id = nthChild(node, 0);
@@ -121,17 +127,13 @@ void processNode(struct symbolTable* sym, struct Node* node)
 			struct Node* tmporino = nthChild(node, 0);
 			break;
 		case parameter_list:
-			printf("ST: analyzing parameter_list\n");
+			//printf("ST: analyzing parameter_list\n");
 			break;
 		case statement:
 			;
 			printf("statement\n");
 			struct Node* target = nthChild(node, 0);
-			printf("assign target: %d\n", target->type);
-			//processNode(sym, target);
-			//processNode(sym, nthChild(node, 0));
-			//processNode(sym, target);
-			//struct Node* value = nthChild(node, 1);
+			if(target == NULL){printf("target is null\n");}
 			break;
 		case optional_statements:
 			processNode(sym, nthChild(node, 0));
@@ -139,6 +141,12 @@ void processNode(struct symbolTable* sym, struct Node* node)
 		case statement_list:
 			processNode(sym, nthChild(node, 0));
 			break;
+		case IF:
+			printf("IF\n");
+			break;
+
+
+
 		default: ;
 			//printf("analyzing %d\n", node->type);	
 			struct Node* tmp = node->leftMostChild;

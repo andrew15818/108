@@ -8,7 +8,7 @@ program foo(input, output, error);
         var d : real;
         var f : string;
         begin
-        end;
+	    end;
 
     procedure proc1(g : array [1 .. 10] of integer);
         var a : integer;
