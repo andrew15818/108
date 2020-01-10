@@ -13,6 +13,9 @@ cover, but we will use OpenGl for our assignments.
 - **Introduction to Compiler Design**: In this course, we studied the basics of the compilation
 process. We designed a primitive lexical/syntactical analyzer.
 
+- **Science Fiction Film and Culture**: Mostly just used for the final presentation and 
+essay.
+
 # 大家好，歡迎來到我的民國108-109學年度的repo
 
 ## 一些修的課如下

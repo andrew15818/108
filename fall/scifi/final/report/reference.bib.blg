@@ -1,5 +1,5 @@
-[0] Config.pm:340> INFO - This is Biber 2.4
-[0] Config.pm:343> INFO - Logfile is 'reference.bib.blg'
-[104] biber:287> INFO - === Wed Jan  1, 2020, 18:31:53
-[136] Utils.pm:163> ERROR - Cannot find control file 'reference.bib.bcf'! - did you pass the "backend=biber" option to BibLaTeX?
-[136] Biber.pm:113> INFO - ERRORS: 1
+[0] Config.pm:304> INFO - This is Biber 2.13
+[0] Config.pm:307> INFO - Logfile is 'reference.bib.blg'
+[19] biber:315> INFO - === Thu Jan  2, 2020, 20:52:20
+[63] Utils.pm:316> ERROR - Cannot find 'reference.bib.bcf'!
+[63] Biber.pm:114> INFO - ERRORS: 1
