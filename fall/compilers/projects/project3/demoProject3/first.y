@@ -93,7 +93,6 @@ type : standard_type{
 
 | ARRAY LBRACKET NUM RANGE NUM RBRACKET OF type{
 		$$ = newNode(array);
-		//$$->specificType = array;
 		addNewChild($$, $8);	
 		addNewChild($$, $3);
 		addNewChild($$, $5);
