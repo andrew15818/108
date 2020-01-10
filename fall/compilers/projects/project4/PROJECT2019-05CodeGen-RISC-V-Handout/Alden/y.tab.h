@@ -46,111 +46,111 @@ extern int yydebug;
   enum yytokentype
   {
     PROGRAM = 258,
-    ID = 259,
-    LPAR = 260,
-    RPAR = 261,
-    SEMICOLON = 262,
-    PERIOD = 263,
-    COMMA = 264,
-    VAR = 265,
-    COLON = 266,
-    ARRAY = 267,
-    LBRACKET = 268,
-    RBRACKET = 269,
-    NUM = 270,
-    STRINGCONST = 271,
+    ELSE = 259,
+    WHILE = 260,
+    DO = 261,
+    THEN = 262,
+    IF = 263,
+    OF = 264,
+    FUNCTION = 265,
+    PROCEDURE = 266,
+    begin = 267,
+    END = 268,
+    ARRAY = 269,
+    VAR = 270,
+    NOT = 271,
     STRING = 272,
-    OF = 273,
-    INTEGER = 274,
-    REAL = 275,
-    FUNCTION = 276,
-    PROCEDURE = 277,
-    PBEGIN = 278,
-    AND = 279,
-    OR = 280,
-    END = 281,
-    ASSIGNOP = 282,
-    IF = 283,
-    THEN = 284,
-    ELSE = 285,
-    WHILE = 286,
-    DO = 287,
-    LESSTHAN = 288,
-    GREATERTHAN = 289,
-    LEQ = 290,
-    GEQ = 291,
-    EQUAL = 292,
-    NOTEQUAL = 293,
-    PLUS = 294,
-    MINUS = 295,
-    MULTIPLY = 296,
-    DIVIDE = 297,
-    NOT = 298,
-    RANGE = 299,
-    BLANK = 300,
-    COMMENT = 301,
-    IDENTIFIER = 302,
-    LPAREN = 303,
-    RPAREN = 304
+    ASSIGNMENT = 273,
+    COLON = 274,
+    COMMA = 275,
+    INTEGER = 276,
+    DOT = 277,
+    DOTDOT = 278,
+    EQUAL = 279,
+    notEQUAL = 280,
+    GE = 281,
+    GT = 282,
+    LBRAC = 283,
+    LE = 284,
+    LPAREN = 285,
+    LT = 286,
+    MINUS = 287,
+    PLUS = 288,
+    RBRAC = 289,
+    REAL = 290,
+    RPAREN = 291,
+    SEMICOLON = 292,
+    SLASH = 293,
+    STAR = 294,
+    CHAR = 295,
+    NUM = 296,
+    TOK_REL_OP = 297,
+    String = 298,
+    Char = 299,
+    ID = 300,
+    AND = 301,
+    OR = 302,
+    HASH = 303,
+    incVal = 304
   };
 #endif
 /* Tokens.  */
 #define PROGRAM 258
-#define ID 259
-#define LPAR 260
-#define RPAR 261
-#define SEMICOLON 262
-#define PERIOD 263
-#define COMMA 264
-#define VAR 265
-#define COLON 266
-#define ARRAY 267
-#define LBRACKET 268
-#define RBRACKET 269
-#define NUM 270
-#define STRINGCONST 271
+#define ELSE 259
+#define WHILE 260
+#define DO 261
+#define THEN 262
+#define IF 263
+#define OF 264
+#define FUNCTION 265
+#define PROCEDURE 266
+#define begin 267
+#define END 268
+#define ARRAY 269
+#define VAR 270
+#define NOT 271
 #define STRING 272
-#define OF 273
-#define INTEGER 274
-#define REAL 275
-#define FUNCTION 276
-#define PROCEDURE 277
-#define PBEGIN 278
-#define AND 279
-#define OR 280
-#define END 281
-#define ASSIGNOP 282
-#define IF 283
-#define THEN 284
-#define ELSE 285
-#define WHILE 286
-#define DO 287
-#define LESSTHAN 288
-#define GREATERTHAN 289
-#define LEQ 290
-#define GEQ 291
-#define EQUAL 292
-#define NOTEQUAL 293
-#define PLUS 294
-#define MINUS 295
-#define MULTIPLY 296
-#define DIVIDE 297
-#define NOT 298
-#define RANGE 299
-#define BLANK 300
-#define COMMENT 301
-#define IDENTIFIER 302
-#define LPAREN 303
-#define RPAREN 304
+#define ASSIGNMENT 273
+#define COLON 274
+#define COMMA 275
+#define INTEGER 276
+#define DOT 277
+#define DOTDOT 278
+#define EQUAL 279
+#define notEQUAL 280
+#define GE 281
+#define GT 282
+#define LBRAC 283
+#define LE 284
+#define LPAREN 285
+#define LT 286
+#define MINUS 287
+#define PLUS 288
+#define RBRAC 289
+#define REAL 290
+#define RPAREN 291
+#define SEMICOLON 292
+#define SLASH 293
+#define STAR 294
+#define CHAR 295
+#define NUM 296
+#define TOK_REL_OP 297
+#define String 298
+#define Char 299
+#define ID 300
+#define AND 301
+#define OR 302
+#define HASH 303
+#define incVal 304
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 20 "first.y" /* yacc.c:1909  */
+#line 32 "parserC.y" /* yacc.c:1909  */
 
-	struct Node* node;
+    struct nodeType *node;
 
 #line 156 "y.tab.h" /* yacc.c:1909  */
 };
