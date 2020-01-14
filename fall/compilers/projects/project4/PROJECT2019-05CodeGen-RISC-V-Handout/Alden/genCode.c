@@ -27,9 +27,21 @@ void emitFunction(const char* function_Name)
 			"\t.globl %s\n"
 			"\t.type %s, @function\n",function_Name ,function_Name, function_Name
 	);
-	//fprintf(fp, function_Name);
-	//fprintf(fp, "\n");
-	//fprintf(fp, function_prepare);
+
+
+
+}
+void emitAdd()
+{
+	fprintf(fp,
+	"lw al, 0(s0) #pop from TOS\n"
+	"addi s0, s0, -4 #making space for an integer\n"
+	"lw, a2, 0(s0)\n"
+	"addi s0, s0, -4\n"
+	"add a3, a1, a2\n"
+	"sw a3, 0(s0)\n"
+	"addi s0, 4\n"
+	);
 }
 void genCode(struct nodeType* node)
 {
@@ -38,6 +50,7 @@ void genCode(struct nodeType* node)
 				printf("GC: NODE_prog\n");
 				openFile();
 				emitPrepareMain();
+				printf("\emitting code\n");
 				emitFunction(node->string);
 				genCode(nthChild(1, node));		
 				genCode(nthChild(2, node));
@@ -46,6 +59,9 @@ void genCode(struct nodeType* node)
 				break;	
 			case NODE_declarations:
 				printf("GC: NODE_delcarations\n");
+				//genCode(nthChild(1, node));
+				genCode(nthChild(2, node));
+				genCode(nthChild(3, node));
 				break;
 			case NODE_NUM:
 				printf("GC: NODE_NUM\n");
@@ -73,6 +89,7 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_subprogram_declarations:
 				printf("GC: NODE_subprogram_declarations\n");
+
 				break;
 			case NODE_subprogram_declaration:
 				printf("GC: NODE_subprogram_declaration\n");
@@ -115,6 +132,12 @@ void genCode(struct nodeType* node)
 				printf("GC: NODE_parameter_list\n");
 				break;
 			case NODE_identifier_list:
+			;
+				struct NodeType* IdNode = nthChild(1, node);
+				if(IdNode == NULL){
+					printf("child of ID node is NULL\n");
+				}
+				
 				printf("GC: NODE_identifier_list\n");
 				break;
 			case NODE_ID:
@@ -140,9 +163,15 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_compound_statement:
 				printf("GC: NODE_compound_statement\n");
+				genCode(nthChild(1, node));
 				break;
 			case NODE_statement_list:
 				printf("GC: NODE_statement_list\n");
+				struct nodeType* firstChild = node->child;
+				while(firstChild->nodeType != firstChild->rsibling->nodeType){
+						genCode(firstChild);
+						firstChild = firstChild->rsibling;
+				}
 				break;
 			default:
 				printf("Cannot generate code for for type : %d\n", node->nodeType);	

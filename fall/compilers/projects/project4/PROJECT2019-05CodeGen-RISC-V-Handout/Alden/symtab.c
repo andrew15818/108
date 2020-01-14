@@ -49,7 +49,7 @@ struct SymTableEntry* addVariable(struct SymTableEntry entry,int line_no) {
         {
             printf("line:%d Error: duplicate declaration of variable %s\n",line_no,entry.name);
             error=1;
-            return;
+            return NULL;
         }
         
         
@@ -75,7 +75,7 @@ struct nodeType* nthChild(int n, struct nodeType *node) {
     struct nodeType *child = node->child;
     for(int i=1; i<n; i++) {
         child = child->rsibling;
-       // printf("%d type:%d\n",i+1,child->nodeType );
+    //  printf("%d type:%d\n",i+1,child->nodeType );
     }
     return child;
 }
