@@ -73,9 +73,16 @@ struct SymTableEntry* addVariable(struct SymTableEntry entry,int line_no) {
 struct nodeType* nthChild(int n, struct nodeType *node) {
     if(node->child == NULL) return NULL;
     struct nodeType *child = node->child;
+    int validChild = 1, counter=1;
     for(int i=1; i<n; i++) {
+<<<<<<< HEAD
         child = child->rsibling;
     //  printf("%d type:%d\n",i+1,child->nodeType );
+=======
+       child = child->rsibling;
+       if(child == NULL){return NULL;}
+       // printf("%d type:%d\n",i+1,child->nodeType );
+>>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
     }
     return child;
 }

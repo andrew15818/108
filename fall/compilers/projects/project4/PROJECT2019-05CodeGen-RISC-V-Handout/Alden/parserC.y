@@ -89,8 +89,9 @@ identifier_list : ID{
   ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
-      
+      printf("new declaration node");
       $$=newNode(NODE_declarations);
+      //$$ = $1;
       addChild($$,$1);     
       addChild($$,$3);
       addChild($$,$5);
@@ -100,6 +101,7 @@ declarations : declarations VAR identifier_list COLON type SEMICOLON{
     }
   | {
       $$=newNode(NODE_declarations);
+      printf("final declaration node\n");
     }
   ;
 
@@ -142,7 +144,7 @@ standard_type : INTEGER{
 
 subprogram_declarations : subprogram_declarations subprogram_declaration SEMICOLON{
      
-      $$=newNode(NODE_subprogram_declarations);
+      //$$=newNode(NODE_subprogram_declarations);
       addChild($$,$1);
       addChild($$,$2);
       
