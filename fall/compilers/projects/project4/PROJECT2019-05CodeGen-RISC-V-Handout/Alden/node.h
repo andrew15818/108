@@ -67,9 +67,9 @@ struct nodeType {
     struct nodeType *rsibling;
     int tokenType;
     int iValue;
-    double rValue;
-    char valueValid;
-    char *string;
+    double rueValid;
+    char *stValue;
+    char valring;
     char op;
     enum StdType valueType;
     enum dataType dtype;

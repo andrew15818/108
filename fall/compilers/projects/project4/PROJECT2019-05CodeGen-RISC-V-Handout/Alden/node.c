@@ -126,6 +126,7 @@ void printTree(struct nodeType *node, int ident) {
             break;
         case NODE_TYPE_STRING:
             printf("%sTYPE_STRING\n", blank);
+
             break;
         case NODE_TYPE_CHAR:
             printf("%sTYPE_CHAR\n", blank);

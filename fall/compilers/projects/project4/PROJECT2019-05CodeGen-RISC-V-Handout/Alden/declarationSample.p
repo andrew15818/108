@@ -1,5 +1,6 @@
 program foo(input, output, error);
     var a: integer;
-	a = 5;
+	
     begin
+    a := 5;
     end.

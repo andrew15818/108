@@ -3,6 +3,7 @@
 #include "symtab.h"
 FILE *fp;
 struct SymTable* symbolTable;
+int registerUsed = 0; //registers up to this point are used currently
 const char* filename = "./output.s";
 /*opening output file*/
 void openFile()
@@ -30,7 +31,6 @@ void emitFunctionPrelude(const char* function_Name, struct SymTable* symTable)
 			"\t.globl %s\n"
 			"\t.type %s, @function\n",function_Name, function_Name
 	);
-<<<<<<< HEAD
 
 
 
@@ -46,26 +46,10 @@ void emitAdd()
 	"sw a3, 0(s0)\n"
 	"addi s0, 4\n"
 	);
-=======
-	fprintf(fp,"%s:\n", function_Name);
-	int frameSize = 1024;
-	int wordSize = 4;//the standard unit is fo size 4 bits
-	fprintf(fp,
-		"\taddi sp, sp, -%d\n" //size of the stack
-		"\tsd ra, %d(sp)\n" // storing return address
-		"\tsd s0, %d(sp)\n" //in mem after s0 we store local variables
-		"\tsd s1, %d(sp)\n" //
-		"\taddi s0, sp, %d\n"
-		"\taddi s1,sp,0\n"
-		,frameSize
-		,frameSize -(frameSize-2*wordSize)
-		,frameSize -(frameSize-4*wordSize)
-		,frameSize -(frameSize - 6*wordSize)
-		,40 /*change this*/);
->>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
 }
 void genCode(struct nodeType* node)
 {
+
 	switch(node->nodeType){
 			case NODE_prog:
 			;
@@ -73,12 +57,8 @@ void genCode(struct nodeType* node)
 				printf("GC: NODE_prog\n");
 				openFile();
 				emitPrepareMain();
-<<<<<<< HEAD
 				printf("\emitting code\n");
-				emitFunction(node->string);
-=======
-				emitFunctionPrelude(node->string, symbolTable);
->>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
+				//emitFunction(node->string);
 				genCode(nthChild(1, node));		
 				genCode(nthChild(2, node));
 				genCode(nthChild(3, node));
@@ -86,16 +66,9 @@ void genCode(struct nodeType* node)
 				break;	
 			case NODE_declarations:
 				printf("GC: NODE_delcarations\n");
-<<<<<<< HEAD
 				//genCode(nthChild(1, node));
 				genCode(nthChild(2, node));
 				genCode(nthChild(3, node));
-=======
-				struct NodeType* declarationsNode = nthChild(1, node);
-				struct NodeType* IDListNode = nthChild(2, node);
-				struct NodeType* typeNode = nthChild(3, node);
-				genCode(IDListNode);
->>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
 				break;
 			case NODE_NUM:
 				printf("GC: NODE_NUM\n");
@@ -124,20 +97,6 @@ void genCode(struct nodeType* node)
 			case NODE_subprogram_declarations:
 				printf("GC: NODE_subprogram_declarations\n");
 
-<<<<<<< HEAD
-=======
-				struct nodeType* child1 =nthChild(1, node);
-				
-				struct nodeType* child2 =nthChild(2, node);
-				if(child1 != NULL){
-					printf("\t genning code for child 1");
-					genCode(child1);
-				}
-				else if(child2 !=NULL){
-					printf("\tgenne3ing code for child 2\n ");
-					genCode(child2);
-				}
->>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
 				break;
 			case NODE_subprogram_declaration:
 				printf("GC: NODE_subprogram_declaration\n");
@@ -155,9 +114,15 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_ASSIGNMENT:
 				printf("GC: NODE_ASSIGNMENT\n");
+				struct nodeType* target = nthChild(1, node);
+				//struct SymTableEntry* targetValue = findSymbol(target->string);	
+				genCode(target);
+				//fprintf(fp, "\tli t%d, %d\n");
 				break;
 			case NODE_SYM_REF:
 				printf("GC: NODE_SYM_REF\n");
+				struct nodeType* tailNode= nthChild(1, node);
+				genCode(tailNode);
 				break;
 			case NODE_statement:
 				printf("GC: NODE_statement\n");
@@ -167,6 +132,10 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_tail:
 				printf("GC: NODE_tail\n");
+				struct nodeType* expressionNode = nthChild(2, node);
+				if(expressionNode != NULL){
+					genCode(expressionNode);
+				}
 				break;
 			case NODE_procedure_statement:
 				printf("GC: NODE_procedure_statement\n");
@@ -188,18 +157,13 @@ void genCode(struct nodeType* node)
 				printf("GC: NODE_parameter_list\n");
 				break;
 			case NODE_identifier_list:
-<<<<<<< HEAD
 			;
-				struct NodeType* IdNode = nthChild(1, node);
+				struct nodeType* IdNode = nthChild(1, node);
 				if(IdNode == NULL){
 					printf("child of ID node is NULL\n");
 				}
 				
 				printf("GC: NODE_identifier_list\n");
-=======
-				printf("GC: NODE_IDidentifier_list\n");
-
->>>>>>> 6e996d97d17399b17c45186a53457b3f53f1de26
 				break;
 			case NODE_ID:
 				printf("GC: NODE_ID\n");
@@ -228,12 +192,13 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_statement_list:
 				printf("GC: NODE_statement_list\n");
-				struct nodeType* firstChild = node->child;
-				while(firstChild->nodeType != firstChild->rsibling->nodeType){
-						genCode(firstChild);
-						firstChild = firstChild->rsibling;
+				struct nodeType* currChild= nthChild(1, node);				
+				while(currChild->nodeType != currChild->rsibling->nodeType){
+						if(currChild!= NULL){genCode(currChild);}
+						currChild= currChild->rsibling;
 				}
 				break;
+
 			case OP_PLUS:
 				printf("GC: plus op\n");
 				break;

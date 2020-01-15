@@ -89,7 +89,7 @@ identifier_list : ID{
   ;
 
 declarations : declarations VAR identifier_list COLON type SEMICOLON{
-      printf("new declaration node");
+      printf("new declaration node\n");
       $$=newNode(NODE_declarations);
       //$$ = $1;
       addChild($$,$1);     
@@ -135,6 +135,7 @@ standard_type : INTEGER{
     | STRING{
         $$=$1;
         $$->nodeType = NODE_TYPE_STRING;
+
       }
     | CHAR{
         $$=$1;
@@ -238,6 +239,7 @@ optional_statements : statement_list{
 statement_list : statement {
       
       $$=newNode(NODE_statement_list);
+      printf("statement_list with single statement\n");
       addChild($$,$1);
     }
   | statement_list SEMICOLON statement{
@@ -258,17 +260,21 @@ statement_list : statement {
 
 statement : variable ASSIGNMENT expression{
       $$=$2;
+      printf("statement with single assignment\n");
       $$->nodeType=NODE_ASSIGNMENT;
       addChild($$,$1);
       addChild($$,$3); 
     }
   | procedure_statement{
+    printf("procedure_statement in statement\n");
       $$=$1;
     }
   | compound_statement{
+    printf("compound statement in statement\n");
       $$=$1;
     }
   | IF expression THEN statement ELSE statement{
+    printf("if node in statement\n");
       $$=newNode(NODE_if);
       addChild($$,$2);
       addChild($$,$4);
