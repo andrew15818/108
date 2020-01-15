@@ -68,7 +68,10 @@ struct nodeType {
     int tokenType;
     int iValue;
     double rueValid;
+	char *string;
     char *stValue;
+	int valueValid;
+	double rValue;
     char valring;
     char op;
     enum StdType valueType;

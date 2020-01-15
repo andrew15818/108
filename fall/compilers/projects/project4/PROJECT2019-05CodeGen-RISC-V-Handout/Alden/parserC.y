@@ -258,7 +258,7 @@ statement_list : statement {
   ;
 
 
-statement : variable ASSIGNMENT expression{
+statement : variable , symbolTableASSIGNMENT expression{
       $$=$2;
       printf("statement with single assignment\n");
       $$->nodeType=NODE_ASSIGNMENT;
