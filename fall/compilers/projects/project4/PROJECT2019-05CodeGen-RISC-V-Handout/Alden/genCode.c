@@ -31,6 +31,17 @@ void emitFunctionPrelude(const char* function_Name, struct SymTable* symTable)
 			"\t.globl %s\n"
 			"\t.type %s, @function\n",function_Name, function_Name
 	);
+	fprintf(fp,
+			"\taddi sp, sp, -1024 #total frame size\n"
+			"\tsd ra,1016(sp)	#return address\n"	
+			"\tsd s0,1008(sp)\n"
+			"\tsd s1,1000(sp)\n"
+			"\taddi s1, sp,0\n"
+			);	
+}
+void emitFunctionPostlude(const char)
+{
+	
 }
 void emitAdd()
 {
@@ -116,7 +127,7 @@ void genCode(struct nodeType* node)
 				printf("GC: NODE_ASSIGNMENT\n");
 				struct nodeType* target = nthChild(1, node);
 				 tmpEntry = findSymbol(target->string);	
-				fprintf(fp,"sw %c%d, ")
+				fprintf(fp,"sw s%d, %d\n",registerUsed, target->iValue)
 
 				genCode(nthChild(1, node));
 				genCode(nthChild(2, node));
