@@ -7,7 +7,7 @@
 struct SymTable SymbolTable;
 struct SymTable* ScopeStack[100];
 int level=0;
-int curlevel=0;
+int currLevel=0;
 int error=0;
 
 
@@ -49,7 +49,7 @@ struct SymTableEntry* addVariable(struct SymTableEntry entry,int line_no) {
         {
             printf("line:%d Error: duplicate declaration of variable %s\n",line_no,entry.name);
             error=1;
-            return NULL;
+            return;
         }
         
         
@@ -73,10 +73,9 @@ struct SymTableEntry* addVariable(struct SymTableEntry entry,int line_no) {
 struct nodeType* nthChild(int n, struct nodeType *node) {
     if(node->child == NULL) return NULL;
     struct nodeType *child = node->child;
-    int validChild = 1, counter=1;
     for(int i=1; i<n; i++) {
         child = child->rsibling;
-    //  printf("%d type:%d\n",i+1,child->nodeType );
+       // printf("%d type:%d\n",i+1,child->nodeType );
     }
     return child;
 }
@@ -212,7 +211,7 @@ void semanticCheck(struct nodeType *node) {
         case NODE_subprogram_declaration:{
             OpenScope();
             //printf("subprogram decl\n");
-            curlevel++;
+            currLevel++;
             struct nodeType *child=(struct nodeType*)malloc(sizeof(struct nodeType));
             child = nthChild(1,node);
             semanticCheck(child);
@@ -398,8 +397,8 @@ void semanticCheck(struct nodeType *node) {
             return;
         }
         case NODE_END:{
-            if(curlevel != 0) CloseScope();
-            curlevel--;
+            if(currLevel != 0) CloseScope();
+            currLevel--;
             return;
         }
         case NODE_procedure_statement:{

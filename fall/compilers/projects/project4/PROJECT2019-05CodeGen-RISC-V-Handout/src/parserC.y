@@ -109,8 +109,9 @@ type : standard_type{
       $$=$1;
     }
   | ARRAY LBRAC num DOTDOT num RBRAC OF type{ 
-      $$=$1;
-      $$->nodeType=NODE_TYPE_ARRAY;
+      //$$=$1;
+      $$ = newNode(NODE_TYPE_ARRAY);
+      //$$->nodeType=NODE_TYPE_ARRAY;
       $3->nodeType = NODE_NUM;
       addChild($$,$3);
       $5->nodeType = NODE_NUM;
