@@ -21,11 +21,9 @@
 	return
 .end method
 
-.method public static sum(I)I
+.method public static sum(I)I
 	.limit locals 100
 	.limit stack 100
-	return
-.end method
 
 .method public static main([Ljava/lang/String;)V
 	.limit locals 100

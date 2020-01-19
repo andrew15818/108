@@ -125,9 +125,9 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_subprogram_declaration:
 				printf("NODE_subprogram_declaration\n");
-				genCode(nthChild(1,node));
+				genCode(nthChild(1,node));//subprogram head
 				//genCode(nthChild(2,node));
-				genCode(nthChild(3,node));
+				genCode(nthChild(3,node));//compound statement
 
 				break;
 			case NODE_subprogram_head:
@@ -159,14 +159,39 @@ void genCode(struct nodeType* node)
 				}
 				fprintf(fp,"\t.limit locals 100\n");
 				fprintf(fp,"\t.limit stack 100\n");
-				fprintf(fp,"\treturn\n");
-				fprintf(fp,".end method\n");
 				break;//sub_head_case
 			case NODE_compound_statement:
 				printf("NODE_compound_statement\n");
+				genCode(nthChild(1, node));//maybe control the optional statements from here?
 				break;
+			case NODE_statement_list:
+				printf("NODE_statement_list\n");
+				struct nodeType* child = nthChild(1,node);
+				genCode(child);
+				if(child->nodeType == NODE_statement_list){
+					printf("recursing on the statment list\n");
+					genCode(child);
+				}
+				else if(child->nodeType == NODE_statement){
+					printf("\t\trecursion not necessary\n");
+				}
+				break;
+			case NODE_statement:
+				printf("NODE_statement\n");
+				break;
+			case NODE_ASSIGNMENT:
+				printf("NODE_ASSIGNMENT\n");
+				break;
+
+
+
+
+
 			case NODE_if:
 				printf("NODE_if\n");
+				genCode(nthChild(1, node));//expression
+				genCode(nthChild(2, node));//statement if branch taken
+				genCode(nthChild(3, node));//statement if else taken
 				break;
 			case NODE_while:
 				printf("NODE_while\n");
