@@ -24,6 +24,15 @@
 .method public static sum(I)I
 	.limit locals 100
 	.limit stack 100
+	ldc 0
+	putstatic foo/a I
+	ldc 0
+	putstatic foo/b I
+	putstatic foo/sum I
+	ldc 0
+	putstatic foo/sum I
+	return
+.end method
 
 .method public static main([Ljava/lang/String;)V
 	.limit locals 100

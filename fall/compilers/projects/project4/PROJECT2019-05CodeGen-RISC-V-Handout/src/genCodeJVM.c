@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<string.h>
 #include "genCode.h"
 #include "symtab.h"
 char* fileName = "output.s";
@@ -126,9 +127,10 @@ void genCode(struct nodeType* node)
 			case NODE_subprogram_declaration:
 				printf("NODE_subprogram_declaration\n");
 				genCode(nthChild(1,node));//subprogram head
-				//genCode(nthChild(2,node));
+				genCode(nthChild(2,node));
 				genCode(nthChild(3,node));//compound statement
-
+				fprintf(fp, "\treturn\n");
+				fprintf(fp,".end method\n");
 				break;
 			case NODE_subprogram_head:
 				printf("NODE_subprogram_head\n");
@@ -181,12 +183,33 @@ void genCode(struct nodeType* node)
 				break;
 			case NODE_ASSIGNMENT:
 				printf("NODE_ASSIGNMENT\n");
+				struct nodeType* varNode = nthChild(1, node); //variable Node
+				struct nodeType* expNode = nthChild(2, node); //expression node
+				genCode(varNode); //node_sym_ref
+				genCode(expNode); //expression node
 				break;
+			case NODE_SYM_REF:
+				printf("NODE_SYM_REF\n");
+				struct SymTableEntry* entry = findSymbol(node->string);
 
-
-
-
-
+				if(entry->scope != 0){
+					if(entry->type == TypeInt){
+						fprintf(fp, "\tistore %d\n", entry->Seq);
+					}	
+					else{
+						fprintf(fp, "\tfstore %d\n", entry->Seq);
+					}
+				}
+				else{
+					fprintf(fp, "\tputstatic %s/%s ", progName, entry->name);
+					if(entry->type == TypeInt){fprintf(fp, "I\n");}
+					else{fprintf(fp, "F\n");}
+				}
+				break;
+			case NODE_NUM:
+				printf("NODE_NUM\n");
+				if(node->valueValid == VALUE_I_VALID){fprintf(fp, "\tldc %d\n", node->iValue);}
+				break;
 			case NODE_if:
 				printf("NODE_if\n");
 				genCode(nthChild(1, node));//expression
@@ -196,6 +219,7 @@ void genCode(struct nodeType* node)
 			case NODE_while:
 				printf("NODE_while\n");
 				break;
+
 			default:
 				printf("defaulterino\n");
 				break;
