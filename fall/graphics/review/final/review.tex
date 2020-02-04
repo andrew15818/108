@@ -1,0 +1,170 @@
+\documentclass[landscape,4pt,a4paper]{article}
+\usepackage{multicol}
+\usepackage[margin=0.3in]{geometry}
+\begin{document}
+\raggedright
+\begin{multicols*}{5}
+	\section{Rasterization}
+		How do we draw polygons on the screen?
+		\subsection{DDA algorithm}
+			Since we know that the equation for a line is \[ \frac{dx}{dy} = \frac{y_{2} - y_{1}}{x_{2}-x_{1}}\],
+			we can focus on drawing the closest integral value of y for every x. However, for steep lines, there 
+			will be many blank spaces until y gets rounded to the next whole number. The solution is to do the 
+			rounding for every y instead of every x.However, this takes an extra addition per step.
+		\subsection{Bresenham's algorithm}
+			With BA, we don't need the extra floating-point addition. Instead, we replace it with multiplication and
+			comparisons, which are easier to implement. We basically compare the $\delta y$ to see if it's greater than
+			$\delta x$. This makes it way more efficient(w/ bit shifting).
+		\subsection{Circle Drawing Algorithms}
+			 We can use the same idea as Bres. to plot circles. Since circles are defined by $f(x,y) = x^{2}+y^{2}-r^{2}$,
+			 we can just measure the value of a pixel $M$, and compare $f(M)$ with $r$. If $f(m) > r^(2)$, choose SE point,
+			 otherwise NE, and so on. Same idea can apply to other polynomials.
+		\subsection{Polygon filling}
+			\textbf{Convex} polygons are preferred b/c they have well-defined interiors. Easier to break down into triangles, b/c
+			any interior edge will only remain in the interior.
+			Several ways to test for points:
+			\begin{enumerate}
+				\item{\textbf{Odd-even filling}}: A point in $p$ must cross an odd num of edges to go to infinity. Outside 
+					points cross even num edges. The \textbf{winding test} measures how many times a point is encircled by 
+					travelling along a direction. If 0, don't color, otherwise yes.
+				\item{\textbf{scanlines}}: we draw a horizontal line across the screen and measure all the intersections.
+					Then we sort the intersections by x-coordinate. We fill the consecutive vertices that are part of the 
+					polygon.
+				\item{\textbf{flood-fill}}: The flood-fill algorithm is similar to the CPE, we recursively call a fill 
+					function on neighboring points if they are inside the polygon too.
+			\end{enumerate}
+	\section{Hidden Surface}
+		To fill the polygons that are visible, we need to be able to determine intersections within the polygons.
+		\subsection{Culling}
+			If the viewing vector $v$ and the normal of the polygon have an angle $90\geq \theta \geq -90$, poly 
+			will be visible. We have two options: \textbf{object space approach} and \textbf{image space approach}.
+			\subsubsection{object space approach}
+				We use pairwise testing for every pair of polygons in the scene. We determine if either one completely
+				obstructs the other one, if there is only partial obstruction, or neither is overlapping. Takes minimum 
+				$O(n)$.
+			\subsubsection{Image space approach}
+				From the COP, we can draw other rays coming out of the projection plane for each pixel. We follow the 
+				ray's intersections with the $k$ polygons in the scene, and color it the same color of the first polygon
+				it intersects. For an nxm display, it takes $O(nmk)$.However, since in practice the algorithms perform 
+				better, this is mostly used. 
+			\subsubsection{z-buffer algorithm}
+				We maintain a z-buffer, which will store the color of the closest(z-direction) element. Done at the same time as 
+				fragment processing. Efficient b/c can be implemented in hardware. Whether perspective is screen space or world
+				coords doesn't matter, relative distances preserved.
+			\subsubsection{Depth Sort and Painter's Algorithm}
+				``Paint over" the farthest, obscured elements, b/c we do \textit{back-to-front rendering}. For two different
+				polygons with identical z-coordinates, we try to apply Depth-sort to figure out an order in which to draw 
+				the figures. For cyclic overlap, we can just divide the polygon into smaller ones and render them separately,
+				since an ordering might not be posssible.
+		\subsection{Screen Space vs. 3D Space}
+				By following the formula $P(m) = P_{1} + mP(P_{2}-P_{1})$, we can find the relation between tow points on the 
+				two different coordinate systems.
+		\subsection{Space Partitioning}
+				To avoid rendering unnecessary objects, we can create different data structures that partition the space. 
+				\subsubsection{Octree}
+					In 2D, we can partition the space into 4 different quads, 3D it's octs. We can do it while there are more
+					than one color per area.
+				\subsubsection{BSP Trees}
+					By drawing planes, we can divide the 3D plane into two half-spaces, and subsequent divisions allow us to 
+					more efficiently calculate visibility of different objects w/ the camera. Creating the ordering of how 
+					to draw the polygons becomes easier since we have to compare fewer elements. 
+				\subsection{Portal Culling}
+					Here, we divide the space into cells and can only move to other cells through ``portals"?
+	\section{Buffers \& Mapping Techniques}
+			Mapping takes place during the fragment processing. For more complicated shapres, we can first map to an intermediate
+			shape before passing on to the desired shape. We can use parametric equations to map textures to different objects.
+			\subsection{Interpolation}	
+				Interpolation will take the samples of different adjacent spaces in the world. This can lead to \textit{funky}
+				effects. We can further subdivide the figure and interpolate again if we map to screen space. \textit{point sampling}
+				can be the easiest, but aliasing errors can still happen. A best approach is to average the values of an entire area.
+			\subsection{minimaps}
+				Minimaps are textures of different resolutions. Depending on the distance of the object, we can apply 
+				different sized images. This helps with different object interpolations.
+			\subsection{Environment Mapping}
+				For highly reflective surfaces, we can apply the environment onto the object to get a reflective look.		
+			\subsection{Bump \& Normal Mapping}
+				With normal mapping, we just map the texture normally. For bump mapping, we apply a distortion to the normal
+				vectors. $P' = P + bN$.
+			\subsection{Opacity, Blending, etc...}
+				To establish opacity, we can provide a constant factor and a blending equation to map a texture to objects 
+				behind it.
+			\subsection{Accumulation Buffer}
+				To apply compositing and fog, we need a bigger buffer space than allowed by the frame buffer. We use the 
+				\textit{Accuulation Buffer} for things like Compositing, Image Filtering, anti-aliasing, motion effects, etc..
+	\section{Curves and Surfaces}
+			\subsection{parametric curves}
+				These curves map some parameter space to 3d space (maybe each var is defined by different equation?) Use them bc
+				they are more general than polygon meshes, normals easier to define, easier to animate, texture coords easy to map.
+				
+				Polynomial curves allow us to define curves, but finding the coefficients is not efficient (can use least squares).
+			\subsection{Hermite Curves}
+				Way of approxing curves by using polynomial functions with certain derivatives given points $x_{1},x_{2},...,x_{n}$.
+				To connect points $x_{i}$ and $x_{i+1}$, we need to know the values at those points and their derivatives. We can
+				approx the curve by the derivatives at those points.
+
+			\subsection{Bezier Curves}
+				A bezier curve involves the tangent of the source and control points. At each time value $t$, we draw a line 
+				from the line segment $P_{0}P_{1}$ to the proportional equivalent on the other control line. This new segment
+				will be tangential to the point on the Bezier curve we wish to draw. The point is then drawn on the proportion
+				of the new segment. We can approx them using \textit{Bernstein Polynomials}. We join the control points and draw
+				their tangents as the line. Different types of continuity:
+				\begin{itemize}
+						\item{$C_{0}$}: No breaks in surface
+						\item{$G_{1}$}: tangent at joing has same direction.
+						\item{$C_{1}$}:tangent at joint has same dir. and magn.
+						\item{$C_{n}$}:curve continuous through $nth$ derivative.
+				\end{itemize}
+	\section{Beyond Rendering}
+			Normal lighting models don't take other surfaces for calcs. Rays can come out of light source or eye.
+			Refraction occurs out along the normal or is reflected if $\theta>90$
+			\subsection{whitted ray tracing}
+				For each pixel, we trace a primary ray to the first visible surface.
+				\begin{itemize}
+					\item{\textbf{primray ray}}: ray from eye to scene.
+					\item{\textbf{shadow ray}}: in dir $L$ to light sources.
+					\item{\textbf{reflected ray}}: in dir $R$ off of the normal.	
+					\item{\textbf{refracted ray}}:(transmitted ray) in dir $T$.
+				\end{itemize}
+				In spuersampling, we emit multiple rays off of the pixel to find avg. of area(slow).Also this is img. space.
+				Complicated rendering equation.
+			\subsection{radiosity}	
+				We divide the scene into ``patches", and all surfaces are diffuse reflectors.	
+				\[b_{i} a_{i}=e_{i}a_{i}+\rho_{i}\sum_{j=0}^{n}f_{ji}b_{j}a_{j}\]
+				\begin{itemize}
+						\item{$\rho_{i}$}:reflectance of element i(given).
+						\item{$b_{i}$}: color of patch $i$.(unknown)
+						\item{$a_{i}$}:the area of patch $i$.(computable)
+						\item{$e_{i}$}:emmissive component (given).
+						\item{$f_{ji}$}:form factor (j->i)(computable)
+				\end{itemize}
+			\subsection{Form Factor}
+				$F_{ji}$ Fraction of light leaving element j and arriving at element i.
+				Depends on shape of the patches, their orientation, distance, and visibility.
+				
+				We have different ways of solving the equation:
+				\begin{itemize}
+						\item{\textbf{Jacobi's method}}:we need two copies of radiosity vector B,
+								doesn't converge quickly.
+						\item{\textbf{Gauss-Siedel}}:no additional copies, converges quickly.
+				\end{itemize}
+			\subsection{Calculating Form Factors}
+				Simple way is to use ray tracing \& point-to-area form factors.
+				\subsubsection{Hermitude Algorithm}
+					On top of every patch, we have a hermicube, which is divided into pixels. Then, we project
+					the patch on the faces of the hermicube. Then the form factor for a particular patch is just the 
+					sum of the form factors of the individual pixel.
+	\section{filler}
+		\begin{itemize}
+				\item{geometry shader}: Can draw new geometric shapes, sits between vertex and fragment shader.
+				\item{vertex shader}: applies effects per vertex, calcs normal, and light reflection.
+				\item{fragment shader}: calcs color of every vertex.
+		\end{itemize}
+		\textbf{mipmapping}: refers to creating smaller textures since one texture coordinate might be smaller/greater
+			than one individual vertex/pixel. This means that we can save ourselves some of the hard work if there is 
+			no need to render all the texture.
+		\subsection{photon mapping}
+			Also composed of bi-directional paths, which take into account the paths from the light sources as well as 
+			from the eye. Then we cache the photons that went along the path from the source. 
+\end{multicols*}
+\end{document}
+

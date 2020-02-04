@@ -1,0 +1,29 @@
+#include<stdio.h>
+#include "genCode.h"
+FILE *fp;
+const char* filename = "./output.s";
+/*opening output file*/
+void openFile()
+{
+	fp = fopen(filename, "w");
+}
+/*This code goes before the main function*/
+
+void emitPrepareMain()
+{
+	const char* function_Prepare_Main=
+			" #pre main code \n
+			.text\n
+			.section .rodata\n
+			.align 3\n";
+	fprintf(fp, function_Prepare_Main);
+}
+void genCode(struct nodeType* node)
+{
+	switch(node->nodeType){
+			case NODE_prog:
+				printf("int the root node\n");
+				openFile();
+				break;	
+	}
+}
