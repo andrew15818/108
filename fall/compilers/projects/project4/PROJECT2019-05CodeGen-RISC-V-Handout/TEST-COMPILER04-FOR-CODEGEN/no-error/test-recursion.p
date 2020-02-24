@@ -1,4 +1,4 @@
-PROGRAM aa(input, output, error); 
+program aa(input, output, error); 
 VAR a, b: INTEGER;
 VAR c: REAL;
 
