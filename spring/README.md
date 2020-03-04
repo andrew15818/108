@@ -9,9 +9,10 @@ the fundamentals of searching and adversarial search, neural
 networks, reinforcement learning etc... Much homework and 
 projects too!
 
-2.**Introduction to Pattern Recognition**:Here we learn 
-different methods of detecting features or patterns in
-images. Topics include kernel method, CNNs, among others...
+2.**Introduction to Pattern Recognition**: In this course, 
+we will use different Python libraries to understand the 
+Pattern Recognition fundamentals. We will use libraries
+such as NumPy, PyTorch, Keras and TensorFlow. 
 
 
 # 大家好， 歡迎來到我108下學期的repo
