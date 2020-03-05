@@ -1,4 +1,8 @@
 \documentclass{tufte-handout}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+%% use \begin{marginfigure} for figures on the side. \begin{figures} otherwise
 \title{Notes on Pattern Recognition}
 \author{Andres Ponce}
 
@@ -30,4 +34,94 @@ the design looked quite nice and wanted to give it a shot!
 	make decisions. AI, more broadly, tries to make computers perform actions
 	that were usually thought to be exclusive to humans. 
 	
-\end{document}
+	Some different types of PR problems involve \textbf{supervised} and
+	\textbf{unsupervised} learning. \footnote{Their difference is whether their 
+	target data is available when the problem begins, i.e. whether we know
+	the correct answer.} There might be a couple of problems that better suit 
+	un-supervised learning, such as:
+	\begin{itemize}
+		\item{\textbf{Clustering}}: Clustering involves finding patterns in the 
+				data which more often resemble themselves rather than other data,
+				i.e. finding similar patterns within the data. 
+		\item{\textbf{Density Estimation}}: Here, we try and find the probability 
+				density function given a set of points.\footnote{Remember the PDF
+				only represents a probability density over a continuous interval.}
+		\item{\textbf{Dimensionality Reduction}}: When multiple variables are involved
+				in a problem, the space in which their solution exists rises exponentially
+				for each new variable.\footnote{i.e. solving for three variables is exp. 
+				harder than solving for two.} 
+	\end{itemize}
+	Although we can imagine supervised scenarios, IRL our model would probably have to find
+	the solutions on its own. 
+
+	We can imagine having a network actually \textit{generate} new data based on the patterns
+	its seen before. For example, given many human faces, we could create a model that generates
+	human faces which do not exist in reality. This would be the idea of a \textbf{Generative
+	Adversarial Network}(GAN)\footnote{A GAN could have \textit{two} networks, one that generates
+	the data and the other one that checks its validity.}
+
+	Finallly, curve fitting! So, we have a polynomial function, whose generic form is
+		\[ y(x,w)= w_{0}+w_{1}x+w_{2}x^{2}+...+ w_{M}x^{M} = \sum_{j=0}^{M}w_{j}x^{j}\]
+	$M$ gives us the  order of the polynomial, and if I remember my algebra correctly, it 
+	should have $M-1$ curves.  If M is too large, we \textit{overfit} and our function
+	will have too many curves and not match the actual function all that well.
+
+	$w$ gives us the value of the constant mulitplier, which can be found by minimizing the 
+	\textbf{expectation} $E(w)$.\footnote{The expectation is like the average, the value 
+	we should expect to see from a random variable.} This expectation is fiven by 
+	\[E(w)=\frac{1}{2}\sum_{n=1}^{N} \{y(x_{n},w)-t_{n}\}^{2} \]
+	Basically we want the difference between the value that our function gave us and the 
+	acutal value of the function.
+
+		\begin{marginfigure}
+			\includegraphics[width=\linewidth]{overfitting}	
+			\caption{Overfitting leads to overly complex models. The blue line
+				is our model.}
+			\label{fig:overfitting}
+		\end{marginfigure}
+	Because we want to avoid overfitting, we introduce a weight term to our cost 
+	function. In Figure \ref{fig:overfitting}, our model tries to overcompensate 
+	because it tries to fit to every single data point, with all its discrepancies included. 
+	Therefore, if we add a specific value to our cost function, it would encourage the model
+	to choose a curve that works within the defined parameters and is not too complex. Our 
+	new curve might be something like:
+	\[ \tilde{E}(w)= \frac{1}{2} \sum_{n=1}^{N}\{y(x_{n},w)-t_{n}\}^{2}+\frac{\lambda}{2}\|w\|^{2}\]
+	where $\|w\|^{2}=w^{T}w = \sum_{n=0}^{M}\omega_{n}^{2}$. We could also include a linear term
+	for $w$, but with its quadratic version it would be a \textbf{ridge regression}. We will have 
+	to choose our $w$ such that $\tilde{E}(w)$ is minimized, thus if we add a bigger term at the 
+	end(quadratic), the value rises quicker and we'll choose a smaller $w$.
+
+	\subsection{Probability}
+		We need to review the fundamentals of probability before moving. 
+
+
+		The \textbf{expectation} of a probability can be thought of as the average value of a 
+		probability distribution, or the value that we should expect should we pick a random 
+		value from the distribution; the value that the distribution revolves around. The main 
+		idea is that we multiply all the possible values of $f(x)$ by the probability that 
+		it is such a way. Thus, for a discrete distribution, the expectation is 
+		\[ \mathbb{E}[f]= \sum_{x}^{}p(x)f(x)\]We replace the sum with an integral 
+		for a continuous distribution.	
+
+
+		The \textbf{variance} is the expected value that a random variable deviates from the 
+		expected value. \footnote{\textbf{Variance} is the expected amount that the 
+		expected amount differs from $f(x)$. 
+		The value is squared so the expectation removes positive.}
+		\[ var[f] = \mathbb{E}[(f(x) - \mathbb{E}[f(x)])^{2}]\]
+
+		\textbf{Covariance} refers to the amount that two random variables vary together. The 
+		\textbf{Gaussian Distribution} refers to a very complicated formula that describes a
+		probability distribution.  There can be multivariate distributions that utilize a 
+		Gaussian distribution, which has a \textbf{covariance matrix} for all the variables and
+		how they relate to each other. 
+
+	\subsection{Bayes's Theorem}
+		This theorem relates the inverse conditional probability $p(w|D)$ with $p(D|w)$. 
+		\[ p(w|D) = \frac{p(D|w)p(w)}{p(D)}\]
+		Given the set of observations $D$, we can formulate how likely it was for a certain 
+		coefficient $w$ to arise both before observing the data and after. \footnote{The 
+		\textbf{prior probability} $p(w)$ of the parameter $w$ is its likelihood 
+		before observing D. $p(D|w)$, the \textbf{likelihood function}, relates how likely
+		the observations are given the parameter. It's gotten after observing $D$.} 
+	\end{document}
