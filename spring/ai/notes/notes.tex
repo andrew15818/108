@@ -46,4 +46,14 @@
 	from that agent. 
 	
 \subsection{5.3 Alpha-Beta Pruning}
+	The idea behind \textbf{pruning} is that we can remove one of the large exponents 
+	behind the search. The way we remove the steps is by realizing that for a node 
+	$n$ somewhere in the tree, if there is a better move anywhere above it, then $n$
+	will never be reeached by the minmax algorithm. This means that we can safely
+	not even search it. Since we continue to switch between Max and Min nodes, if the 
+	node to be chosen by a Max node is greater than the node to be chosen by a Min node,
+	we node that the node chosen by a Min node will never be chosen by a Max node,
+	so we can safely discard it.\footnote{The \textbf{alpha} and \textbf{beta} values refer 
+	to the maximum value of the Max and Min players, respectively. If $\alpha$ > $\beta$,
+	then we can say we will never choose $\beta$ as our best move.} 
 \end{document}
