@@ -124,4 +124,13 @@ the design looked quite nice and wanted to give it a shot!
 		\textbf{prior probability} $p(w)$ of the parameter $w$ is its likelihood 
 		before observing D. $p(D|w)$, the \textbf{likelihood function}, relates how likely
 		the observations are given the parameter. It's gotten after observing $D$.} 
-	\end{document}
+\section{Probability Distributions}
+	\newthought{Suppose we have} an unfair coin that we are throwing in the air $n$ times. We would like
+	to measure the probability of getting $x$ heads. The probability distribution would be:
+	$p(x)=(p(x))^{x}(1-p(x))^{1-n}$. This is known as the \textbf{Bernoulli Distribution}
+
+	Similar to the Bernoulli distribution, we might consider the \textbf{Binomial Distribution},
+	where factor in the \textit{different} possible ways to draw M heads. The formula then becomes:
+	\[ \textrm{Bin}(m|N,\mu) = {N\choose M}\mu^{m}(1-\mu)^{N-m}\]\footnote{This formula relates the 
+	probability fo the \textit{combinations}, or possible orderings, in which $M$ events happen.}
+\end{document}
