@@ -133,4 +133,14 @@ the design looked quite nice and wanted to give it a shot!
 	where factor in the \textit{different} possible ways to draw M heads. The formula then becomes:
 	\[ \textrm{Bin}(m|N,\mu) = {N\choose M}\mu^{m}(1-\mu)^{N-m}\]\footnote{This formula relates the 
 	probability fo the \textit{combinations}, or possible orderings, in which $M$ events happen.}
+
+	\subsection{The Beta Distribution}
+	First, we have to talk about \textbf{prior distributions} and \textbf{posterior distributions}.
+	These are $p(\theta)$ and $p(\theta|x)$, respectively.\footnote{The difference between the two is
+	knowing the result of some variable $x$ which can influence the result. Together they are known as
+	\textbf{conjugate distribution}.} 
+
+	Together, these inform us as to how the probabilities for a random event and its complement 
+	depend mutually on each other. The hyperparameters $a$ and $b$ can be considtered the amount
+	of times that the observations for $x=1$ and $x=0$ have been observed.
 \end{document}
