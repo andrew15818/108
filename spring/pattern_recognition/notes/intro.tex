@@ -194,5 +194,13 @@ the design looked quite nice and wanted to give it a shot!
 
 	However, least squares solutions can also suffer from \textbf{overfitting}, so we can add
 	a \textbf{regulartization}. This term ensures that our approach does not overfit the actual
-	answer again. As metnitoned, we can add a linear term or a quadratic term.
+	answer again. As metnitoned, we can add a linear term or a quadratic term. The general form 
+	for a good equalizer might be:\footnote{where $t$ is target vector,$w$ would be the 
+	parameter matrix? $\phi$ is the basis function}
+	\[ \frac{1}{2}\sum_{n=1}^{N}\{t_{n}-w^{T}\phi(x_{n})\}^{2}+ \frac{\lambda}{2}\sum_{j=1}{M}|w_{j}|^{q} \]
+	\subsection{Multiple Outputs}
+	Previously, there had just been one variable we were trying to identify, we were only making a single
+	observation. This observation was the sum of the parameters $w$ and the $\phi(x_{n})$. However, if we 
+	keep mulitple basis functions(why do that?), then we could just have a similar process but instead store
+	all the relevant info in a giant matrix $W$.
 \end{document}
