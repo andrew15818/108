@@ -179,7 +179,7 @@ the design looked quite nice and wanted to give it a shot!
 	of the normal distribution of each member in $t$. This makes sense since the probability 
 	that our target vector is a certain way would depend on the normal distribution. And since 
 	every $x$ is independently and identically distributed, having the product of all of them
-	should give the correct overall likelihood. Right? :) }	
+	should give the correct overall likelihood. Right? :) }
 	\[ p(t|x,w,\beta ) = \prod_{n=1}^{N}\aleph(t_{n}|w^{T}\phi(x_{n}),\beta^{-1}) \]
 
 	Often times, to find the maximum of the likelihood function, we instead take its natural
@@ -191,4 +191,8 @@ the design looked quite nice and wanted to give it a shot!
 	function value and the one our model gives us. We take this difference (squared to maintain a
 	positive number) and try to minimize over the whole sum of errors. Then, optimality would involve
 	minimizing the log likelihood function.
+
+	However, least squares solutions can also suffer from \textbf{overfitting}, so we can add
+	a \textbf{regulartization}. This term ensures that our approach does not overfit the actual
+	answer again. As metnitoned, we can add a linear term or a quadratic term.
 \end{document}
