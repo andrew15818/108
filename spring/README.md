@@ -9,11 +9,14 @@ the fundamentals of searching and adversarial search, neural
 networks, reinforcement learning etc... Much homework and 
 projects too!
 
-2.**Introduction to Pattern Recognition**: In this course, 
+2. **Introduction to Pattern Recognition**: In this course, 
 we will use different Python libraries to understand the 
 Pattern Recognition fundamentals. We will use libraries
 such as NumPy, PyTorch, Keras and TensorFlow. 
 
+3. **Technology Entrepeneurship**: Here, we have to write 
+a business plan, make presentations, in order to gain some
+understanding of how to handle a tech business. 
 
 # 大家好， 歡迎來到我108下學期的repo
 
