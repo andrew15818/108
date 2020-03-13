@@ -152,6 +152,8 @@ the design looked quite nice and wanted to give it a shot!
 	Whatever approximation we wish to do would then probably be some sort of linear combination of the 
 	original basis function.
 	
+	The basis function is of the form(we will describe the forms of $\phi$ below):
+	\[ y=w_{0}+w_{1}\phi_{1}(x)+...+w_{M-1}\phi_{M-1}(x)\]
 	However, as with overfitting, the basis function will not necessarily allow you to automatically 
 	reach all the space at first. However, since linear functions will just allow a straight line, then 
 	we cannot use it always. Some examples of basis functions include:
@@ -168,10 +170,10 @@ the design looked quite nice and wanted to give it a shot!
 			\item \textbf{Sigmoidal}:
 			\[ \phi_{j}(x) = \phi(\frac{x-\mu_{j}}{s}) \textrm{ where } \phi(a) = \frac{1}{1+\textrm{exp}(-a)}\]
 	\end{itemize}
-	Remember the basis functions describe the probability of every observation in our $x$ vector.
 
-	Given an input vector $X$, and a set of target values $t$, and a precision $\beta$, our
-	likelihood function is:\footnote{Essentially, this formula says that the 
+	In the figure below, $t$ refers to the \textbf{target vector}, which is the result of the actual
+	function $y(x,w)$ and a random gaussian nose $\epsilon$
+	\footnote{Essentially, this formula says that the 
 	likelihood of a given target vector $t$
 	given a certain input vector $x$, parameter $w$, and precision $\beta$ is the product 
 	of the normal distribution of each member in $t$. This makes sense since the probability 
@@ -184,4 +186,9 @@ the design looked quite nice and wanted to give it a shot!
 	logarithm. We do this because the function itself is \textbf{monotonically increasing},
 	meaning that maximizing the likelihood function is equivalent to maximizing the 
 	\textbf{log likelihood function}.
+	\subsection{Least Squares}
+	The idea behind a \textbf{Least Squares Approximation} is to take the difference between the 
+	function value and the one our model gives us. We take this difference (squared to maintain a
+	positive number) and try to minimize over the whole sum of errors. Then, optimality would involve
+	minimizing the log likelihood function.
 \end{document}
