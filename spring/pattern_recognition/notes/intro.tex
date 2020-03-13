@@ -143,4 +143,45 @@ the design looked quite nice and wanted to give it a shot!
 	Together, these inform us as to how the probabilities for a random event and its complement 
 	depend mutually on each other. The hyperparameters $a$ and $b$ can be considtered the amount
 	of times that the observations for $x=1$ and $x=0$ have been observed.
+
+	\newthought{This was in the textbook, not in the presentation}
+\section{Regression}
+	\newthought{If we remember}, when doing regression, we have a \textbf{basis function}.\footnote{
+	A \textbf{basis function} is a function that allows us to reach any point within a given space.
+	I think it might be similar to how you can reach any point in 3D with three orthogonal vectors?}
+	Whatever approximation we wish to do would then probably be some sort of linear combination of the 
+	original basis function.
+	
+	However, as with overfitting, the basis function will not necessarily allow you to automatically 
+	reach all the space at first. However, since linear functions will just allow a straight line, then 
+	we cannot use it always. Some examples of basis functions include:
+
+	The key to understand is the basis function $\phi$. Because we have an input vector $\{X\}$ with n
+	elements, each of the  $x_{n}$ will have to be passed through $\phi$.
+	\begin{itemize}
+			\item \textbf{Polynomial}: These functions are of the form:
+					\[ \phi_{j}(x)=x^{j}\]
+			\item \textbf{Gaussian}: governed by $\mu_{j}$ and $s$.\footnote{Notice how $\mu_{j}$
+					will determine how big our numerator and denominator are, i.e. the expected value
+					tells us more than anything what to expect.}	
+					\[ \phi_{j}(x) = \textrm{exp}\{ -\frac{(x-\mu_{j})^{2}}{2s^{2}} \}\]
+			\item \textbf{Sigmoidal}:
+			\[ \phi_{j}(x) = \phi(\frac{x-\mu_{j}}{s}) \textrm{ where } \phi(a) = \frac{1}{1+\textrm{exp}(-a)}\]
+	\end{itemize}
+	Remember the basis functions describe the probability of every observation in our $x$ vector.
+
+	Given an input vector $X$, and a set of target values $t$, and a precision $\beta$, our
+	likelihood function is:\footnote{Essentially, this formula says that the 
+	likelihood of a given target vector $t$
+	given a certain input vector $x$, parameter $w$, and precision $\beta$ is the product 
+	of the normal distribution of each member in $t$. This makes sense since the probability 
+	that our target vector is a certain way would depend on the normal distribution. And since 
+	every $x$ is independently and identically distributed, having the product of all of them
+	should give the correct overall likelihood. Right? :) }	
+	\[ p(t|x,w,\beta ) = \prod_{n=1}^{N}\aleph(t_{n}|w^{T}\phi(x_{n}),\beta^{-1}) \]
+
+	Often times, to find the maximum of the likelihood function, we instead take its natural
+	logarithm. We do this because the function itself is \textbf{monotonically increasing},
+	meaning that maximizing the likelihood function is equivalent to maximizing the 
+	\textbf{log likelihood function}.
 \end{document}
