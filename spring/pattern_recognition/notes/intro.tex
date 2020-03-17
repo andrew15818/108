@@ -198,11 +198,27 @@ the design looked quite nice and wanted to give it a shot!
 	for a good equalizer might be:\footnote{where $t$ is target vector,$w$ would be the 
 	parameter matrix? $\phi$ is the basis function}
 	\[ \frac{1}{2}\sum_{n=1}^{N}\{t_{n}-w^{T}\phi(x_{n})\}^{2}+ \frac{\lambda}{2}\sum_{j=1}{M}|w_{j}|^{q} \]
-	\subsection{Multiple Outputs}
-	Previously, there had just been one variable we were trying to identify, we were only making a single
-	observation. This observation was the sum of the parameters $w$ and the $\phi(x_{n})$. However, if we 
-	keep mulitple basis functions(why do that?), then we could just have a similar process but instead store
-	all the relevant info in a giant matrix $W$, where each of the $M$ rows are a basis function and K
-	columns are the number of the target value.
 
+	\subsection{Multiple Outputs}
+	Suppose we have target vector with multiple components. The way to find the best coefficients would
+	be to have either multiple basis functions or to estimate the components of $\textbf{t}$. This would
+	be equivalent to $K$ indpendent regresion problems for $K$ dimensions.
+	\subsection{Maximum a posterior}
+	In regression problems, both the prior and posterior probabilities are Gaussian.
+	Thus\footnote{$m_{0}$ and $S_{0}$ are the mean and covariance matrix respectively.} 
+	\[ p(w) = \aleph(w,m_{0},S_{0})\]
+	and 
+	\[ p(w|\textbf{t}) = \aleph(w|m_{N},S_{N})\]
+	are both Gaussian in nature.
+	
+	After that, we finally start using the predictive function $y(x,w)$ to guess the points.\footnote{Remember
+	this function takes the parameters and multiplies them by the basis function, and adds some Gaussian
+	noise just cuz.}
+	\begin{figure}[t]		
+			\centering
+			\includegraphics[width=\textwidth]{regression}\\
+			\caption{The red line is our predictive function; the green is our actual function
+				which we don't know, and the red area reps. 1 standard deviation from the function
+				value at each point.}
+	\end{figure}
 \end{document}
