@@ -56,4 +56,17 @@
 	so we can safely discard it.\footnote{The \textbf{alpha} and \textbf{beta} values refer 
 	to the maximum value of the Max and Min players, respectively. If $\alpha$ > $\beta$,
 	then we can say we will never choose $\beta$ as our best move.} 
+
+	When we are dealing with search trees, we have to be careful to avoid 
+	\textbf{transposition}, since that can really throw off our attempt.
+	\footnote{Transposition refers to multiple move sequences that lead to the same end
+	result.}
+\subsection{5.4 Imperfect Real-Time-Decisions}
+	Supposing we are playing chess again(while evbdy. else plays checkers). Since the search
+	space is too large to make a move quickly while searching all the different possibilities,
+	we could cut off the search after a certain number of nodes. This would allow us to 
+	choose a move in a certain amount of time since we are making on judgement on 
+	the remainder of the \smallcaps{eval}  function.	
+
+	
 \end{document}
