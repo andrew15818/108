@@ -1,7 +1,10 @@
 import numpy as np 
-import pandas as pd 
+import pandas as pd
+from random import * 
 import matplotlib.pyplot as plt 
 
+ITERATIONS = 100
+LEARNING_RATE = 1e-4
 '''
 Homework has to follow PEP8 guidelines, including them here for quick reference: 
     Naming Conventions:
@@ -11,6 +14,39 @@ Homework has to follow PEP8 guidelines, including them here for quick reference:
         method: all lowercase, use udnerscores for readability.
         constant: all caps, should use underscores for mult. words       
 '''
+#returns quite a large negative number, which I suppose 
+#should be the case if we have a small learning rate
+def gradient(xtrain, ytrain,slope, num_points):
+	print('hola')
+	tmp = 0
+	#target-prediction * prediction basically
+	for i in range(0, num_points):
+		tmp += (ytrain[i]-(slope*xtrain[i]))*xtrain[i]
+	
+	return tmp
+
+def model(xtrain, ytrain):
+	#assign random values at first
+	intercept = uniform(1,5)
+	slope = uniform(1,5)
+
+	#gives the number of columns of the table, called a 'series'
+	num_points = train_df['x_train'].shape[0]
+
+	errors = np.zeros((num_points,1))
+	current_prediction = np.zeros((num_points,1))
+	for i in range(0,num_points):
+		#first predict the value, then get the error
+		y = intercept + slope*xtrain[i]
+		current_prediction[i,0] = y
+		errors[i,0] = (ytrain[i] - current_prediction[i,0])**2
+
+	#find the amount we need to update our slope,intercept by 	
+	print('updating values by ' + str(gradient(xtrain,ytrain, slope, num_points)*LEARNING_RATE))
+	plt.plot(xtrain,current_prediction)
+	#plt.show()
+
+
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
 
@@ -18,6 +54,7 @@ train_df = pd.read_csv("train_data.csv")
 xtrain = train_df['x_train']
 ytrain = train_df['y_train']
 
+model(xtrain, ytrain)
 '''
 Basically: we can use a function of the form f(x) = b0+b1(x),
 to predict the values for the data points. We first randomize the input
@@ -25,6 +62,7 @@ values, and measure the losss against the actual function values. We should
 see the loss go down after a few 'iterations'. Does iterations mean iterations
 through the whole data set or just individual points from the dataset?
 '''
+
 #generating and showing the graphs
 plt.plot(xtrain,ytrain,'.')
 plt.show()
