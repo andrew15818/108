@@ -2,6 +2,8 @@
 
 *.nav
 
+*.snm
+
 *.log
 
 *.aux
