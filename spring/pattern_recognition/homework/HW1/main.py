@@ -1,5 +1,6 @@
 import numpy as np 
 import pandas as pd
+import time
 from random import * 
 import matplotlib.pyplot as plt 
 
@@ -17,34 +18,40 @@ Homework has to follow PEP8 guidelines, including them here for quick reference:
 #returns quite a large negative number, which I suppose 
 #should be the case if we have a small learning rate
 def gradient(xtrain, ytrain,slope, num_points):
-	print('hola')
-	tmp = 0
-	#target-prediction * prediction basically
-	for i in range(0, num_points):
-		tmp += (ytrain[i]-(slope*xtrain[i]))*xtrain[i]
-	
-	return tmp
+        #print('hola')
+        tmp = 0
+        #target-prediction * prediction basically
+        for i in range(0, num_points):
+                tmp += (ytrain[i]-(slope*xtrain[i]))*xtrain[i]
+        
+        return tmp
 
 def model(xtrain, ytrain):
-	#assign random values at first
-	intercept = uniform(1,5)
-	slope = uniform(1,5)
+        #assign random values at first
+        intercept = uniform(1,5)
+        slope = uniform(1,5)
 
-	#gives the number of columns of the table, called a 'series'
-	num_points = train_df['x_train'].shape[0]
+        #gives the number of columns of the table, called a 'series'
+        num_points = train_df['x_train'].shape[0]
 
-	errors = np.zeros((num_points,1))
-	current_prediction = np.zeros((num_points,1))
-	for i in range(0,num_points):
-		#first predict the value, then get the error
-		y = intercept + slope*xtrain[i]
-		current_prediction[i,0] = y
-		errors[i,0] = (ytrain[i] - current_prediction[i,0])**2
+        errors = np.zeros((num_points,1))
+        current_prediction = np.zeros((num_points,1))
+        for i in range(0,ITERATIONS):
+            for j in range(0,ITERATIONS):
+               #first we predict the value, then store it in the array 
+               y = intercept + slope*xtrain[j]
+               current_prediction[j,0]=y
+               errors[j,0] = (ytrain[j] - current_prediction[j,0])**2 
+            update_value = gradient(xtrain,ytrain,slope,num_points) *LEARNING_RATE
+            slope*=update_value
+            intercept*=update_value
+            plt.plot(xtrain,current_prediction)
+            #time.sleep(0.5)
 
-	#find the amount we need to update our slope,intercept by 	
-	print('updating values by ' + str(gradient(xtrain,ytrain, slope, num_points)*LEARNING_RATE))
-	plt.plot(xtrain,current_prediction)
-	#plt.show()
+        #find the amount we need to update our slope,intercept by       
+        
+        
+        #plt.show()
 
 
 #import the data from the csv, x and y values
