@@ -55,5 +55,14 @@ How do we extend a linear discriminant to other classes? We can have
 \subsection{K-class discriminant}
 	If we use $K$ linear functions of the form 
 	\[ y_{k}(x) = w^{T}_{k}(x) + w_{k0}\]
-	 
+	Then point x goes in class $k$ iff $y_{k}(x) > y_{j}(x) \forall j\neq k$ 
+	\footnote{essentially we describe every region by its own equation, and assign
+		the points to the one that fits the best.}
+\subsection{Least Squares for classification}
+	Similar to the original least squares definition, we want to minimize the difference
+	between the data points and the final values. 
+
+	The actual formula for the least squares classification is
+	\[ E_{D}(\widetilde{W}) = \frac{1}{2}\textrm{Tr}\{ (\widetilde{X}\widetilde{W}-T)^{T}(\widetilde{X}
+	\widetilde{W}-T\}) \]
 \end{document}
