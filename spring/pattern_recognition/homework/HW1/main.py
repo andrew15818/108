@@ -26,33 +26,11 @@ def gradient(xtrain, ytrain,slope, num_points):
         
         return tmp
 
+def mean_squared_error(error_list, num_points):
+    return (np.sum(error_list)/num_points)
+
 def model(xtrain, ytrain):
-        #assign random values at first
-        intercept = uniform(1,5)
-        slope = uniform(1,5)
-
-        #gives the number of columns of the table, called a 'series'
-        num_points = train_df['x_train'].shape[0]
-
-        errors = np.zeros((num_points,1))
-        current_prediction = np.zeros((num_points,1))
-        for i in range(0,ITERATIONS):
-            for j in range(0,ITERATIONS):
-               #first we predict the value, then store it in the array 
-               y = intercept + slope*xtrain[j]
-               current_prediction[j,0]=y
-               errors[j,0] = (ytrain[j] - current_prediction[j,0])**2 
-            update_value = gradient(xtrain,ytrain,slope,num_points) *LEARNING_RATE
-            slope*=update_value
-            intercept*=update_value
-            plt.plot(xtrain,current_prediction)
-            #time.sleep(0.5)
-
-        #find the amount we need to update our slope,intercept by       
-        
-        
-        #plt.show()
-
+    #we need several values: w0(weight), gradient, yi(guess),...
 
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
