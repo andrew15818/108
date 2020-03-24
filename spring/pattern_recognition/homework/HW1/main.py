@@ -1,11 +1,15 @@
 import numpy as np 
 import pandas as pd
 import time
-from random import * 
+from random import randrange
 import matplotlib.pyplot as plt 
 
+#constants
 ITERATIONS = 100
 LEARNING_RATE = 1e-4
+SLOPE_GRADIENT = 1
+INT_GRADIENT= 2
+
 '''
 Homework has to follow PEP8 guidelines, including them here for quick reference: 
     Naming Conventions:
@@ -17,20 +21,43 @@ Homework has to follow PEP8 guidelines, including them here for quick reference:
 '''
 #returns quite a large negative number, which I suppose 
 #should be the case if we have a small learning rate
-def gradient(xtrain, ytrain,slope, num_points):
-        #print('hola')
-        tmp = 0
-        #target-prediction * prediction basically
+def gradient(type, ytrain, xtrain, slope, intercept, num_points):
+    tmp = 0
+    if type == SLOPE_GRADIENT:
         for i in range(0, num_points):
-                tmp += (ytrain[i]-(slope*xtrain[i]))*xtrain[i]
-        
-        return tmp
+            tmp += (ytrain[i] - slope*xtrain[i] - intercept) * xtrain[i] 
+    elif type == INT_GRADIENT:
+        for i in range(0, num_points):
+            tmp += (ytrain[i] - slope*xtrain[i] - intercept)
+    return (-(2 / num_points)) * tmp
 
-def mean_squared_error(error_list, num_points):
-    return (np.sum(error_list)/num_points)
+#get the average error value, just for debugging
+def mse(ytrain,predictions, num_points):
+    tmp = 0
+    for i in range(0, num_points):
+        tmp +=(ytrain[i] - predictions[i,0])**2
+    return tmp / num_points
 
 def model(xtrain, ytrain):
     #we need several values: w0(weight), gradient, yi(guess),...
+    #Then the MSE function should be used to find the slope and intercept?
+    num_points = xtrain.size
+    #two values we want to optimize, init to random values first
+    slope = randrange(1,5)
+    intercept = randrange(1,5)
+
+    predictions = np.zeros((num_points,1))
+    error = np.zeros((num_points,1))
+    for i in range(0, ITERATIONS):
+        for j in range(0, num_points):
+            predictions[j, 0] = intercept + slope * xtrain[j]        
+        slope = slope - gradient(SLOPE_GRADIENT, ytrain, 
+                                xtrain, slope, intercept, 
+                                num_points)*LEARNING_RATE
+        intercept = intercept - gradient(INT_GRADIENT, ytrain, xtrain,
+                                        slope, intercept, num_points)*LEARNING_RATE
+        print(mse(ytrain, predictions, num_points))
+    plt.plot(xtrain, predictions)
 
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
