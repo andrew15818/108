@@ -1,3 +1,2 @@
-\beamer@endinputifotherversion {3.36pt}
-\beamer@sectionintoc {1}{Introduction}{4}{0}{1}
-\beamer@sectionintoc {2}{Suggestions}{6}{0}{2}
+\beamer@sectionintoc {1}{Laying Out Clear Priorities}{7}{0}{1}
+\beamer@sectionintoc {2}{Investing in Talent}{10}{0}{2}
