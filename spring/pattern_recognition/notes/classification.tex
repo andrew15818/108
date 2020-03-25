@@ -84,4 +84,19 @@ How do we extend a linear discriminant to other classes? We can have
 	\[ m_{2} - m_{1} = w^{t}(m_{2} - m_{1})\]
 	to be maximized.We also want to minimize the variance within a single class.
 
+	So, there are a coupple ways to carry out classification:
+	\begin{itemize}
+			\item{Determine a threshold}:We can find a point $x$ such that if $y(x)\geq -y_{0}$,
+					$C_{1}$, else $C_{2}$.
+			\item{use the nearest-neighbor rule}:When we project a training sample onto a 
+					one-dimensional space, we can sample some of the training data a certain 
+					distance away, and classifying the point based on the number of training 
+					points belonging to a certain class.
+	\end{itemize}
+	\begin{marginfigure}
+			\includegraphics[width=\linewidth]{nearest_neighbors}
+			\caption{If we take the sample space to be the solid colored line, we say the green
+				sample point is a red triangle, since the closest points are mostly red triangles(2-1).
+				Using the dahsed circle, we would classify it as a blue square for the same reason.}
+	\end{marginfigure}
 \end{document}
