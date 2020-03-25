@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 ITERATIONS = 100
 LEARNING_RATE = 1e-4
 SLOPE_GRADIENT = 1
-INT_GRADIENT= 2
+INT_GRADIENT = 2
 
 '''
 Homework has to follow PEP8 guidelines, including them here for quick reference: 
@@ -51,13 +51,14 @@ def model(xtrain, ytrain):
     for i in range(0, ITERATIONS):
         for j in range(0, num_points):
             predictions[j, 0] = intercept + slope * xtrain[j]        
+
         slope = slope - gradient(SLOPE_GRADIENT, ytrain, 
                                 xtrain, slope, intercept, 
                                 num_points)*LEARNING_RATE
         intercept = intercept - gradient(INT_GRADIENT, ytrain, xtrain,
                                         slope, intercept, num_points)*LEARNING_RATE
         print(mse(ytrain, predictions, num_points))
-    plt.plot(xtrain, predictions)
+        plt.plot(xtrain, predictions)
 
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
