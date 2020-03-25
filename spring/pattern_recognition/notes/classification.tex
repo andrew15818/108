@@ -63,6 +63,25 @@ How do we extend a linear discriminant to other classes? We can have
 	between the data points and the final values. 
 
 	The actual formula for the least squares classification is
-	\[ E_{D}(\widetilde{W}) = \frac{1}{2}\textrm{Tr}\{ (\widetilde{X}\widetilde{W}-T)^{T}(\widetilde{X}
-	\widetilde{W}-T\}) \]
+	\[ y(x) = \widetilde{W}^{T}\tilde{x}\]
+
+	However, the least squares solution usually does not have the best performance, and is 
+	sensitive to \textbf{outliers}.
+	\begin{marginfigure}
+			\includegraphics[width=\linewidth]{ls_not_good}
+			\caption{Logistic regression can sometimes have better performance than
+				ordinary least squares.}
+	\end{marginfigure}
+\subsection{Fisher's Linear Discriminant:2 classes}
+	\textbf{Fisher's Linear Discriminant} can help with dimensionality reduction at the moment
+	of solving a K-dimensionality problem. With these kinds of problems, we want to find a lienar
+	combinations of elements that maximizes the distance between data points not in the same class.
+
+	The \textbf{mean vectors} between two classes is 
+	\[ m_{1} = \frac{1}{N_{1}} \sum_{n\in C_{1}}^{}x_{n}\]
+	and likewise for $m_{2}$. Then, we want a function that maximizes the distance between the two
+	functions. We would like  
+	\[ m_{2} - m_{1} = w^{t}(m_{2} - m_{1})\]
+	to be maximized.We also want to minimize the variance within a single class.
+
 \end{document}
