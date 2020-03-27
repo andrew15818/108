@@ -8,22 +8,37 @@
 
 \begin{enumerate}
 	\item 
-		\textbf{Suppose we have three colored boxes $R$ (red), $B$ (blue), 
-		and $G$ (green). Box $R$ contains 3 apples 4 oranges, and 3
-		guavas, box $B$ contains 12 apples, 4 oranges, and 4 guavas. If
-		a box is chosen at random with probabilities $p(R)=0.2,p(B)=0.4,p(G)=0.4$
-		and a piece of fruit is removed from the box (with equal probability of selecting
-		any of the items in the box), then what is the probability of selecting guava? If
-		we observe that the selected fruit is in fact an apple, what is the probability
-		that it came from the blue box?}
+		\textbf{Suppose that we have three colored boxes $R$ (red), $B$ (blue),
+				and $G$ (green). Box $R$ contains 3 apples, 4 oranges, and 3 guavas,
+				box $B$ contains 2 apples, 0 oranges, and 2 guavas, and box $G$ contains
+				12 apples, 4 oranges, and 4 guavas. If a box is chosen at random with 
+				probabilities $p(R)=0.2,p(B)=0.4,p(G)=.4$, and a piece of fruit is removed
+				from the box (with equal probability of selecting any of the items in the box),
+				then what is the probability of selecting guava? If we observe that the selected
+				fruit is in fact an apple, what is the probability that it came from the blue box?}
 
-		For the second question, let $a$ be the event of choosing an apple.We are trying to find the 
-		probability that the apple comes from the blue box, or $p(a|b)$. However, we can
-		use \textbf{Baye's Theorem} to calculate the probability. This theorem says 
-		\[p(a|b) = \frac{p(b|a)p(a)}{p(b)} \]
-		We are told that $p(B) = 0.4$,
+		For the first question, let $b_{i}$ refer to choosing box $i$, and $g_{i}$ refer 
+		to choosing a guava from box $i$. If we want the probabilites in general of choosing
+		a guava from each of the boxes, we need to add the products $p(b_{i})p(g_{i})$. Thus 
+		our formula becomes 
+				\[ \sum_{i=0}^{N}p(b_{i})p(g_{i})\]
+		which evaluates to 
+				\[(.3)(.2) + (.5)(.4) + (.4)(.2) = 0.34\]
 		
-	\item
+		For the second question, we want to calculate the probability that the blue box was chosen
+		given that we have chosen an apple. Let $a$ be the event of choosing an apple, and $B$ be
+		the event of choosing the blue box. Then, we would like to find $p(B|a)$. By using
+		\textbf{Baye's Theorem}, which states
+		\[ p(A|B) = \frac{p(B|A)p(A)}{p(B)}\]
+		we can find each of the required probabilities. We are given that $p(B) = .4$. To find
+		$p(a|B)$, we find the probability of choosing an apple from box $B$, which is 
+		$\frac{2}{2+2} = 0.5$. Finally, to find $p(a)$, we repeat the process from the first part,
+		and add the probabilities of choosing box $i$ and picking an apple from that box, which in the
+		end comes out to .5. Thus, our final calculation is 
+				\[ p(B|a) = \frac{(.5)(.4)}{(.5)} = .4\]
+
+
+		\item
 		\textbf{Using the definition} \[\textrm{var}[f] = E[(f(x) - E[f(x)])^{2}] \]
 		\textbf{show that $\textrm{var}[f(x)]$ satisfies}
 		\[\textrm{var}[f(x)] = E[f(x)^{2}] - E[f(x)]^{2}\]
