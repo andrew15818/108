@@ -99,4 +99,18 @@ How do we extend a linear discriminant to other classes? We can have
 				sample point is a red triangle, since the closest points are mostly red triangles(2-1).
 				Using the dahsed circle, we would classify it as a blue square for the same reason.}
 	\end{marginfigure}
+\subsection{Perceptron Algorithm}
+	The \textbf{perceptron algorithm} works by having a linear combination of the terms 
+	$y(x) = f(w^{T}\phi(x))$. We also want $f$ to have a value either $1$ or $-1$. Another
+	parameter $t$ can either be set to -1 or 1, and during the training phase we usually set it
+	to 1 for $C_{1}$ and -1 for $C_{2}$
+	
+	The goal of the perceptron then becomes to make $w^{T}\phi(x_{n})t_{n} > 0$, since this means
+	that the point $x_{n}$ was correctly classified. In classification problems, we only have a binary
+	choice: whether the point was classified into the correct class. Therefore, the error function to 
+	judge our model should be a function of all the points that were actually \textit{misclassified}.
+	One such function might be
+	\[ E_{p}(w) = -\sum_{n\in M}^{}w^{T}\phi_{n}t_{n}\]
+	where M is the set of points that were misclassified.
+	Then, the weight vector is updated depending on whether we correctly classified the data or not. 
 \end{document}
