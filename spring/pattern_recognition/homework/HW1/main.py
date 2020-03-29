@@ -33,16 +33,19 @@ def gradient(type, ytrain, xtrain, slope, intercept, num_points):
 
 #get the average error value, just for debugging
 def mse(ytrain,predictions, num_points):
-    tmp = 0
-    for i in range(0, num_points):
-        tmp +=(ytrain[i] - predictions[i,0])**2
-    return tmp / num_points
+    tmp = np.sum((ytrain - predictions) **2)
+    return (tmp/num_points)
 
 #returns the predicted values for the input set.
 def model(xtrain, ytrain):
     #values we try to maximize
     slope = 0
     intercept = 0 
+
+    #here we store the values we will  use to 
+    #plot the loss_array
+    loss_array = []
+    it_count = []
 
     #turning the two original objects into 
     #numpy arrays
@@ -58,26 +61,33 @@ def model(xtrain, ytrain):
         slope = slope - slope_gradient * LEARNING_RATE
         intercept = intercept - int_gradient * LEARNING_RATE
 
+        loss_array.append(mse(ytrain, Y_predict, num_points))
+        it_count.append(i)
     
-    return Y_predict
+    print('slope: '+str(slope)+'\tintercept: '+str(intercept))
+    return Y_predict,loss_array,it_count
 
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
 
-#rows and columns of the training data.
-xtrain = train_df['x_train']
-ytrain = train_df['y_train']
-
-#generating and showing the graphs
-plt.plot(xtrain,ytrain,".")             #training points
-plt.plot(xtrain,model(xtrain,ytrain),label='training set')   #predictions for the testing data
-plt.show()
+##Uncomment these lines for the training data graph #xtrain = train_df['x_train']
+#ytrain = train_df['y_train']
+#Y_predict, loss_array, it_count = model(xtrain,ytrain)
+#plt.plot(xtrain,ytrain,".")             #training points
+#plt.plot(it_count, loss_array,'.',label='training data error')
+#plt.title('training data error')
+#plt.show()
 
 #handling the test data
+
 train_df = pd.read_csv("test_data.csv")
 xtest = train_df['x_test']
 ytest = train_df['y_test']
-plt.plot(xtest,ytest,'.')
-plt.plot(xtest, model(xtest,ytest), label='testing set')
+Y_predict, loss_array, it_count = model(xtest,ytest)
+
+#plt.plot(xtest,ytest,'.')
+#plt.plot(xtest, Y_predict, label='testing set')
+plt.plot(it_count, loss_array, '.')
+plt.title('testing data error')
 plt.show()
 print("We're making it to the end :D")

@@ -1,11 +1,47 @@
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
 \renewcommand{\familydefault}{\sfdefault}
 \title{Introduction to Pattern Recognition Homework 1}
 \author{Andres Ponce(0616110)}
 \begin{document}
 \maketitle
 
+\section{Program Report} %%tentative section name
+\begin{enumerate}
+		\item \textbf{Plot the learning curve of the training, you should 
+				find that loss decreases after a few iterations 
+				(x-axis=iteration,y-axis=loss, Matplotlibor other plot tools is available to use)}
+
+				For this assignment, we plotted both the actual regression function and the error
+				for each iteraiton of the training and test data sets.
+				\begin{figure}
+					\centering
+						\begin{subfigure}[b]{0.3\linewidth}
+								\centering
+								\includegraphics[width=\textwidth]{training_data_error.png}
+								\caption{Training Data Error} 
+						\end{subfigure}
+						\begin{subfigure}[b]{0.3\linewidth}
+								\centering
+								\includegraphics[width=\textwidth]{testing_data_error.png}
+								\caption{Testing Data Error}
+						\end{subfigure}
+				\end{figure}
+
+		\item \textbf{What's the Mean Square Error of your prediction and ground truth
+				(prediction=model(x\_test),ground truth = y\_test)}
+
+		\item \textbf{What're the weights and intercepts of your linear model?}
+				For the testing data, we got about 0.719 for our slope and 0.635 for our 
+				y-intercept.
+
+		\item \textbf{What's the difference between the Gradient Descent, Mini-Batch Gradient
+				Descent, and Stochastic Gradient Descent?}
+\end{enumerate}
+\section{Questions}
 \begin{enumerate}
 	\item 
 		\textbf{Suppose that we have three colored boxes $R$ (red), $B$ (blue),
