@@ -17,29 +17,39 @@
 
 				For this assignment, we plotted both the actual regression function and the error
 				for each iteraiton of the training and test data sets.
-				\begin{figure}
+				%the !ht places the figures in the actual place in the file
+				\begin{figure}[!ht]
 					\centering
-						\begin{subfigure}[b]{0.3\linewidth}
-								\centering
-								\includegraphics[width=\textwidth]{training_data_error.png}
-								\caption{Training Data Error} 
-						\end{subfigure}
-						\begin{subfigure}[b]{0.3\linewidth}
-								\centering
-								\includegraphics[width=\textwidth]{testing_data_error.png}
-								\caption{Testing Data Error}
-						\end{subfigure}
+						\begin{subfigure}{0.4\linewidth}
+						\includegraphics[width=\linewidth]{training_data_error.png}
+					\end{subfigure}
+					\begin{subfigure}{0.4\linewidth}
+						\includegraphics[width=\linewidth]{testing_data_error.png}
+					\end{subfigure}
 				\end{figure}
 
 		\item \textbf{What's the Mean Square Error of your prediction and ground truth
 				(prediction=model(x\_test),ground truth = y\_test)}
 
 		\item \textbf{What're the weights and intercepts of your linear model?}
+
 				For the testing data, we got about 0.719 for our slope and 0.635 for our 
 				y-intercept.
 
 		\item \textbf{What's the difference between the Gradient Descent, Mini-Batch Gradient
 				Descent, and Stochastic Gradient Descent?}
+				
+				Gradient Descent seeks to find the minimum to a function. To do this, at each 
+				iteration we have to find the \textbf{gradient}, or the how much the slope changes
+				at that point. Once we do that, we move in the direction of the gradient (we 
+				\textit{descend} along the line), by a factor that depends on the learning rate.
+				Eventually, depending on the number of iterations, we should reach a point 
+				on or around the global minimum.
+
+				However, there are different approaches to calculating the gradient depending 
+				on the amount of data available.
+
+
 \end{enumerate}
 \section{Questions}
 \begin{enumerate}

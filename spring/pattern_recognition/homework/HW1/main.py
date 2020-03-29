@@ -19,19 +19,7 @@ Homework has to follow PEP8 guidelines, including them here for quick reference:
         method: all lowercase, use udnerscores for readability.
         constant: all caps, should use underscores for mult. words       
 '''
-#returns quite a large negative number, which I suppose 
-#should be the case if we have a small learning rate
-def gradient(type, ytrain, xtrain, slope, intercept, num_points):
-    tmp = 0
-    if type == SLOPE_GRADIENT:
-        for i in range(0, num_points):
-            tmp += (ytrain[i] - slope*xtrain[i] - intercept) * xtrain[i]
-    elif type == INT_GRADIENT:
-        for i in range(0, num_points):
-            tmp += (ytrain[i] - slope*xtrain[i] - intercept)
-    return (-(2 / num_points)) * tmp
-
-#get the average error value, just for debugging
+#get the average error for all the points in the predictive set
 def mse(ytrain,predictions, num_points):
     tmp = np.sum((ytrain - predictions) **2)
     return (tmp/num_points)
