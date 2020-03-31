@@ -46,9 +46,15 @@
 				Eventually, depending on the number of iterations, we should reach a point 
 				on or around the global minimum.
 
-				However, there are different approaches to calculating the gradient depending 
-				on the amount of data available.
+				Depending on the amount of data available, it might be infeasible to calculate
+				the gradient in a straightforward manner. In \textbf{stochastic gradient descent},
+				we pick a random sample from the data points and calculate the gradient based on that
+				sample. When the input data is too large to use the entire data set every iteration,
+				a stochastic approach might greatly reduce the computational complexity. However,
+				the amount of iterations required to achieve the same results also increases. In the end,
+				for some applications in big data, this tradeoff might be worth it.
 
+				There exists another approach to the gradient, used in \textbf{mini-batch gradient descent}.
 
 \end{enumerate}
 \section{Questions}
