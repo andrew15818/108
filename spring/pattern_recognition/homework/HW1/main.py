@@ -5,7 +5,7 @@ from random import randrange
 import matplotlib.pyplot as plt 
 
 #constants
-ITERATIONS = 100
+ITERATIONS = 1000
 LEARNING_RATE = 1e-2
 SLOPE_GRADIENT = 1
 INT_GRADIENT = 2
@@ -19,21 +19,12 @@ Homework has to follow PEP8 guidelines, including them here for quick reference:
         method: all lowercase, use udnerscores for readability.
         constant: all caps, should use underscores for mult. words       
 '''
-#get the average error for all the points in the predictive set
-def mse(ytrain,predictions, num_points):
-    tmp = np.sum((ytrain - predictions) **2)
-    return (tmp/num_points)
-
-#returns the predicted values for the input set.
+#returns the estimated slope and intercepts 
+#we use
 def model(xtrain, ytrain):
     #values we try to maximize
     slope = 0
     intercept = 0 
-
-    #here we store the values we will  use to 
-    #plot the loss_array
-    loss_array = []
-    it_count = []
 
     #turning the two original objects into 
     #numpy arrays
@@ -48,34 +39,34 @@ def model(xtrain, ytrain):
         
         slope = slope - slope_gradient * LEARNING_RATE
         intercept = intercept - int_gradient * LEARNING_RATE
-
-        loss_array.append(mse(ytrain, Y_predict, num_points))
-        it_count.append(i)
-    
-    print('slope: '+str(slope)+'\tintercept: '+str(intercept))
-    return Y_predict,loss_array,it_count
+ 
+    #print('slope: '+str(slope)+'\tintercept: '+str(intercept))
+    return Y_predict, slope, intercept 
 
 #import the data from the csv, x and y values
 train_df = pd.read_csv("train_data.csv")
 
-##Uncomment these lines for the training data graph #xtrain = train_df['x_train']
-#ytrain = train_df['y_train']
-#Y_predict, loss_array, it_count = model(xtrain,ytrain)
-#plt.plot(xtrain,ytrain,".")             #training points
-#plt.plot(it_count, loss_array,'.',label='training data error')
-#plt.title('training data error')
-#plt.show()
+#values we use estimate the values
+slope = 0
+intercept = 0
+
+##Uncomment these lines for the training data graph 
+xtrain = train_df['x_train']
+ytrain = train_df['y_train']
+Y_predict, slope, intercept = model(xtrain,ytrain)
+
 
 #handling the test data
-
 train_df = pd.read_csv("test_data.csv")
 xtest = train_df['x_test']
 ytest = train_df['y_test']
-Y_predict, loss_array, it_count = model(xtest,ytest)
+Y_predict = xtest * slope + intercept
+error = np.sum((ytest - Y_predict)**2) / ytest.shape[0]
+print('slope: '+str(slope) + '\tintercept: '+str(intercept) + '\terror:' + str(error))
 
-#plt.plot(xtest,ytest,'.')
-#plt.plot(xtest, Y_predict, label='testing set')
-plt.plot(it_count, loss_array, '.')
-plt.title('testing data error')
+#create the final plot
+plt.plot(xtest,ytest,'.') #testing points
+plt.plot(xtest, Y_predict, label='testing set') #estimating line
+plt.title('estimation for the testing data')
 plt.show()
-print("We're making it to the end :D")
+
