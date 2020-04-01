@@ -100,6 +100,30 @@
 		 show that $\textrm{var}[f(x)]$ satisfies
 		\[\textrm{var}[f(x)] = E[f(x)^{2}] - E[f(x)]^{2}\]}
 		
-		First, we write the 
+		First, we take the first definition of variance and expand the square.
+		\[ E[(f(x) - E[f(x)])^{2}] = E[f(x)^{2}] - f(x)E[f(x)] - (E[f(x)])(f(x) - E[f(x)])\]
+		For the first two terms, we get
+		%\[ \]
+		\begin{equation}
+				E[f(x)^{2}] - E[f(x)]E[f(x)]
+			\label{eq:1}
+		\end{equation}
+		which becomes
+		\begin{equation}
+			\label{eq:2}
+			 E[f(x)^{2}] - E[f(x)]E[f(x)]
+		\end{equation}
+		\begin{equation}
+				\label{eq:3}
+			 = E[f(x^{2})] - E[f(x)]^{2}
+		\end{equation}
 
+		because $E[E[f(x)]]$ is simply $E[f(x)]$ because it is a constant term. Therefore we distribute the outer
+		$E[]$ to arrive at Equation \ref{eq:3}.
+
+		However, we still have the last copule terms. But,
+		\[ E[(E[f(x)])(f(x) - E[f(x)])]\]
+		\[ = (E[(f(x)])E[f(x) - E[f(x)]]\]
+		\[ = (E[f(x)])(E[f(x)] - E[f(x)]) = 0\]
+		So, in the end we are left with Equation \ref{eq:1}, which simplifies to $E[f(x)^{2}] - E[f(x)]^{2}$.
 \end{document}
