@@ -10,17 +10,7 @@ LEARNING_RATE = 1e-2
 SLOPE_GRADIENT = 1
 INT_GRADIENT = 2
 
-'''
-Homework has to follow PEP8 guidelines, including them here for quick reference: 
-    Naming Conventions:
-        function: all lowercase, use underscore for multiple words
-        variable: same, use underscore; make it descriptive
-        class: each word should start with uppercase, don't use underscore
-        method: all lowercase, use udnerscores for readability.
-        constant: all caps, should use underscores for mult. words       
-'''
 #returns the estimated slope and intercepts 
-#we use
 def model(xtrain, ytrain):
     #values we try to maximize
     slope = 0
@@ -40,7 +30,7 @@ def model(xtrain, ytrain):
         slope = slope - slope_gradient * LEARNING_RATE
         intercept = intercept - int_gradient * LEARNING_RATE
  
-    #print('slope: '+str(slope)+'\tintercept: '+str(intercept))
+
     return Y_predict, slope, intercept 
 
 #import the data from the csv, x and y values
@@ -50,10 +40,20 @@ train_df = pd.read_csv("train_data.csv")
 slope = 0
 intercept = 0
 
-##Uncomment these lines for the training data graph 
+#Modeling and plotting the training data
 xtrain = train_df['x_train']
 ytrain = train_df['y_train']
 Y_predict, slope, intercept = model(xtrain,ytrain)
+plt.plot(xtrain, ytrain, '.') #original test points
+plt.plot(xtrain, Y_predict) #our estimate for the line
+plt.title('estimate for the training data')
+
+error = np.square(np.subtract(ytrain, Y_predict)).mean()
+print('Training data info: \n')
+print('slope: ' + str(slope) + '\tintercept: ' + str(intercept) + '\terror: '+str(error))
+plt.show()
+
+
 
 
 #handling the test data
@@ -61,12 +61,15 @@ train_df = pd.read_csv("test_data.csv")
 xtest = train_df['x_test']
 ytest = train_df['y_test']
 Y_predict = xtest * slope + intercept
-error = np.sum((ytest - Y_predict)**2) / ytest.shape[0]
-print('slope: '+str(slope) + '\tintercept: '+str(intercept) + '\terror:' + str(error))
+error = np.square(np.subtract(ytest, Y_predict)).mean()
+print('\nTesting data info:\n')
+print('slope: ' + str(slope) + '\tintercept: ' + str(intercept) + '\terror: '+str(error))
+
+
 
 #create the final plot
+
 plt.plot(xtest,ytest,'.') #testing points
 plt.plot(xtest, Y_predict, label='testing set') #estimating line
 plt.title('estimation for the testing data')
 plt.show()
-
