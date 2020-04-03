@@ -77,6 +77,12 @@ How do we extend a linear discriminant to other classes? We can have
 	of solving a K-dimensionality problem. With these kinds of problems, we want to find a lienar
 	combinations of elements that maximizes the distance between data points not in the same class.
 
+	That is, we want to reduce the number of dimensions from $D$ down to 1; then we want to select 
+	a threshold $t$, which serves to mark where one point would be classified as $C_{1}$ or $C_{2}$.
+	After we have clearly separated the different classes in a reduced space, we would like to maximize
+	the distance between the points of all classes, so as to minimize the variance between points of the 
+	same class and thus maximize the distance between points of different classes.
+
 	The \textbf{mean vectors} between two classes is 
 	\[ m_{1} = \frac{1}{N_{1}} \sum_{n\in C_{1}}^{}x_{n}\]
 	and likewise for $m_{2}$. Then, we want a function that maximizes the distance between the two
@@ -112,5 +118,34 @@ How do we extend a linear discriminant to other classes? We can have
 	One such function might be
 	\[ E_{p}(w) = -\sum_{n\in M}^{}w^{T}\phi_{n}t_{n}\]
 	where M is the set of points that were misclassified.
-	Then, the weight vector is updated depending on whether we correctly classified the data or not. 
+	Then, the weight vector is updated depending on whether we correctly classified the data or not.
+	Add $\phi_{n}$ to $w$ if $x_{n}$ belongs to $C_{1}$ and was misclassified, and subtract $\phi_{n}$
+	from $w$ if $x_{n}$ belongs to $C_{2}$ and was misclassified.
+\subsection{Generative Models}
+	In these types of mdoels, we try and figure out $p(C_{k}|x)$ by calculating $p(x|C_{k})$ and $p(C_{k})$
+	and solving for Bayes' Theorem.\footnote{The main idea of the gernative model remains to find the 
+	\textit{joint probability} both the target variable and our input variable, i.e. $p(t,x)$}
+
+	However, this was only the case for 2 classes; we can try to generalize to more classes. The basic
+	formula still very much resembles Bayes' Theorem.\footnote{basically the probability that the input
+	vector belongs to class $C_{k}$ over the probability that it belongs to any of the other classes.}
+	\[ p(C_{k}|x) = \frac{p(x|C_{k})p(C_{k})}{\sum_{j}^{}p(x|C_{j})p(C_{j})}\]
+
+	With this type of model, we also have to set several parameters, $\pi, \mu_{k}$. \footnote{We can
+	use the maximum likelihood to identify the parameters, if we recall by maximizing the log of the 
+	likelihood function.}
+\subsection{Different models}
+	So far, we have two different models for estimating the parameters.
+	\begin{itemize}
+		\item \textbf{Probabilistic Generative Model}: As we just saw, with this model we try and
+				estimate the posterior probability by computing the class priors and trying to 
+				solve Bayes' Theorem.
+		\item \textbf{Probabilistic Discriminative Models}: Here we also try and solve for the 
+				posterior probability of an input belonging to a certain class, but we 
+				generalize the linear model (like with Fisher's and Perceptron) to solve for the 
+				required parameters directly. There are a couple advantages to using this type
+				of model, for example there are less parameters and usually has better performance.
+	\end{itemize}
+\newthought{After this, the slides mostly just discussed how to find the parameters used in these
+and related equations.}
 \end{document}
