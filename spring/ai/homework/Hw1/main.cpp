@@ -6,11 +6,19 @@
 #define A_STAR 4
 #define IDA_STAR 5
 
-void DFS_search(int startx, int starty){}
-void BFS_search(int startx, int starty){}
-void IDS_search(int startx, int starty){}
-void A_STAR_search(int startx, int starty){}
-void IDA_STAR_search(int startx, int starty){}
+//these functions return the number of expanded nodes
+inline int is_valid(int x, int y)
+{
+	return (x < 0|| y < 0) || (x > 7 || y > 8);
+}
+int DFS_search(int startx, int starty)
+{
+
+}
+int  BFS_search(int startx, int starty){}
+int IDS_search(int startx, int starty){}
+int  A_STAR_search(int startx, int starty){}
+int IDA_STAR_search(int startx, int starty){}
 
 //calls the appropriate function for the search type
 void search(int search_type, int startx, int starty)
@@ -34,7 +42,7 @@ void search(int search_type, int startx, int starty)
 
 		case IDA_STAR:
 			IDA_STAR_search(startx, starty);
-			break;:
+			break;
 	}
 }
 void print_introduction()
