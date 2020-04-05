@@ -15,14 +15,14 @@ int board[BOARD_SIZE][BOARD_SIZE];
 //these functions return the number of expanded nodes
 struct Node
 {
-	int x, y, child_count =0 ;
-	Node *parent, children[CHILD_NO];
-	Node(int x, int y):x(x), y(y){}
-
-	void add_node(struct Node *node){
-		children[child_count] = node;	
-		child_count++;
-		node->parent = this;
+	int x, y, discovered  = 0, children=0;
+	Node *parent, *child[CHILD_NO];
+	void add_child(struct Node* node)
+	{
+		if(children >= CHILD_NO){return;}
+		child[children] = node;
+		children++;
+		return;
 	}
 };
 inline int is_valid(int x, int y)
@@ -31,85 +31,96 @@ inline int is_valid(int x, int y)
 	tmp = (x < 0 || y < 0 || y >= BOARD_SIZE || x>=BOARD_SIZE)? 0 : 1;
 	return tmp;
 }
-int BFS_search(int startx, int starty, int endx, int endy)
+inline int get_index(int row, int col)
 {
-	Node initial(startx, endy);
-	initial.parent = NULL;
-	std::list<Node> frontier;
-	frontier.push_back(initial);
-	
-	//perform fast lookup of whether we already visited this spot
-	int expanded = 0, graph[BOARD_SIZE][BOARD_SIZE]; //store whether the point has been visited
-	memset(graph, 0, sizeof(graph));
-	
-	while( !frontier.empty() )
-	{
-		Node* current = &frontier.front();		
-		frontier.pop_front();
-		printf("testing: %d %d\n", current->x, current->y);
-		expanded++;
-		if(!is_valid(current->x, current->y))
-		{
-			continue;	
-		}
-		else if(current->x == endx && current->y == endy)	
-		{
-			printf("Found target.\n");
-			return expanded;
-		}
-		current->add_node(Node(current->x, current->y));
-	}
-	return 0;
+	return row*BOARD_SIZE + col;
 }
-/*
+void print_path(struct Node* node, const int startx, const int starty)
+{
+	Node  *tmp = node;
+	printf("(%d, %d)", node->x, node->y);
+	if(tmp->parent == NULL || (tmp->x == startx && tmp->y == starty)){	
+		return;
+	}
+	printf(" -> ");
+	print_path(tmp->parent, startx, starty);
+	
+	
+	return;
+}
 int BFS_search(int startx, int starty, int endx, int endy)
 {
-	//printf("startx: %d\tstarty: %d\tendx: %d\t, endy: %d\n", startx, starty,endx, endy);
-	int graph[BOARD_SIZE][BOARD_SIZE]; //store whether the point has been visited
-	memset(graph, 0, sizeof(graph));
-	std::pair<int, int> initial(startx, starty); //store the point coordinates
-
-	std::list<std::pair<int, int> > frontier;
-	Node first(initial.first, initial.second);
-
+	Node board[BOARD_SIZE * BOARD_SIZE];
+	std::list<Node*> frontier;
+	//preprocessing
+	for(int i =0; i < BOARD_SIZE * BOARD_SIZE; i++){
+		board[i].x = i / BOARD_SIZE;
+		board[i].y  = i % BOARD_SIZE;
+	}
+	int index = get_index(startx, starty);
+	Node* initial = &board[index];
+	initial->parent = NULL;
 	frontier.push_back(initial);
-
-
-	int expanded = 0;
-	while(!frontier.empty()){
-
-		std::pair<int, int>current = frontier.front();
-		frontier.pop_front();
-		expanded++;
-		if(current.first == endx && current.second == endy){
-			printf("arrived at (%d, %d). Found target\n",current.first, current.second);
-			break;
-		}
-
-		//continue if we've already expaned this node.
-		if(graph[current.first][current.second] == 1 || !is_valid(current.first, current.second)){ 
+	int expanded = 0; //number of expanded nodes
+	while(!frontier.empty())
+	{
+		Node* current = frontier.front();
+		current->discovered = 1;
+		if(!is_valid(current->x, current->y)){
 			continue;
 		}
-		printf("(%d,%d) is being checked with %d elements in list\n", 
-				current.first, current.second, frontier.size());
 
-
-		graph[current.first][current.second] = 1;
-		//next nodes in line
-		frontier.push_back(std::pair<int, int>(current.first+1, current.second+2));
-		frontier.push_back(std::pair<int, int>(current.first+1, current.second-2));
-		frontier.push_back(std::pair<int, int>(current.first-1, current.second+2));
-		frontier.push_back(std::pair<int, int>(current.first-1, current.second-2));
-
-		frontier.push_back(std::pair<int, int>(current.first+2, current.second+1));
-		frontier.push_back(std::pair<int, int>(current.first+2, current.second-1));
-		frontier.push_back(std::pair<int, int>(current.first-2, current.second+1));
-		frontier.push_back(std::pair<int, int>(current.first-2, current.second-1));
+		if(current->x == endx && current->y == endy)
+		{
+			print_path(current, startx, starty);
+			return expanded;
+		}
+		expanded++;
+		frontier.pop_front();
+		Node* tmp = &board[get_index(current->x + 1, current->y + 2)];
+		for(int i=0; i< CHILD_NO; i++){
+			int x = current->x, y = current->y;
+			switch(i % CHILD_NO){
+				case 0:
+					x+=1;y+=2;
+					break;
+				case 1:
+					x+=1;y-=2;
+					break;
+				case 2:
+					x-=1;y+=2;
+					break;
+				case 3:
+					x-=1;y-=2;
+					break;
+				case 4:
+					x+=2;y+=1;
+					break;
+				case 5:
+					x+=2;y-=1;
+					break;
+				case 6:
+					x-=2;y+=1;
+					break;
+				case 7:
+					x-=2;y-=1;
+					break;
+			}
+			//add child point to frontier if valid
+			if(is_valid(x, y)){
+				if(!board[get_index(x,y)].discovered){
+				frontier.push_back(&board[get_index(x, y)]);
+				board[get_index(x,y)].parent = current;
+				}
+			}
+		}
+		
 	}
-	printf("returning %d expanded\n", expanded);
-	return expanded;
+	printf("doneo\n");
+
+	return 0;
 }
-*/
+
 int DFS_search(int startx, int starty, int endx, int endy){
 	return 0;
 }
@@ -170,10 +181,12 @@ int main(int argc, char** argv)
 	print_introduction(); //show how to input the numbers
 	int algorithm =1, startx, starty, endx, endy;
 
+	Node n1, n2, n3;
+
 	while(algorithm > 0){
 		//scanf("%d %d %d %d", &algorithm, &startx, &starty, &endx, &endy);
 		std::cin>>algorithm>>startx>>starty>>endx>>endy;
 		printf("bout to search %d %d %d %d\n", startx, starty, endx, endy);
 		search(algorithm, startx, starty, endx, endy);
-	}
+	}	
 }
