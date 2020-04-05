@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage[margin=1in]{geometry}
+\usepackage[default]{sourcesanspro}
+%apparently can only use this CJK font?
+\setCJKmainfont{Noto Serif CJK TC}
+
+%info
+\title{Introduction To Artificial Intelligence: Homework 1 Report}
+\author{Andres Ponce(彭思安)\\
+0616110}
+%%%
+
+\begin{document}
+\maketitle
+\section{Introduction}
+	The first assignment for the course involved a chess board, and placing a knight 
+	on that board. Given a starting and ending position, how do we move the knight
+	along the ``best" path from the start to the finish? Using several of the methods
+	described in the textbook, the task focused on comparing the performance of each one.
+	Some criteria may include: completeness, time and space complexity, among other general
+	observations.
+\subsection{Breadth-First-Search}
+	The first algorithm to be implemented was the classic Breadth-First-Search. In general,
+	this algorithm keeps a ``frontier" data structure where to-be-expanded nodes are stored.
+	Every iteration, we pop a node from this set and examine its children. Since we can move 
+	by either $(\pm1 , \pm2)$ or $(\pm2, \pm1)$, every node has a possible 8 children.
+
+	In this implementation, we first check the validity of the specific child node(i.e. if it 
+	has already been explored), and if we have not encountered it and is withing the board bounds, 
+	we add it to the frontier list, implemented here by \texttt{std::list<Node*>}. If we already explored
+	a node,then we already know it does not contain a shortest path, otherwise the algorithm would have
+	halted already. 
+
+	To store the individual nodes information, we use a special \texttt{struct Node}, 
+	which essentially just stores the node's correspondent x and y values in the board. Then, a quick 
+	hash function can turn the x and y values into the index in the node array.
+
+	Breadth-First Search appears to not be the most efficient algorithm to use as is, unless we add
+	some form of heuristic when we choose which nodes to explore. Our algorithm will eventually reach 
+	the target node, however given a large enough board the time would likely be prohibitive. Since the
+	branching factor is 8, since we can make 8 possible moves at every node, the worst-case time complexity
+	is $O(d^{8})$, where $d$ is the depth of the solution path.
+
+
+\end{document}
