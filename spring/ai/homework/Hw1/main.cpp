@@ -149,7 +149,6 @@ void search(int search_type, int startx, int starty,
 		case DFS:
 			DFS_search(startx, starty, endx, endy);
 			break;
-
 		case IDS:
 			IDS_search(startx, starty, endx, endy);
 			break;
