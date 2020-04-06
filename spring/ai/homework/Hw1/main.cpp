@@ -10,7 +10,7 @@
 #define IDA_STAR 5
 #define BOARD_SIZE 8
 #define CHILD_NO 8
-int board[BOARD_SIZE][BOARD_SIZE];
+//int board[BOARD_SIZE][BOARD_SIZE];
 
 //these functions return the number of expanded nodes
 struct Node
@@ -25,6 +25,20 @@ struct Node
 		return;
 	}
 };
+
+static Node board[BOARD_SIZE * BOARD_SIZE];
+int expanded = 0; //number of expanded nodes for each algorithm
+void reset_board()
+{
+	//we set the x and y every iteration?
+	expanded = 0;
+	for(int i =0; i < BOARD_SIZE * BOARD_SIZE; i++){
+		board[i].x = i / BOARD_SIZE;
+		board[i].y  = i % BOARD_SIZE;
+		board[i].discovered = 0;
+	}
+
+}
 inline int is_valid(int x, int y)
 {
 	int tmp = 0;
@@ -44,24 +58,18 @@ void print_path(struct Node* node, const int startx, const int starty)
 	}
 	printf(" -> ");
 	print_path(tmp->parent, startx, starty);
-	
-	
 	return;
 }
 int BFS_search(int startx, int starty, int endx, int endy)
 {
-	Node board[BOARD_SIZE * BOARD_SIZE];
 	std::list<Node*> frontier;
 	//preprocessing
-	for(int i =0; i < BOARD_SIZE * BOARD_SIZE; i++){
-		board[i].x = i / BOARD_SIZE;
-		board[i].y  = i % BOARD_SIZE;
-	}
+	//reset_board();
 	int index = get_index(startx, starty);
 	Node* initial = &board[index];
 	initial->parent = NULL;
 	frontier.push_back(initial);
-	int expanded = 0; //number of expanded nodes
+	
 	while(!frontier.empty())
 	{
 		Node* current = frontier.front();
@@ -116,12 +124,56 @@ int BFS_search(int startx, int starty, int endx, int endy)
 		}
 		
 	}
-	printf("doneo\n");
-
 	return 0;
 }
 
-int DFS_search(int startx, int starty, int endx, int endy){
+int DFS_search(int startx, int starty, int endx, int endy)
+{
+	//reset_board();
+	Node *current = &board[get_index(startx, starty)];
+	printf("starting with: %d, %d\n", current->x, current->y);
+	board[get_index(current->x, current->y)].discovered = 1;
+	if(startx == endx && starty == endy){
+		printf("Found Target\n");
+		return expanded;
+	}
+	
+	for(int i = 0; i<CHILD_NO; i++){
+		int x=current->x, y= current->y;
+		switch(i % CHILD_NO)
+		{
+			case 0:
+				x+=1; y+=2;
+				break;
+			case 1:
+				x+=1; y-=2;
+				break;
+			case 2:
+				x-=1; y+=2;
+				break;
+			case 3:
+				x-=1; y-=2;
+				break;
+			case 4:
+				x+=2; y+=1;
+				break;
+			case 5:
+				x+=2; y-=1;
+				break;
+			case 6:
+				x-=2; y+=1;
+				break;
+			case 7:
+				x-=2; y-=1;
+				break;
+		}
+		//recursively call if there is a valid, unexplored node
+		if(is_valid(x, y) && !board[get_index(x, y)].discovered)
+		{
+			board[get_index(x, y)].parent = current;
+			DFS_search(x, y, endx, endy);
+		}
+	}	
 	return 0;
 }
 
@@ -141,6 +193,7 @@ int IDA_STAR_search(int startx, int starty, int endx, int endy){
 void search(int search_type, int startx, int starty, 
 				int endx, int endy)
 {
+	reset_board();
 	switch(search_type){
 		case BFS:
 			BFS_search(startx, starty, endx, endy);
