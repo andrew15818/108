@@ -15,7 +15,7 @@
 //these functions return the number of expanded nodes
 struct Node
 {
-	int x, y, discovered  = 0, children=0;
+	int x, y, discovered  = 0, children=0, expanded = 0;
 	Node *parent, *child[CHILD_NO];
 	void add_child(struct Node* node)
 	{
@@ -127,19 +127,22 @@ int BFS_search(int startx, int starty, int endx, int endy)
 	return 0;
 }
 
+
 int DFS_search(int startx, int starty, int endx, int endy)
 {
-	//reset_board();
+	static int expanded = 0;
 	Node *current = &board[get_index(startx, starty)];
 	printf("starting with: %d, %d\n", current->x, current->y);
 	board[get_index(current->x, current->y)].discovered = 1;
 	if(startx == endx && starty == endy){
 		printf("Found Target\n");
+		print_path(current, startx, starty);
 		return expanded;
 	}
-	
+	expanded++;
+	int x, y;
 	for(int i = 0; i<CHILD_NO; i++){
-		int x=current->x, y= current->y;
+		x=current->x; y= current->y;
 		switch(i % CHILD_NO)
 		{
 			case 0:
@@ -170,11 +173,15 @@ int DFS_search(int startx, int starty, int endx, int endy)
 		//recursively call if there is a valid, unexplored node
 		if(is_valid(x, y) && !board[get_index(x, y)].discovered)
 		{
-			board[get_index(x, y)].parent = current;
+			Node* tmp = &board[get_index(x, y)];
+			tmp->parent = current;
+			board[get_index(x, y)].expanded = current->expanded + 1;
+			printf("(%d, %d) is the parent of (%d, %d)\n", tmp->parent->x, tmp->parent->y,tmp->x, tmp->y);
 			DFS_search(x, y, endx, endy);
+			return expanded;
 		}
-	}	
-	return 0;
+	}
+	return expanded;
 }
 
 int IDS_search(int startx, int starty, int endx, int endy){
