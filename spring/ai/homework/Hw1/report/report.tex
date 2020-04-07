@@ -42,6 +42,23 @@
 	the target node, however given a large enough board the time would likely be prohibitive. Since the
 	branching factor is 8, since we can make 8 possible moves at every node, the worst-case time complexity
 	is $O(d^{8})$, where $d$ is the depth of the solution path.
+\subsection{Depth-First-Search}
+	For depth-first-search(DFS), we first carry out a thread to the end, and as we are left without valid 
+	states to move on to that we start backtracking up the chain. On average, it tends to be slower than
+	BFS, since we can explore a large amount of nodes before getting to the target if the target is near
+	the starting point. However, the \textit{memory} requirements are quite lower. This is because at any 
+	point, only the nodes on the current search path are kept in memory -- the ones we have to search --
+	rather than all the nodes at a given level such as BFS. 
 
+	
+	From some of the sample tests, DFS resulted in sometimes significantly longer search paths,
+	since it would search for paths that lead to dead ends.
 
+	Depending on the problem, DFS would probably not be the most ideal search algorithm. These two first
+	algorithms usually have no heuristic to select nodes, so considerable time may be spent on nodes
+	that ultimately have no bearing on the final result. Thus, uninformed algorithms in general might
+	not be the wisest move. 
+	
+	An interesting experiment or topic for further discussion given enough time might be 
+	to check the actual average difference between random points on the board. 
 \end{document}

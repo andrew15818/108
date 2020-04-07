@@ -2,6 +2,7 @@
 #include<cstdio>
 #include<cstring>
 #include<vector>
+#include<stack>
 #include<list>
 #define BFS 1
 #define DFS 2
@@ -15,7 +16,7 @@
 //these functions return the number of expanded nodes
 struct Node
 {
-	int x, y, discovered  = 0, children=0, expanded = 0;
+	int x, y, discovered = 0, children=0;
 	Node *parent, *child[CHILD_NO];
 	void add_child(struct Node* node)
 	{
@@ -64,7 +65,7 @@ int BFS_search(int startx, int starty, int endx, int endy)
 {
 	std::list<Node*> frontier;
 	//preprocessing
-	//reset_board();
+
 	int index = get_index(startx, starty);
 	Node* initial = &board[index];
 	initial->parent = NULL;
@@ -73,19 +74,22 @@ int BFS_search(int startx, int starty, int endx, int endy)
 	while(!frontier.empty())
 	{
 		Node* current = frontier.front();
+		
+		//if(!is_valid(current->x, current->y)){ 
+		//	continue;
+		//}
 		current->discovered = 1;
-		if(!is_valid(current->x, current->y)){
-			continue;
-		}
-
-		if(current->x == endx && current->y == endy)
-		{
+		//printf("checking: (%d, %d)\n", current->x, current->y);
+		if(current->x == endx && current->y == endy){
+			printf("Found Target.\n");
 			print_path(current, startx, starty);
 			return expanded;
 		}
 		expanded++;
 		frontier.pop_front();
 		Node* tmp = &board[get_index(current->x + 1, current->y + 2)];
+		current->discovered = 1;
+
 		for(int i=0; i< CHILD_NO; i++){
 			int x = current->x, y = current->y;
 			switch(i % CHILD_NO){
@@ -116,9 +120,9 @@ int BFS_search(int startx, int starty, int endx, int endy)
 			}
 			//add child point to frontier if valid
 			if(is_valid(x, y)){
-				if(!board[get_index(x,y)].discovered){
-				frontier.push_back(&board[get_index(x, y)]);
-				board[get_index(x,y)].parent = current;
+				if(!board[get_index(x, y)].discovered){
+					frontier.push_back(&board[get_index(x, y)]);
+					board[get_index(x,y)].parent = current;
 				}
 			}
 		}
@@ -130,66 +134,67 @@ int BFS_search(int startx, int starty, int endx, int endy)
 
 int DFS_search(int startx, int starty, int endx, int endy)
 {
-
-	Node *current = &board[get_index(startx, starty)];
-	printf("starting with: %d, %d with %d expanded\n", current->x, current->y, current->expanded);
-	board[get_index(current->x, current->y)].discovered = 1;
-	if(startx == endx && starty == endy){
-		printf("Found Target\n");
-		print_path(current, startx, starty);
-		//printf("expanded: %d\n", expanded);
-		return current->expanded;
-	}
-	expanded++;
-	int x, y;
-	for(int i = 0; i<CHILD_NO; i++){
-		x=current->x; y= current->y;
-		switch(i % CHILD_NO)
+	Node* initial= &board[get_index(startx, starty)];
+	Node* current;
+	initial->parent = NULL;
+	int expanded = 0;
+	std::stack<Node*> frontier;
+	frontier.push(initial);
+	
+	while(!frontier.empty()){
+		current = frontier.top();
+		frontier.pop();
+		expanded++;
+		//checking for target value
+		//printf("Check (%d, %d)\n", current->x, current->y);
+		if(current->x == endx && current->y == endy)
 		{
-			case 0:
-				x+=1; y+=2;
-				break;
-			case 1:
-				x+=1; y-=2;
-				break;
-			case 2:
-				x-=1; y+=2;
-				break;
-			case 3:
-				x-=1; y-=2;
-				break;
-			case 4:
-				x+=2; y+=1;
-				break;
-			case 5:
-				x+=2; y-=1;
-				break;
-			case 6:
-				x-=2; y+=1;
-				break;
-			case 7:
-				x-=2; y-=1;
-				break;
+			printf("Found Target.\n");
+			print_path(current, startx, starty);
+			printf("pritned path\n");
+			return expanded;
 		}
-		//recursively call if there is a valid, unexplored node
-		if(is_valid(x, y) && !board[get_index(x, y)].discovered)
-		{
-			Node* tmp = &board[get_index(x, y)];
-			tmp->parent = current;
-			printf("(%d, %d) is the parent of (%d, %d)\n", tmp->parent->x, tmp->parent->y,tmp->x, tmp->y);
-			board[get_index(x, y)].expanded = current->expanded + 1;
-			
-			int return_value = DFS_search(x, y, endx, endy);
-			if(return_value > 0){
-				printf("\tparent of (%d, %d) is (%d, %d)\n", current->x, current->y, current->parent->x,
-								current->parent->y);
-				return return_value;
+		
+		current->discovered = 1;
+		int x, y;
+		for(int i = 0; i<CHILD_NO; i++){
+			x=current->x; y= current->y;
+			switch(i % CHILD_NO)
+			{
+					case 0:
+						x+=1; y+=2;
+						break;
+					case 1:
+						x+=1; y-=2;
+						break;
+					case 2:
+						x-=1; y+=2;
+						break;
+					case 3:
+						x-=1; y-=2;
+						break;
+					case 4:
+						x+=2; y+=1;
+						break;
+					case 5:
+						x+=2; y-=1;
+						break;
+					case 6:
+						x-=2; y+=1;
+						break;
+					case 7:
+						x-=2; y-=1;
+						break;
+			}
+			Node* to_check = &board[get_index(x, y)];
+			if(is_valid(x,y) && !to_check->discovered){
+				to_check->parent = current;
+				frontier.push(to_check);
+
 			}
 		}
 	}
-	//if we get here, we didnt find a viable path from this node :(
-	current->expanded = 0;
-	return current->expanded;
+	return 0;//placeholder ATM
 }
 
 int IDS_search(int startx, int starty, int endx, int endy){
@@ -236,8 +241,8 @@ void print_introduction()
 			"Enter the number of the algorithm to use, and starting x,y and ending x,y  like:\n"
 			" algorithm startx starty endx endy.\n"
 			"The algorithms numbers are as follows:\n"
-			"\t1.DFS\n"
-			"\t2.BFS\n"
+			"\t1.BFS\n"
+			"\t2.DFS\n"
 			"\t3.IDS\n"
 			"\t4.A*\n"
 			"\t5.IDA*\n"
