@@ -130,14 +130,15 @@ int BFS_search(int startx, int starty, int endx, int endy)
 
 int DFS_search(int startx, int starty, int endx, int endy)
 {
-	static int expanded = 0;
+
 	Node *current = &board[get_index(startx, starty)];
-	printf("starting with: %d, %d\n", current->x, current->y);
+	printf("starting with: %d, %d with %d expanded\n", current->x, current->y, current->expanded);
 	board[get_index(current->x, current->y)].discovered = 1;
 	if(startx == endx && starty == endy){
 		printf("Found Target\n");
 		print_path(current, startx, starty);
-		return expanded;
+		//printf("expanded: %d\n", expanded);
+		return current->expanded;
 	}
 	expanded++;
 	int x, y;
@@ -175,13 +176,20 @@ int DFS_search(int startx, int starty, int endx, int endy)
 		{
 			Node* tmp = &board[get_index(x, y)];
 			tmp->parent = current;
-			board[get_index(x, y)].expanded = current->expanded + 1;
 			printf("(%d, %d) is the parent of (%d, %d)\n", tmp->parent->x, tmp->parent->y,tmp->x, tmp->y);
-			DFS_search(x, y, endx, endy);
-			return expanded;
+			board[get_index(x, y)].expanded = current->expanded + 1;
+			
+			int return_value = DFS_search(x, y, endx, endy);
+			if(return_value > 0){
+				printf("\tparent of (%d, %d) is (%d, %d)\n", current->x, current->y, current->parent->x,
+								current->parent->y);
+				return return_value;
+			}
 		}
 	}
-	return expanded;
+	//if we get here, we didnt find a viable path from this node :(
+	current->expanded = 0;
+	return current->expanded;
 }
 
 int IDS_search(int startx, int starty, int endx, int endy){
