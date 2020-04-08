@@ -1,0 +1,31 @@
+\documentclass{tufte-handout}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\title{Neural Networks}
+\author{Andresito Ponce}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+	The general idea behind neural networks is to 
+	maintain a \textbf{basis function} whose parameters
+	can change during testing. Then the function can know 
+	how to perform "better" as the testing goes on.
+\end{abstract}
+
+Previously, we had only considered a linear combination of a fixed
+basis function, which usually took the form
+\[ y(x, w) = f(\sum_{j=1}^{M}w_{j}\phi_{j}(x))\]
+
+However, our goal is to make some sort of these functions depend on
+certain parameters.
+\[ a_{j} = \sum_{i=1}^{D}w^{(1)}_{ji}x_{i} + w^{(1)}_{j0}\]
+where $a_{j}$ is the \textbf{activation} value.\footnote{Remember the
+activation is the final output of this node. In classification, it 
+determines which class we eventually assign to an input. The (1) 
+superscript indicates they are the first layer of the NN.}
+
+We then transform the activation value by another nonlinear function
+$h$, and are left with the final result $z_{j} = h(a_{j})$. 
+\end{document}
