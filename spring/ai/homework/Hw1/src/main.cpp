@@ -1,10 +1,12 @@
 #include<iostream>
 #include<cstdio>
 #include<cstring>
-#include<vector>
+#include<queue>
 //#include<bfs.h>
 #include<stack>
 #include<list>
+#include<stdlib.h>
+
 #define BFS 1
 #define DFS 2
 #define IDS 3
@@ -53,6 +55,10 @@ inline int is_valid(int x, int y)
 inline int get_index(int row, int col)
 {
 	return row*BOARD_SIZE + col;
+}
+inline int h(int currx, int curry, int targetx, int targety)
+{
+	return (abs(targetx - currx) + abs(targety - curry))/3;
 }
 void print_path(struct Node* node, const int startx, const int starty)
 {
@@ -202,6 +208,20 @@ int IDS_search(int startx, int starty, int endx, int endy){
 }
 
 int  A_STAR_search(int startx, int starty, int endx, int endy){
+	Node* initial = &board[get_index(startx, starty)];
+	initial->parent = NULL;
+	int x,y;
+	std::priority_queue<Node*> frontier;	
+	frontier.push(initial);
+	Node* tmp = frontier.top();
+	//select the best node that has not been discovered yet
+	
+	while(!frontier.empty())
+	{
+		Node* tmp = frontier.top();		
+		frontier.pop();
+		
+	}
 	return 0;
 }
 
