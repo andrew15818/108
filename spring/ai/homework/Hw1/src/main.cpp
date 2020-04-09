@@ -2,7 +2,6 @@
 #include<cstdio>
 #include<cstring>
 #include<queue>
-//#include<bfs.h>
 #include<stack>
 #include<list>
 #include<stdlib.h>
@@ -15,13 +14,14 @@
 #define BOARD_SIZE 8
 #define CHILD_NO 8
 #define MAX_DEPTH 10
+#define OPEN_SET 1000 
 //int board[BOARD_SIZE][BOARD_SIZE];
 
 //these functions return the number of expanded nodes
 struct Node
 {
 	int x, y, discovered = 0, children=0;
-	int f = 0 , h = 0; //info for a* algorithm
+	int f = 0 , g = 0; //info for a* algorithm
 	Node *parent; 
 };
 //need the struct to sort priority queue
@@ -59,9 +59,9 @@ inline int get_index(int row, int col)
 {
 	return row*BOARD_SIZE + col;
 }
-inline int h(int currx, int curry, int targetx, int targety)
+inline int heuristic(struct Node* node, int targetx, int targety)
 {
-	return (abs(targetx - currx) + abs(targety - curry))/3;
+	return (abs(targetx - node->x) + abs(targety - node->y));
 }
 void print_path(struct Node* node, const int startx, const int starty)
 {
@@ -218,27 +218,95 @@ int  A_STAR_search(int startx, int starty, int endx, int endy){
 	Node* initial = &board[get_index(startx, starty)];
 	initial->parent = NULL;
 	int x,y;
-	std::priority_queue<Node*, std::vector<Node*>, compare > frontier;	
+	std::priority_queue<Node*, std::vector<Node*>, compare > frontier;
 	frontier.push(initial);
-	
+	initial->f = heuristic(initial, endx, endy);
 	//select the best node that has not been discovered yet
-	int expanded = 0;	
+	int expanded = 0;
 	while(!frontier.empty())
 	{
 
-		Node* tmp = frontier.top();		
+		Node* parent = frontier.top();
 		frontier.pop();
 		expanded++;
-		tmp->discovered = 1;
-		printf("getting: (%d, %d)\n",tmp->x, tmp->y);
-		if(tmp->x == endx && tmp->y == endy)
+		
+		//printf("getting: (%d, %d)\n",parent->x, parent->y);
+		
+		parent->discovered= OPEN_SET;
+		expanded++;
+
+
+		printf("for (%d, %d): f:%d \tg:%d \th:%d\n", parent->x, parent->y, parent->f, parent->g, heuristic(parent, endx, endy));
+		//iterate through the nodes of the parent node
+		for(int i =0; i < CHILD_NO; i++)
 		{
-			print_path(tmp, startx, starty);
-			return expanded;	
+			x = parent->x + rowstep[i]; y = parent->y + colstep[i];
+			if(!is_valid(x, y)){continue;}
+			
+			Node* child = &board[get_index(x, y)];
+			
+			//check if the child node is the target
+			if(child->x == endx && child->y == endy){
+				printf("parent: (%d, %d)\n", parent->x, parent->y);
+				child->parent = parent;
+				//print_path(child, startx, starty);
+				return expanded;
+				//return expanded;
+			}
+			//calculate f and g for the child
+			child->g = parent->g + (abs(parent->x + child->x) + abs(parent->y - child->y));
+			child->f =  child->g + heuristic(child, endx, endy);
+			
+			if(child->f <= parent->f)
+			{
+				printf("\tfor (%d, %d): f:%d \tg:%d \th:%d\n", child->x, child->y, child->f, child->g, heuristic(child, endx, endy));
+				printf("hola\n");
+				child->parent = parent;
+				Node* tmp;
+				bool found = false;
+				for(int i = 0; i < frontier.size(); i++)
+				{
+					tmp = frontier.top();
+					frontier.pop();
+					if(tmp->x == child->x && tmp->y == child->y){
+						found = true;
+						break;
+					}
+					frontier.push(tmp);
+				}
+				frontier.push(child);
+
+				
+			}
+			/*
+			if(child->discovered == 1 || child->discovered == OPEN_SET)
+			{
+				if(child->f > parent->f)
+				{
+					continue;
+				}
+			}
+			Node* tmpo; 
+			bool found = false;
+			for(int i = 0; i< frontier.size(); i++)
+			{
+				tmpo = frontier.top();
+				frontier.pop();
+				found = (tmpo->x == child->x && tmpo->y == child->y)?true:false;
+				if(found){frontier.push(tmpo);break;}
+			}
+			child->parent = parent;
+			if(!found){
+			frontier.push(child);
+			}
+			*/
+		
 		}
 		
 	}
-	return 0;
+	Node* tmp = &board[get_index(endx, endy)];
+	//print_path(tmp, startx, endx);
+	return expanded;
 }
 
 int IDA_STAR_search(int startx, int starty, int endx, int endy){
@@ -271,7 +339,7 @@ void search(int search_type, int startx, int starty,
 			expanded = IDA_STAR_search(startx, starty, endx, endy);
 			break;
 	}
-	printf("When performing the algorithm, expanded %d nodes.\n",expanded );
+	printf("\nWhen performing the algorithm, expanded %d nodes.\n",expanded );
 }
 void print_introduction()
 {
