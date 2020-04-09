@@ -21,18 +21,21 @@
 struct Node
 {
 	int x, y, discovered = 0, children=0;
-	Node *parent, *child[CHILD_NO];
-	void add_child(struct Node* node)
+	int f = 0 , h = 0; //info for a* algorithm
+	Node *parent; 
+};
+//need the struct to sort priority queue
+struct compare{
+	bool operator()(const Node* n1, const Node* n2)
 	{
-		if(children >= CHILD_NO){return;}
-		child[children] = node;
-		children++;
-		return;
+		return n1-> f <= n2->f;
 	}
 };
+
 const int rowstep[CHILD_NO] = {1, 1, -1, -1, 2, 2, -2, -2}; 
 const int colstep[CHILD_NO] = {2, -2, 2, -2, 1, -1, 1, -1};
 static Node board[BOARD_SIZE * BOARD_SIZE];
+
 int expanded = 0; //number of expanded nodes for each algorithm
 
 void reset_board()
@@ -158,12 +161,10 @@ int DFS_search(int startx, int starty, int endx, int endy)
 int IDS_helper(int startx, int starty, int endx, int endy, int curr_depth)
 {
 	
-	Node* current = &board[get_index(startx, starty)];
+	Node* current = &board[get_index(startx, starty)]; 
 
 	if(current->x == endx && current->y == endy) //1.check if we found the target
 	{
-		//printf("found (%d, %d) with depth: %d \n",endx, endy, curr_depth);
-		printf("\tparent:(%d, %d)\n", current->parent->x, current->parent->y);
 		print_path(current, endx, endy);
 		return 1;
 	}
@@ -174,12 +175,15 @@ int IDS_helper(int startx, int starty, int endx, int endy, int curr_depth)
 	current->discovered = 1;
 	int x ,y;
 	Node* to_check;
+
+	//checking and recursing on child nodes
 	for(int i =0; i<CHILD_NO; i++)
 	{
 		x = current->x + rowstep[i]; y = current->y + colstep[i];
 		if(is_valid(x, y)){
 				to_check = &board[get_index(x, y)];
-				
+
+				//return if target node reachable from current node
 				if(!to_check->discovered){
 					to_check->parent = current;
 					if(IDS_helper(x, y, endx, endy, curr_depth++) > 0){
@@ -197,6 +201,8 @@ int IDS_search(int startx, int starty, int endx, int endy){
 
 	int iterations = 1, found = 0;
 	board[get_index(startx, starty)].parent = NULL;
+	//try to find min amount of nodes needed to reach goal
+	//by limiting iterations
 	for(iterations; iterations <= MAX_DEPTH; iterations++){
 		found = IDS_helper(startx, starty, endx, endy, iterations);
 		if (found > 0){
@@ -208,18 +214,28 @@ int IDS_search(int startx, int starty, int endx, int endy){
 }
 
 int  A_STAR_search(int startx, int starty, int endx, int endy){
+
 	Node* initial = &board[get_index(startx, starty)];
 	initial->parent = NULL;
 	int x,y;
-	std::priority_queue<Node*> frontier;	
+	std::priority_queue<Node*, std::vector<Node*>, compare > frontier;	
 	frontier.push(initial);
-	Node* tmp = frontier.top();
-	//select the best node that has not been discovered yet
 	
+	//select the best node that has not been discovered yet
+	int expanded = 0;	
 	while(!frontier.empty())
 	{
+
 		Node* tmp = frontier.top();		
 		frontier.pop();
+		expanded++;
+		tmp->discovered = 1;
+		printf("getting: (%d, %d)\n",tmp->x, tmp->y);
+		if(tmp->x == endx && tmp->y == endy)
+		{
+			print_path(tmp, startx, starty);
+			return expanded;	
+		}
 		
 	}
 	return 0;
