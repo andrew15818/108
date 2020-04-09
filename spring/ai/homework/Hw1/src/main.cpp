@@ -12,7 +12,7 @@
 #define IDA_STAR 5
 #define BOARD_SIZE 8
 #define CHILD_NO 8
-#define MAX_DEPTH 1
+#define MAX_DEPTH 10
 //int board[BOARD_SIZE][BOARD_SIZE];
 
 //these functions return the number of expanded nodes
@@ -96,33 +96,8 @@ int BFS_search(int startx, int starty, int endx, int endy)
 		current->discovered = 1;
 
 		for(int i=0; i< CHILD_NO; i++){
-			int x = current->x, y = current->y;
-			switch(i % CHILD_NO){
-				case 0:
-					x+=1;y+=2;
-					break;
-				case 1:
-					x+=1;y-=2;
-					break;
-				case 2:
-					x-=1;y+=2;
-					break;
-				case 3:
-					x-=1;y-=2;
-					break;
-				case 4:
-					x+=2;y+=1;
-					break;
-				case 5:
-					x+=2;y-=1;
-					break;
-				case 6:
-					x-=2;y+=1;
-					break;
-				case 7:
-					x-=2;y-=1;
-					break;
-			}
+			int x = current->x + rowstep[i], y = current->y + colstep[i];
+
 			//add child point to frontier if valid
 			if(is_valid(x, y)){
 				if(!board[get_index(x, y)].discovered){
@@ -164,34 +139,6 @@ int DFS_search(int startx, int starty, int endx, int endy)
 		int x, y;
 		for(int i = 0; i<CHILD_NO; i++){
 			x=current->x + rowstep[i]; y= current->y + colstep[i];
-			/*switch(i % CHILD_NO)
-			{
-					case 0:
-						x+=1; y+=2;
-						break;
-					case 1:
-						x+=1; y-=2;
-						break;
-					case 2:
-						x-=1; y+=2;
-						break;
-					case 3:
-						x-=1; y-=2;
-						break;
-					case 4:
-						x+=2; y+=1;
-						break;
-					case 5:
-						x+=2; y-=1;
-						break;
-					case 6:
-						x-=2; y+=1;
-						break;
-					case 7:
-						x-=2; y-=1;
-						break;
-			}
-			*/
 			Node* to_check = &board[get_index(x, y)];
 			if(is_valid(x,y) && !to_check->discovered){
 				to_check->parent = current;
@@ -206,17 +153,17 @@ int IDS_helper(int startx, int starty, int endx, int endy, int curr_depth)
 {
 	
 	Node* current = &board[get_index(startx, starty)];
-	printf("checking with IDS: (%d, %d)\n", current->x, current->y);
+
 	if(current->x == endx && current->y == endy) //1.check if we found the target
 	{
+		//printf("found (%d, %d) with depth: %d \n",endx, endy, curr_depth);
+		printf("\tparent:(%d, %d)\n", current->parent->x, current->parent->y);
 		print_path(current, endx, endy);
-		return 1;	
+		return 1;
 	}
-	printf("Depth: %d\n", curr_depth);
-
-	if(curr_depth > MAX_DEPTH){
+	if(curr_depth > MAX_DEPTH || current->discovered){
 		printf("MAX_DEPTH exceeded.\n");
-		return 0;	
+		return 0;
 	}
 	current->discovered = 1;
 	int x ,y;
@@ -226,10 +173,13 @@ int IDS_helper(int startx, int starty, int endx, int endy, int curr_depth)
 		x = current->x + rowstep[i]; y = current->y + colstep[i];
 		if(is_valid(x, y)){
 				to_check = &board[get_index(x, y)];
-				to_check->parent = current;
+				
 				if(!to_check->discovered){
-					IDS_helper(x, y, endx, endy, curr_depth++);
-					//return 1;	
+					to_check->parent = current;
+					if(IDS_helper(x, y, endx, endy, curr_depth++) > 0){
+						return 1;
+					}
+
 				}
 		}
 	}
@@ -239,16 +189,16 @@ int IDS_helper(int startx, int starty, int endx, int endy, int curr_depth)
 //want to run limited DFS from starting nodes found in BFS manner
 int IDS_search(int startx, int starty, int endx, int endy){
 
-	int iterations = 1, found = 0;	
+	int iterations = 1, found = 0;
+	board[get_index(startx, starty)].parent = NULL;
 	for(iterations; iterations <= MAX_DEPTH; iterations++){
-
-		found = IDS_helper(startx, starty, endx, endy, iterations);	
+		found = IDS_helper(startx, starty, endx, endy, iterations);
 		if (found > 0){
-			return found;	
-		}		
+			break;
+		}
 	}
-
-	return 0;
+	print_path(&board[get_index(endx, endy)], startx, starty);
+	return found;
 }
 
 int  A_STAR_search(int startx, int starty, int endx, int endy){
@@ -263,27 +213,29 @@ int IDA_STAR_search(int startx, int starty, int endx, int endy){
 void search(int search_type, int startx, int starty, 
 				int endx, int endy)
 {
+	int expanded=0;
 	reset_board();
 	switch(search_type){
 		case BFS:
-			BFS_search(startx, starty, endx, endy);
+			expanded = BFS_search(startx, starty, endx, endy);
 			break;
 			
 		case DFS:
-			DFS_search(startx, starty, endx, endy);
+			expanded = DFS_search(startx, starty, endx, endy);
 			break;
 		case IDS:
-			IDS_search(startx, starty, endx, endy);
+			expanded = IDS_search(startx, starty, endx, endy);
 			break;
 
 		case A_STAR:
-			A_STAR_search(startx, starty, endx, endy);
+			expanded = A_STAR_search(startx, starty, endx, endy);
 			break;
 
 		case IDA_STAR:
-			IDA_STAR_search(startx, starty, endx, endy);
+			expanded = IDA_STAR_search(startx, starty, endx, endy);
 			break;
 	}
+	printf("When performing the algorithm, expanded %d nodes.\n",expanded );
 }
 void print_introduction()
 {
