@@ -78,4 +78,46 @@
 	For our implementation, we use a helper function, since we recursively call the helper function. When first
 	entering the helper function, besides from just checking whehter we are at the target, we also have to check
 	whether the limit has been reached. Other than that, we proceed in a very similar manner to DFS.
+
+\subsection{A* Search}
+	The a* algorithm usually turns out to be one of the most effective search algorithms, since we 
+	use a heuristic to make a decision on which nodes to expand. The algorithm itself is relatively 
+	straightforward: for every node, we keep track of three variables $f, g,$ and $h$.  $g$ is the 
+	cost of getting to node $n$, while $h$ is the (estimated) cost of arriving at the solution node. 
+	Then, for each node $f = g + h$. From the child nodes, we choose one that has a lower $f$ cost than
+	its parent. 
+
+	This is where the problems begin. Due to the unconventional movement of the knight in chess, 
+	the program does not find the correct answer (and sometimes no answer at all) when we have to make
+	a move away from the target, to a node that is actually \textit{farther away} from the target node
+	than the one we are currently in right now. For example, the sample problem involves going from 
+	$(0, 0)$ to $(2, 2)$. In this case, the program would move to $(2, 1)$ and then get stuck because
+	the best move is actually one that is farther away from $(2, 2)$, i.e. a node with a higher $f$ value.
+
+	Adapting this algorithm this situation would most definitely be an interesting research question. 
+	A* remains widely used in many industries, from computer vision to video games, due to its efficiency
+	and correctness. Since we only expand nodes that grant a better chance of arriving at a target, then
+	we can overall expand fewer nodes.
+
+	In this implemenation, if the target node can be reached directly without going to a further point, 
+	then the algorithm will reach the target node with fewer expanded nodes than with an uninformed 
+	search. 
+\section{Results}
+Maybe include a table with some of the nodes that we expanded, maybe with $(0, 2)$ and $(0, 7)$?
+\section{Lessons}
+	The biggest personal takeaway from this assignment was the sheer difference between informed and 
+	uninformed searches. Spending valuable time expanding nodes that do not influence the final 
+	result made the optimal path take considerably longer to compute. However, the problem was 
+	solvable even with a relatively straightforward approach such as BFS and DFS. A* would take 
+	considerably fewer nodes, usually less than 10 expansions. The total $f$ values would quickly 
+	get very small,which means that the algorithm was moving in a targetetd manner towards the
+	target node.
+
+	The actual implementation of the algorithms also proved useful. Although I had already 
+	implemented most of them in previous courses, this time finding a better approach to writing the
+	code took more priority. 
+
+	Some areas of interest include programs that play games based on the ideas of graph theory. When 
+	we can model some of the ``best" moves in a game, it would be interesting to try to model the 
+	games with such an approach. 
 \end{document}
