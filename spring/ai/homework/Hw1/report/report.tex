@@ -61,4 +61,21 @@
 	
 	An interesting experiment or topic for further discussion given enough time might be 
 	to check the actual average difference between random points on the board. 
+\subsection{Iterative Deepening Search}
+	Iterative Deepening Search, sometimes referred to as \textit{Iterative Deepening Depth-First Search},
+	attempts to combine the useful properties of BFS and DFS in one single algorithm. First, we set a limit
+	on the depth of the solution, and call a depth-first search on the starting node. Thus, whenever we find
+	the solution node, it should be done using the least amount of ndoes possible.
+
+	Every time we don't find the solution node, we increase the limit and try again. This might result
+	in the top nodes of the search tree being generated often, however the difference still turns out not
+	to be too great, since most nodes reside in the lower levels of the search tree(assuming constant 
+	branching factor). Even though the 
+	asymptotic running time remains $O(b^{d})$ (same as BFS), the memory complexity is that of DFS $O(bd)$.
+	For uninformed strategies with an unknown solution depth, IDS might be the best choice since like DFS
+	for a finite space, it is guaranteed to find the solution becuase of the optimality property.
+
+	For our implementation, we use a helper function, since we recursively call the helper function. When first
+	entering the helper function, besides from just checking whehter we are at the target, we also have to check
+	whether the limit has been reached. Other than that, we proceed in a very similar manner to DFS.
 \end{document}
