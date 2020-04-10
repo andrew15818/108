@@ -236,7 +236,8 @@ int  A_STAR_search(int startx, int starty, int endx, int endy){
 		expanded++;
 
 
-		printf("for (%d, %d): f:%d \tg:%d \th:%d\n", parent->x, parent->y, parent->f, parent->g, heuristic(parent, endx, endy));
+		printf("for (%d, %d): f:%d \tg:%d \th:%d\n", 
+						parent->x, parent->y, parent->f, parent->g, heuristic(parent, endx, endy));
 		//iterate through the nodes of the parent node
 		for(int i =0; i < CHILD_NO; i++)
 		{
@@ -249,7 +250,7 @@ int  A_STAR_search(int startx, int starty, int endx, int endy){
 			if(child->x == endx && child->y == endy){
 				printf("parent: (%d, %d)\n", parent->x, parent->y);
 				child->parent = parent;
-				//print_path(child, startx, starty);
+				print_path(child, startx, starty);
 				return expanded;
 				//return expanded;
 			}
@@ -259,7 +260,8 @@ int  A_STAR_search(int startx, int starty, int endx, int endy){
 			
 			if(child->f <= parent->f)
 			{
-				printf("\tfor (%d, %d): f:%d \tg:%d \th:%d\n", child->x, child->y, child->f, child->g, heuristic(child, endx, endy));
+				printf("\tfor (%d, %d): f:%d \tg:%d \th:%d\n", 
+								child->x, child->y, child->f, child->g, heuristic(child, endx, endy));
 				printf("hola\n");
 				child->parent = parent;
 				Node* tmp;
@@ -278,38 +280,21 @@ int  A_STAR_search(int startx, int starty, int endx, int endy){
 
 				
 			}
-			/*
-			if(child->discovered == 1 || child->discovered == OPEN_SET)
-			{
-				if(child->f > parent->f)
-				{
-					continue;
-				}
-			}
-			Node* tmpo; 
-			bool found = false;
-			for(int i = 0; i< frontier.size(); i++)
-			{
-				tmpo = frontier.top();
-				frontier.pop();
-				found = (tmpo->x == child->x && tmpo->y == child->y)?true:false;
-				if(found){frontier.push(tmpo);break;}
-			}
-			child->parent = parent;
-			if(!found){
-			frontier.push(child);
-			}
-			*/
-		
+					
 		}
 		
 	}
-	Node* tmp = &board[get_index(endx, endy)];
-	//print_path(tmp, startx, endx);
 	return expanded;
 }
 
+int IDA_STAR_helper(int bound)
+{
+
+}
 int IDA_STAR_search(int startx, int starty, int endx, int endy){
+	Node* initial = &board[get_index(x, y)];
+	initial->parent = NULL;
+	initial->f = h(initial, endx, endy);
 	return 0;
 }
 
