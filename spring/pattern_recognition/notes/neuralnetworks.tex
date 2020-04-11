@@ -26,6 +26,7 @@ activation is the final output of this node. In classification, it
 determines which class we eventually assign to an input. The (1) 
 superscript indicates they are the first layer of the NN.}
 
+A common activation function is $y = \frac{1}{1+e^{-x}}$
 We then transform the activation value by another nonlinear function
 $h$, and are left with the final result $z_{j} = h(a_{j})$. 
 
@@ -38,4 +39,49 @@ from all the layers that feed into k for the two levels?}
 \[ y_{k}(x, w) = \phi(\sum_{j=1}^{M}w_{kj}^{(2)}h(\sum_{i=1}^{D}
 w_{ji}^{(1)}x_{i}+w_{j0}^{(1)})+w_{k0}^{(2)})\]
 
+\subsection{Feed-Forward Neural Networks}
+In this scheme, there are a set of \textbf{input nodes}, which only 
+connect to the nodes on the next layer, and do not form cycles. 
+There might be some \textbf{hidden layers} connected which lie between
+the input layers and the final output layer. 
+
+\begin{marginfigure}
+		\includegraphics[scale=0.3]{neural_networks}
+		\caption{The input layers feed into the hidden layers,
+		the combinations of weights and basis functions can then
+		determine the results of the output layers.}
+\end{marginfigure}
+
+Out of this simple model arises \textbf{deep learning}, where we have 
+more than one hidden layers, \textbf{convolutional neural networks},
+where nodes of one layer are not necessarily connected to the nodes
+of a different layer(in contrast to multilayer perceptron).
+\footnote{The lack of full connectedness means that the model is less prone to
+overfit data. Instead of matrix multiplication, CNNs also use \textbf{convolution}
+in at least one layer.}
+
+For the problem of \textbf{regression}, using only one layer, we would also have to
+minimize the sum of the squares between the target vector and the output of our model
+$y(x, w)$. If we wanted a function with K dimensions, our final layer could have K 
+output nodes, one for each dimension. 
+
+For a classification problem, we might again use the sigmoid function to model 
+our confidence of $p(C_{1}|x)$ for $p(C_{2}|x)$, by measuring the probability of one,
+say $y(x,w) = p(C_{1}|x)$ and doing $1- y(x, w)$.
+
+For multiclass classification, we can still optimize the set of weights $w$\footnote{does
+this refer to optimizing for \emph{every} node in the network?} and then apply the 
+\textbf{softmax} function \footnote{This would be the probs an input belongs to class K right?}
+\[ y_{k}(x, w) = \frac{e^{a_{k}(x,w)}}{\sum_{j}^{}e^{a_{j}(x, w)}}\]
+
+When utilizing gradient descent in a model such as this, we also need to calculate the gradient 
+as well. Remember when looking to minimize the error function, we need to move in the direction 
+where the error diminishes by the greater amount. When we calculate the derivative for the
+parameters of the function, this is what we are doing. We want to move in the direction the 
+error decreases the fastest.
+
+However, under the direct approach, we would have to use all the values of the input vector. 
+With \textbf{stochastic gradient descent}, we could calculate the gradient using only some values
+from the input to speed up the calculation.  This would reduce the time required, especially for
+large inputs. We only choose one data point to calculate the vector at a time.
 \end{document}
