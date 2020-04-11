@@ -28,4 +28,14 @@ superscript indicates they are the first layer of the NN.}
 
 We then transform the activation value by another nonlinear function
 $h$, and are left with the final result $z_{j} = h(a_{j})$. 
+
+To summarize the basic structure: supposing the result fits into 
+$K$ classes, we then sum the weights of the D nodes in the first
+layer and the M nodes of the second layer, and we get a formula 
+in the end resembling\footnote{This equation basically says that
+the final value of class $k$ is the result of adding all the nodes
+from all the layers that feed into k for the two levels?}
+\[ y_{k}(x, w) = \phi(\sum_{j=1}^{M}w_{kj}^{(2)}h(\sum_{i=1}^{D}
+w_{ji}^{(1)}x_{i}+w_{j0}^{(1)})+w_{k0}^{(2)})\]
+
 \end{document}
