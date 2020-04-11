@@ -84,4 +84,17 @@ However, under the direct approach, we would have to use all the values of the i
 With \textbf{stochastic gradient descent}, we could calculate the gradient using only some values
 from the input to speed up the calculation.  This would reduce the time required, especially for
 large inputs. We only choose one data point to calculate the vector at a time.
+
+\begin{marginfigure}
+	\includegraphics[scale=0.4]{gradient_descent}
+	\caption{Visual description of gradient descent. We want to move 
+		the weights along the derivative to the global minimum of the
+		entire function space.}
+\end{marginfigure}
+
+In \textbf{gradient descent}, we want to adjust the set of weights along their derivatives. Thus,
+we move always in the direction the curve is \textit{descending} the greatest. If we use sensible 
+values during the calcualtion, we can avoid getting ``stuck" on a local minimum, and reach the 
+absolute lowest point of a fucntion.
+\section{Error Backpropagation}
 \end{document}
