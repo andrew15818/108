@@ -1,2 +1,4 @@
-\beamer@sectionintoc {1}{Laying Out Clear Priorities}{7}{0}{1}
-\beamer@sectionintoc {2}{Investing in Talent}{10}{0}{2}
+\beamer@sectionintoc {1}{Laying Out Clear Priorities}{10}{0}{1}
+\beamer@sectionintoc {2}{Investing in Talent}{14}{0}{2}
+\beamer@sectionintoc {3}{Committing Time and Money}{17}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{25}{0}{4}
