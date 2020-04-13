@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{fontspec}
 \usepackage{xeCJK}
+\usepackage{graphicx}
+\graphicspath{ {../} }
 \usepackage[margin=1in]{geometry}
 \usepackage[default]{sourcesanspro}
 %apparently can only use this CJK font?
@@ -102,8 +104,59 @@
 	In this implemenation, if the target node can be reached directly without going to a further point, 
 	then the algorithm will reach the target node with fewer expanded nodes than with an uninformed 
 	search. 
+\subsection{Iterative Deepening A* Algorithm}
+	This algorithm attempts to mix the Iterative Deepening algorithm while using a heuristic similar
+	to the A* algorithm. We keep incrementing the bound on the node that we call the main search
+	function on. However, instead of this bound coming from the depth of the search process, we
+	use the nodes $f$ value. The main algorithm, \texttt{IDA\_STAR\_search} function, returns either
+	if the node is found or if there is no possible path. 
+
+	Similar to regular A*, if the heuristic we use is admissible, meaning it never underestimates
+	the distance to the target node (which the sample heuristic in \texttt{Prog1.pdf} does not). 
+	Thus, at every iteration the $f$ values of the nodes will not exceed the previous node's 
+	$f$ value. Therefore, every node we select will have value at most the parent's $f$ value. 
+	This guarantees that the optimal node will actually not be overlooked due to the estimation
+	using the heursitic function. 
+
+	However, the potential benefit of IDA* comes in memory utilization, since there is no need
+	to keep a list of the nodes that we will explore as is the case in A*. In A*, the nodes were 
+	checked against the Open set to see if we were duplicating nodes. This ensured that nodes were
+	only expanded once. IDA* does not utilize this approach, so some nodes might be expanded 
+	multiple times during the recursion process.
+
+
 \section{Results}
-Maybe include a table with some of the nodes that we expanded, maybe with $(0, 2)$ and $(0, 7)$?
+	Below are some of the results obtained from the testing on the board. Using a standard board 
+	of 8 rows  and columns, we tested the amount of expanded nodes going from $(0, 0)$ to $(2, 2)$
+	as in the example, and then proceeded to test on a $16x16$ board going from $(0, 0)$ to $(7, 7)$
+	and $(0, 0)$ to $(15, 15)$.
+
+	\begin{center}
+		\begin{tabular}[c]{|l | l | l | l | l | l |}
+				\hline
+				Route & BFS & DFS & IDS & A* & IDA* \\ \hline
+				(8x8)(0, 0)->(2,2) & 83 & 25 & 55 & 6 & 2\\ \hline
+				(8x8)(0,0)->(7,7) & 583 & 68 & 10 & 24 & 10\\ \hline
+				(16x16)(0,0)->(7,7) & 925 & 101 & 136 & 42 & 111\\ \hline
+				(16x16)(0,0)->(15, 15) & 65809 & 259 & 18 & 634 & 18\\ 
+				
+				\hline
+		\end{tabular}
+	\end{center}
+
+	As shown, some of the results are surprising. While some may be attributable to poor implementation,
+	however, with the amount of nodes that some visit, even if momentarily, can be quite large. For the BFS,
+	we check all the descendants without any sort of heuristic, so larger numbers are not 
+	too unexpected. 
+
+	The ease of getting to some of the testing nodes might also play a part in the pathfinding. 
+	For example, sometimes we need to ``snake" around the board until we reach the target node, even if 
+	the algorithm is still relatively close to the target node. For the informed algorithms, there are
+	usually less nodes required to arrive at the destination. As mentioned, for the informed search 
+	algorithms there might be some problems if we have to search a node that is farther from the target
+	node because the heuristic might cause that node to be overlooked. However, when we do get a 
+	solution, it usually requires considerably less nodes than an algorithm such as BFS.
+
 \section{Lessons}
 	The biggest personal takeaway from this assignment was the sheer difference between informed and 
 	uninformed searches. Spending valuable time expanding nodes that do not influence the final 
@@ -115,9 +168,34 @@ Maybe include a table with some of the nodes that we expanded, maybe with $(0, 2
 
 	The actual implementation of the algorithms also proved useful. Although I had already 
 	implemented most of them in previous courses, this time finding a better approach to writing the
-	code took more priority. 
+	code took more priority. Also, even though the small changes from algorithm to algorithm, or the
+	way some of the algorithms tested utilize ideas from the other algorithms showed how even small 
+	tweaks might influence the algorithms. Then, combining ideas from the two algorithms can sometimes
+	also be applied to situations with different constraints. For example, IDS and IDA* combine 
+	and build upon DFS and A*, respectively.
 
-	Some areas of interest include programs that play games based on the ideas of graph theory. When 
-	we can model some of the ``best" moves in a game, it would be interesting to try to model the 
-	games with such an approach. 
+	The ideas behind graph search are applicable in an incredible wide range of areas, such as 
+	GPS services video games, and making game-playing adversaries, to name a few examples. One 
+	possible area of future research might include making an agent that can intelligently play 
+	some sort of game, now knowing how some of the major algorithms compare to each other. 
+\section{Code Images}
+
+\includegraphics[scale=0.5]{sc1.png}
+
+\includegraphics[scale=0.5]{sc2.png}
+
+\includegraphics[scale=0.5]{sc3.png}
+
+\includegraphics[scale=0.5]{sc4.png}
+
+\includegraphics[scale=0.5]{sc5.png}
+
+\includegraphics[scale=0.5]{sc6.png}
+
+\includegraphics[scale=0.5]{sc7.png}
+
+\includegraphics[scale=0.5]{sc8.png}
+
+\includegraphics[scale=0.5]{sc9.png}
+
 \end{document}
