@@ -97,4 +97,26 @@ we move always in the direction the curve is \textit{descending} the greatest. I
 values during the calcualtion, we can avoid getting ``stuck" on a local minimum, and reach the 
 absolute lowest point of a fucntion.
 \section{Error Backpropagation}
+The main idea behind back propagation(BP) is that we start from the last layer in our diagram, let's 
+call it layer $k$. Then we travel back along the layers and along the nodes and calculate the 
+error regressively along the network. Thus we \textit{propagate the error backwards}. Remember the 
+basic notaion when we talk about \textit{nodes} in a neural network:\footnote{ Here, the $w$ is the 
+weight, $1$ refers to the layer where we find this node, $j$ refers to the $j^{th}$ node of the 
+previous layer, and i is the $i^{th}$ node of the current layer.}
+\[ w^{(1)}_{ji}\]
+Our main goal in BP is to calculate 
+\[\frac{\partial E}{\partial w^{(2)}_{ji}}\]  
+which means we want to calculate the change in the gradient relative to the weights. With this we are 
+continuing our pattern of gradient descent, since we want to find the direction that minimizes the error.
+
+If we actually go through with the partial derivatives formula, we reach that
+\[ \frac{\partial E}{\partial w_{ji}} = \partial_{j}z_{i}\]
+which basically means that the derivative of the gradient is just multiplying the error in node $j$
+($\partial_{j}$ is the \textbf{error} here) times the $z$ value at the input of the next node.
+
+By making use of some earlier results, we can calculate the final \textbf{backpropagation formula} as
+follows:\footnote{notice $\partial k$ is from the node to which $j$ connects. Thus, by summing the 
+error in the previous layer, we can basically use the same formula to calculate the error for $j$
+as we did with linear regression.}
+\[\partial_{j} = h'(a_{j})\sum_{k}^{}w_{kj}\partial k\]
 \end{document}
