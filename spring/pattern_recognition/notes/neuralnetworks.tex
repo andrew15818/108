@@ -119,4 +119,15 @@ follows:\footnote{notice $\partial k$ is from the node to which $j$ connects. Th
 error in the previous layer, we can basically use the same formula to calculate the error for $j$
 as we did with linear regression.}
 \[\partial_{j} = h'(a_{j})\sum_{k}^{}w_{kj}\partial k\]
+
+To conclude, the steps for \textbf{backpropagation} are:
+\begin{enumerate}
+		\item{\textbf{Apply an input vector $x_{n}$}}. Then forward propagate through the network,
+				find the activation of all the hidden units in the network.
+		\item{\textbf{Find $\partial_{k}$ for the output units.}}
+		\item{\textbf{Back propagate the $\partial 's$}} and obtain all the $\partial_{j}$ for all the 
+				units in the network.
+		\item{\textbf{Evaluate the required derivatives.}}
+\end{enumerate}
+
 \end{document}
