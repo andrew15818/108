@@ -90,6 +90,15 @@ How do we extend a linear discriminant to other classes? We can have
 	\[ m_{2} - m_{1} = w^{t}(m_{2} - m_{1})\]
 	to be maximized.We also want to minimize the variance within a single class.
 
+	So, if we are trying to determine the variance between the $k$ classes, then we need a way to 
+	determine the variance between each of the $k$ classes. Thus, we would calculate something like
+	\[s_{k}^{2} = \sum_{n\in C_{k}}^{}(y_{n} - m_{1})\]
+	and then repeat this procedure to find out the variance between all the classes.
+	\footnote{Remember the \textbf{variance} represents the amount the value differs from the mean. We
+	want to minimize the variance between our estimates and the elements of class $k$, but we want to  
+	maximize the distance between the means of the two classes when we project onto a single dimension.
+	This is the entire feeling behind Fisher's Linear Discriminant.}
+
 	So, there are a coupple ways to carry out classification:
 	\begin{itemize}
 			\item{Determine a threshold}:We can find a point $x$ such that if $y(x)\geq -y_{0}$,

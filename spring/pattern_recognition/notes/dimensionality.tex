@@ -20,7 +20,7 @@ dimensions in a given problem by attempting to find a lower dimensional
 space on which to map the data points.
 
 \begin{marginfigure}
-	\includegraphics[scale=0.4]{pca}	
+	\includegraphics[scale=0.4]{pca}
 	\caption{For original dimensions $x_{1}$ and $x_{2}$,  the \textcolor{magenta}{line}
 		is the new space we want to map onto. We minimize the sum of the projections of the 
 		\textcolor{red}{data point} onto the line, which is at the \textcolor{green}{dot}}
@@ -70,5 +70,13 @@ Then, for this approach to work, if we are to use only $M$ eigenvectors in subsp
 perform the decomposition since we would need to find the largest $M$ eigenvectors. Then the approximate point
 $\tilde{x}_{n}$ can be written as
 \[ \tilde{x}_{n} = \overline{x} + \sum_{i=1}^{M}(x^{T}_{n}u_{i} - \overline{x}^{T}u_{i})u_{i}\]
+
+\begin{center}
+	\begin{figure}
+		\includegraphics[scale=0.4]{number_class}
+		\caption{Here, we take the mean, and we calculate the four PCA eigenvectors, and their 
+			corresponding eigenvalues, and calculate their covariance from the mean.}
+	\end{figure}
+\end{center}
 \end{document}
 
