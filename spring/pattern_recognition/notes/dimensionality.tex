@@ -66,5 +66,9 @@ as a linear combination of the $D$ orhtonormal vectors. Our goal is to then expr
 linear combination of $M$ vectors instead, which would be equivalent to projecting the vectors onto a smaller
 subspace.
 
+Then, for this approach to work, if we are to use only $M$ eigenvectors in subspace $u$, we would still need to
+perform the decomposition since we would need to find the largest $M$ eigenvectors. Then the approximate point
+$\tilde{x}_{n}$ can be written as
+\[ \tilde{x}_{n} = \overline{x} + \sum_{i=1}^{M}(x^{T}_{n}u_{i} - \overline{x}^{T}u_{i})u_{i}\]
 \end{document}
 
