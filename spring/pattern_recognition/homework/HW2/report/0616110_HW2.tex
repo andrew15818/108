@@ -1,0 +1,57 @@
+\documentclass{article}
+%necessary packages, use xelatex to compile
+\usepackage[margin=1in]{geometry}
+\usepackage{helvet}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+%changing the main font
+\renewcommand{\familydefault}{\sfdefault}
+%cool traditional chinese font for my name :^D
+\setCJKmainfont{Noto Serif CJK TC}
+\title{Introduction to Pattern Recognition Homework 2 Report}
+\author{Andr\'es Ponce(彭思安) \\
+\and
+0616110}
+\begin{document}
+
+\maketitle
+\section{Coding}
+	\subsection{Compute the mean vectors $m_{i},(i=1,2)$ of each 2 classes on training data}
+	\subsection{Compute the within-class scatter matrix $S_{W}$ on training data.}
+	\subsection{Compute the between-class scatter matrix $S_{B}$ on training data.}
+	\subsection{Compute the Fisher's linear discriminant $W$ on training data.}
+	\subsection{Project the testing data by linear discriminant to get the class prediction by
+		nearest-neighbor rule and calculate your accuracy score on testing data.}
+	\subsection{Plot the \textbf{1) best projection line} on the training data and slow the slope
+		and intercept on the title \textbf{2)colorize the data} with each class \textbf{3) project
+		all data points on your projection line}.}
+\section{Questions}
+	\subsection{Show that maximization of the class separation criterion given by 
+		$L(\lambda, w) = w^{T}(m_{2} - m_{1})  + \lambda(w^{T}w - 1)$ with respect to w, using a
+		Lagrange multiplier to enforce the constraint $w^{T}w = 1$, leads to the result that 
+		$w \propto (m_{2} - m_{1})$.}
+	\subsection{Using eq \ref{eq:eq 1} and eq \ref{eq:eq 2}, derive the result eq \ref{eq:eq 3} for the posterior class
+		probability in the two-class generative model with Gaussian densities, and verify the
+		results eq \ref{eq:eq 4} and eq \ref{eq:eq 5} for the parameters w and $w_{0}$.}
+		\begin{equation}
+			\label{eq:eq 1}
+			\frac{1}{1 + exp(-\alpha) = \phi(\alpha)}
+		\end{equation}
+		\begin{equation}
+			\label{eq:eq 2}
+			a = ln\frac{p(x|C_{1})p(C_{1})}{p(x|C_{2})p(C_{2})}	
+		\end{equation}
+		\begin{equation}
+			\label{eq:eq 3}
+			p(C_{1}|x) = \phi(w^{T}x + w_{0})
+		\end{equation}
+		\begin{equation}
+			\label{eq:eq 4}
+			w = \sum_{}^{-1}(\mu_{1} - \mu_{2})
+		\end{equation}
+		\begin{equation}
+			\label{eq:eq 5}
+			w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
+		\end{equation}
+		
+\end{document}
