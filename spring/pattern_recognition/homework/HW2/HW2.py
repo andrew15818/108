@@ -39,11 +39,18 @@ print(f"mean vector of class 1: {m1}", f"mean vector of class 2: {m2}")
 
 ## Your code HERE
 tmp = np.array
-#find according to formula on slide 21 in disc.ppt
-for i in range(0, c1.shape[0]):
-    #do something
+
+#the within-class variance is the difference bw actual value and class mean
+s1 = (c1 - m1) ** 2
+s2 = (c2 - m2) ** 2
+
+s1 = np.sum(s1, axis = 0)
+s2 = np.sum(s2, axis = 0)
+'''
 for i in range(0, c2.shape[1]):
     #do something
+'''
+sw = np.vstack((s1,s2))
 assert sw.shape == (2,2)
 print(f"Within-class scatter matrix SW: {sw}")
 
