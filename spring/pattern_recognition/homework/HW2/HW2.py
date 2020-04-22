@@ -15,17 +15,21 @@ y_train = pd.read_csv("y_train.csv").values[:,0]
 x_test = pd.read_csv("x_test.csv").values
 y_test = pd.read_csv("y_test.csv").values[:,0]
 
-print(x_train.shape)
-print(y_train.shape)
-print(x_test.shape)
-print(y_test.shape)
+print("x_train.shape: " + str(x_train.shape))
+print("y_train.shape: " + str(y_train.shape))
+print("x_test.shape: " + str(x_test.shape))
+print("y_test.shape: " + str(y_test.shape))
 
 
 # ## 1. Compute the mean vectors mi, (i=1,2) of each 2 classes
-m1 = np.array(x_train)
-m1 = np.mean(m1, axis = 0)
-print(m1)
-## Your code HERE
+x_train = np.array(x_train)
+#selecting the elements that belong to each class
+c1 = x_train[y_train == 0] 
+c2 = x_train[y_train == 1]
+
+#getting the class means
+m1 = np.mean(c1, axis = 0)
+m2 = np.mean(c2, axis = 0)
 
 assert m1.shape == (2,)
 print(f"mean vector of class 1: {m1}", f"mean vector of class 2: {m2}")
@@ -34,8 +38,12 @@ print(f"mean vector of class 1: {m1}", f"mean vector of class 2: {m2}")
 # ## 2. Compute the Within-class scatter matrix SW
 
 ## Your code HERE
-
-
+tmp = np.array
+#find according to formula on slide 21 in disc.ppt
+for i in range(0, c1.shape[0]):
+    #do something
+for i in range(0, c2.shape[1]):
+    #do something
 assert sw.shape == (2,2)
 print(f"Within-class scatter matrix SW: {sw}")
 
