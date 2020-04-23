@@ -46,10 +46,7 @@ s2 = (c2 - m2) ** 2
 
 s1 = np.sum(s1, axis = 0)
 s2 = np.sum(s2, axis = 0)
-'''
-for i in range(0, c2.shape[1]):
-    #do something
-'''
+
 sw = np.vstack((s1,s2))
 assert sw.shape == (2,2)
 print(f"Within-class scatter matrix SW: {sw}")
@@ -58,8 +55,7 @@ print(f"Within-class scatter matrix SW: {sw}")
 # ## 3.  Compute the Between-class scatter matrix SB
 
 ## Your code HERE
-
-
+sb = (m2 - m1) ** 2
 assert sb.shape == (2,2)
 print(f"Between-class scatter matrix SB: {sb}")
 
@@ -84,6 +80,4 @@ print(f"Accuracy of test-set {acc}")
 
 # ## 6. Plot the 1) projection line 2) Decision boundary and colorize the data with each class
 # ### the result should be look like this [image](https://i2.kknews.cc/SIG=fe79fb/26q1000on37o7874879n.jpg) (Red line: projection line, Green line: Decision boundary)
-
-
 

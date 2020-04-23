@@ -30,28 +30,58 @@
 		$L(\lambda, w) = w^{T}(m_{2} - m_{1})  + \lambda(w^{T}w - 1)$ with respect to w, using a
 		Lagrange multiplier to enforce the constraint $w^{T}w = 1$, leads to the result that 
 		$w \propto (m_{2} - m_{1})$.}
-	\subsection{Using eq \ref{eq:eq 1} and eq \ref{eq:eq 2}, derive the result eq \ref{eq:eq 3} for the posterior class
+
+		\textbf{Lagrange Multipliers} allow us to maximize a function $L$ given a constraint $g$.
+		To do this, we have  the initial equation $\nabla L(w, \lambda) = \alpha \nabla g(w, \lambda)$. Where 
+		$\alpha$ is the Lagrange Multiplier in this equation. Since we apply the multiplier to each
+		variable individually, then we have to find the multiplier based on the component functions 
+		for $L$ and $g$. Thus we have to solve the system of equations 
+		\[ L_{\lambda} = \alpha g_{\lambda} \quad\quad L_{w} = \alpha g_{w} \]
+		So, we have to differentiate with respect to $\lambda$ and $w$, since we are dealing with the gradient
+		vector. When we set up the equations, we get the system of equations
+		\begin{subequations}
+			\begin{equation}
+				w^{T}w -1 = 0
+			\end{equation}
+			\begin{equation}
+				\label{eq: fw}
+				m_{2} - m_{1} = \alpha
+			\end{equation}
+			\begin{equation}
+				\label{eq:constraint}
+				w^{T}w = 1
+			\end{equation}
+		\end{subequations}
+		Then, multiplying (\ref{eq:constraint}) by (\ref{eq: fw}), we get
+		\[(m_{2} - m_{1})(w^{T}w) = \alpha\]
+		which, when divided by $m_{2} - m_{1}$ gives 
+		\[w^{T}w = \frac{\alpha}{m_{2} - m_{1}}\]
+
+		Since $w_{T}w$ is proportional to $m_{2} - m_{1}$, then $w$ will also be. 
+		Thus, using Lagrange Multipliers we have shown that $w \propto m_{2} - m_{1}$ 
+	%second question
+	\subsection{Using eq \ref{eq:eq1} and eq \ref{eq:eq2}, derive the result eq \ref{eq:eq3} for the posterior class
 		probability in the two-class generative model with Gaussian densities, and verify the
-		results eq \ref{eq:eq 4} and eq \ref{eq:eq 5} for the parameters w and $w_{0}$.}
+		results eq \ref{eq:eq4} and eq \ref{eq:eq5} for the parameters w and $w_{0}$.}
 		\begin{equation}
-			\label{eq:eq 1}
+			\label{eq: eq1}
 			\frac{1}{1 + exp(-\alpha) = \phi(\alpha)}
 		\end{equation}
 		\begin{equation}
-			\label{eq:eq 2}
+			\label{eq: eq2}
 			a = ln\frac{p(x|C_{1})p(C_{1})}{p(x|C_{2})p(C_{2})}	
 		\end{equation}
 		\begin{equation}
-			\label{eq:eq 3}
+			\label{eq: eq3}
 			p(C_{1}|x) = \phi(w^{T}x + w_{0})
 		\end{equation}
 		\begin{equation}
-			\label{eq:eq 4}
+			\label{eq: eq4}
 			w = \sum_{}^{-1}(\mu_{1} - \mu_{2})
 		\end{equation}
 		\begin{equation}
-			\label{eq:eq 5}
-			w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
+			\label{eq: eq5}
+				w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
 		\end{equation}
 		
 \end{document}
