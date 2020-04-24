@@ -27,7 +27,7 @@ x_train = np.array(x_train)
 c1 = x_train[y_train == 0] 
 c2 = x_train[y_train == 1]
 
-#getting the class means
+#getting the class means 
 m1 = np.mean(c1, axis = 0)
 m2 = np.mean(c2, axis = 0)
 
@@ -55,7 +55,10 @@ print(f"Within-class scatter matrix SW: {sw}")
 # ## 3.  Compute the Between-class scatter matrix SB
 
 ## Your code HERE
-sb = (m2 - m1) ** 2
+sb =  np.array(np.array(m2 - m1) * np.array(m2 - m1).T)
+# is zero-stacking the correct answer?
+sb = np.vstack((sb, np.array([0.0, 0.0])))
+print("sb.shape:" + str(sb.shape) + str(sb))
 assert sb.shape == (2,2)
 print(f"Between-class scatter matrix SB: {sb}")
 
@@ -63,8 +66,9 @@ print(f"Between-class scatter matrix SB: {sb}")
 # ## 4. Compute the Fisher’s linear discriminant
 
 ## Your code HERE
-
-
+#The Fisher Criterion J(w) is the ratio of the in-class variance to the between-class variance
+w = ((m2 - m1) ** 2)/(s1 ** 2 + s2 ** 2)
+print(str(w) + "\t" + str(w.shape))
 assert w.shape == (2,1)
 print(f" Fisher’s linear discriminant: {w}")
 
@@ -72,7 +76,7 @@ print(f" Fisher’s linear discriminant: {w}")
 
 # ## 5. Project the test data by linear discriminant to get the class prediction by nearest-neighbor rule and calculate the accuracy score 
 # you can use accuracy_score function from sklearn.metric.accuracy_score
-
+y = x_test * w
 acc = accuracy(y_test, y_pred)
 
 print(f"Accuracy of test-set {acc}")
