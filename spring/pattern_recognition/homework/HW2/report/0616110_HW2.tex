@@ -17,6 +17,12 @@
 \maketitle
 \section{Coding}
 	\subsection{Compute the mean vectors $m_{i},(i=1,2)$ of each 2 classes on training data}
+		To calculate the \textbf{mean vectors} for each class, we need to know which of the 
+		input vectors belong to $C_{1}$ and $C_{2}$, respectively. This is done by just checking
+		which rows in \texttt{y\_test} are 0 and 1, since those tell us which class the test input
+		vectors belong to. After separating them and getting the mean for each column separately,
+		we end with the result
+		\[ m_{1} = [2.47107265 \textrm{ } 1.97913899]\quad m_{2} = [1.82380675 \textrm{ } 3.03051876]\]
 	\subsection{Compute the within-class scatter matrix $S_{W}$ on training data.}
 	\subsection{Compute the between-class scatter matrix $S_{B}$ on training data.}
 	\subsection{Compute the Fisher's linear discriminant $W$ on training data.}
