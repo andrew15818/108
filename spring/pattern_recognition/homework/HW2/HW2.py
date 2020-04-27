@@ -55,7 +55,6 @@ sw2 = 0
 for i in range(0, c1.shape[0]):
     tmp = (c1[i] - m1)[np.newaxis] #separate the two coluns so we can transpose the array
     sw1 += (tmp * tmp.T)
-print(sw1)
 
 for i in range(0, c2.shape[0]):
     tmp = (c2[i] - m2)[np.newaxis]   
@@ -79,11 +78,15 @@ print(f"Between-class scatter matrix SB: {sb}")
 First, we have to calculate w, which is proportional to the within-class scatter matrix and the direction of the two means
 then, we can quickly calculate J(w), which involves the within and between scatter matrices
 """
-w = 1 / (np.linalg.inv(sb) * (m2 - m1))
-w = np.sum(w, axis = 1)
-w = np.array([[w[0]], [w[1]]]) # make w have the appropriate dimensions
-jw = (w.T * sb * w) / (w.T * sw * w) #fisher criterion
+jw = ((m2 - m1) ** 2) / (sw1 ** 2 + sw2 ** 2)
+print("jw shapearooni: " + str(jw.shape))
 print(f"Fisher's criterion: {jw}")
+
+mean_diff = (m2 - m1)[:,np.newaxis]
+sw_inv = np.linalg.inv(sw) 
+w = ( sw_inv * mean_diff)
+w = (np.sum(w, axis = 1))[:, np.newaxis]
+print(w.shape)
 assert w.shape == (2,1)
 print(f" Fisher’s linear discriminant: {w}")
 
@@ -92,7 +95,7 @@ print(f" Fisher’s linear discriminant: {w}")
 # ## 5. Project the test data by linear discriminant to get the class prediction by nearest-neighbor rule and calculate the accuracy score 
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
-y_pred = x_train * w.T
+y_pred = w.T * x_train 
 y_class_pred = []
 
 #calculating the k-nearest neighbors
@@ -129,5 +132,8 @@ print(f"Accuracy of test-set {acc}")
 # ### the result should be look like this [image](https://i2.kknews.cc/SIG=fe79fb/26q1000on37o7874879n.jpg) (Red line: projection line, Green line: Decision boundary)
 
 plt.plot(y_pred[y_class_pred == 0], '.', color="red")
-plt.plot(y_pred[y_class_pred == 1], '.', color="blue")
+plt.plot(x_train[y_train == 0], '.', color="blue")
+plt.plot(x_train[y_train == 1], '.', color = "green")
+#plt.plot(y_pred[y_class_pred == 1], '.', color="blue")
+plt.plot(jw, '.',color="green")
 plt.show()
