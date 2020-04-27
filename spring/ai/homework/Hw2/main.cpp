@@ -8,10 +8,23 @@
 #include<iostream>
 #include<queue>
 #define BOARD_SIZE 6
+#define MINE 100
+#define HINT 101
+#define VAR 102
+bool  is_valid(int x, int y)
+{
+	if(x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE)
+	{
+		return false;
+	}
+	return true;
+}
 struct Node
 {
 	int value; //can be either mine(-1) or hint, with number of adjacent mines
+	int remaining; //how many mines can we assign to adjacent cells
 	int x, y;
+	int type = VAR;
 };
 class Board
 {
@@ -34,16 +47,78 @@ class Board
 		Node* first(const Node* node); //maybe don't require a node argument
 		Node* next(const Node* node); //same as above
 };
+bool Board::reject(const Node* node)
+{
+	int x, y;
+	int adjacent_nodes = 8;
+	//need to check all adjacent nodes
+	for(int i = 0; i < adjacent_nodes; i++)
+	{
+		x = node->x; y = node->y;
+		switch(i % adjacent_nodes){
+			case 0: //left
+				y -= 1;
+				break;
+			case 1: //diagonal up left
+				x -= 1;y -= 1;
+				break;
+			case 2: //straight up
+				 y -= 1;
+				break;
+			case 3: //up right
+				x += 1; y -= 1;
+				break;
+			case 4: //right
+				y+=1;
+				break;
+			case 5: //down right
+				x -= 1; y += 1;
+				break;
+			case 6: //down
+				y += 1;
+				break;
+			case 7: //down left
+				x -= 1; y += 1;
+				break;
+		}
+		//
+		if(is_valid(x, y))
+		{
+			Node *tmp = &board[x][y];
+			//we can't assign a node b/c there would be too many next to tmp
+			if(tmp->type == HINT && tmp->remaining == 0)
+			{
+				return true;
+			}
+			//then try and assign a mine here if we can
+			else if(tmp->type == HINT)
+			{
+				tmp->remaining--;
+			}
+		}
+	}
+	this->mines--; //not sure if we should remove a mine at this stage?
+	return false; //we cannot reject this node
+} 
 //input value into board node
 void Board::input(int x, int y, int value)
 {
 	board[x][y].x = x; board[x][y].y = y; board[x][y].value = value;
+	//marking the node as unassigned
 	if( value == -1)
 	{
 		Node *tmp = &board[x][y];
+		tmp->value = VAR;
 		unassigned.push(tmp);
 	}
+	//the "remaining" field will be subtracted from and added to, value is const
+	else if(value != -1)
+	{
+		board[x][y].type = HINT;
+		board[x][y].remaining = value;
+	}
 }
+//print out current state of the board
 void Board::print_out()
 {
 	for(int i =0; i < BOARD_SIZE; i++)
