@@ -49,23 +49,26 @@ print(f"mean vector of class 1: {m1}", f"mean vector of class 2: {m2}")
 tmp = np.array
 
 #the within-class variance is the difference bw actual value and class mean
-s1 = np.array((c1 - m1) ** 2)
-s2 = np.array((c2 - m2) ** 2)
+#empty arrays
+sw1 = 0
+sw2 = 0 
+for i in range(0, c1.shape[0]):
+    tmp = (c1[i] - m1)[np.newaxis] #separate the two coluns so we can transpose the array
+    sw1 += (tmp * tmp.T)
+print(sw1)
 
-s1 = np.sum(s1, axis = 0)
-s2 = np.sum(s2, axis = 0)
-sw = np.vstack((s1,s2))
+for i in range(0, c2.shape[0]):
+    tmp = (c2[i] - m2)[np.newaxis]   
+    sw2 += (tmp * tmp.T)
+sw = sw1 + sw2
 assert sw.shape == (2,2)
+
 print(f"Within-class scatter matrix SW: {sw}")
 
 
 # ## 3.  Compute the Between-class scatter matrix SB
-
-## Your code HERE
-sb =  np.array(np.array(m2 - m1) * np.array(m2 - m1).T)
-# is zero-stacking the correct answer?
-sb = np.vstack((sb, np.array([1.0, 1.0]))) ##This is probably wrong
-print("sb.shape:" + str(sb.shape) + str(sb))
+tmp = (m2 - m1)[np.newaxis]
+sb = (tmp * tmp.T)
 assert sb.shape == (2,2)
 print(f"Between-class scatter matrix SB: {sb}")
 
