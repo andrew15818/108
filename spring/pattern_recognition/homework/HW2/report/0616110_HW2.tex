@@ -24,7 +24,28 @@
 		we end with the result
 		\[ m_{1} = [2.47107265 \textrm{ } 1.97913899]\quad m_{2} = [1.82380675 \textrm{ } 3.03051876]\]
 	\subsection{Compute the within-class scatter matrix $S_{W}$ on training data.}
+		The within class matrix $S_{W}$ measures how much the points in ever class differ from the mean.
+		The within class variance for the dataset is the sum of the within-class variance for all the classes
+		in our dataset. The result is a $2x2$ matrix with the values:
+
+		\begin{equation*}
+			S_{W} = 
+			\begin{bmatrix}
+				140.40035447 & -5.30881553\\
+				-5.30881553 & 138.14297637
+			\end{bmatrix}
+		\end{equation*}
 	\subsection{Compute the between-class scatter matrix $S_{B}$ on training data.}
+		The between-class covariance matrix $S_{B}$ measures how much the two class means
+		vary from each other. The result is another $2x2$ matrix:
+
+		\begin{equation*}
+			S_{B} = 
+			\begin{bmatrix}
+				0.41895314 & -0.68052227\\
+				-0.68052227 &  1.10539942
+			\end{bmatrix}
+		\end{equation*}
 	\subsection{Compute the Fisher's linear discriminant $W$ on training data.}
 	\subsection{Project the testing data by linear discriminant to get the class prediction by
 		nearest-neighbor rule and calculate your accuracy score on testing data.}
@@ -89,5 +110,4 @@
 			\label{eq:eq5}
 				w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
 		\end{equation}
-		
 \end{document}
