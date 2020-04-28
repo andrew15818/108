@@ -98,7 +98,8 @@ print(f" Fisher’s linear discriminant: {w}")
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
 print(f"x_train.shape: {x_train.shape} x w.T{(w.T).shape}")
-y_pred = np.matmul( x_train, w)
+y_pred = np.matmul( x_train, w.T) 
+print(y_pred.shape)
 y_class_pred = []
 
 #calculating the k-nearest neighbors
@@ -136,6 +137,6 @@ print(f"Accuracy of test-set {acc}")
 """
 
 color = ['red' if l == 0 else "green" for l in y_train]
-print(color)
-plt.scatter(x_train[:,0], x_train[:,1], color=color) #plotting the two classes
+#plt.scatter(x_train[:,0], x_train[:,1], color=color) #plotting the two classes
+plt.scatter(y_pred[0:,], y_pred[:,1], color="red") #plotting the two classes
 plt.show()
