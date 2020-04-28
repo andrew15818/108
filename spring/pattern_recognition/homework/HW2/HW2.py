@@ -30,6 +30,8 @@ print("y_test.shape: " + str(y_test.shape))
 # ## 1. Compute the mean vectors mi, (i=1,2) of each 2 classes
 x_train = np.array(x_train)
 #selecting the elements that belong to each class
+
+
 c1 = x_train[y_train == 0] 
 c2 = x_train[y_train == 1]
 print(f"class1 shape: {c1.shape}", f"class2 shape{c2.shape}")
@@ -39,7 +41,7 @@ m1 = np.mean(c1, axis = 0)
 m2 = np.mean(c2, axis = 0)
 
 assert m1.shape == (2,)
-print("shape of m1:  " + str(m1.shape) +"\t shape of m2: " + str(m2.shape))
+#print("shape of m1:  " + str(m1.shape) +"\t shape of m2: " + str(m2.shape))
 print(f"mean vector of class 1: {m1}", f"mean vector of class 2: {m2}")
 
 
@@ -54,11 +56,11 @@ sw1 = 0
 sw2 = 0 
 for i in range(0, c1.shape[0]):
     tmp = (c1[i] - m1)[np.newaxis] #separate the two coluns so we can transpose the array
-    sw1 += (tmp * tmp.T)
+    sw1 += np.matmul(tmp.T, tmp)
 
 for i in range(0, c2.shape[0]):
     tmp = (c2[i] - m2)[np.newaxis]   
-    sw2 += (tmp * tmp.T)
+    sw2 += np.matmul(tmp.T, tmp)#(tmp * tmp.T) <-igual aqui
 sw = sw1 + sw2
 assert sw.shape == (2,2)
 
@@ -67,7 +69,8 @@ print(f"Within-class scatter matrix SW: {sw}")
 
 # ## 3.  Compute the Between-class scatter matrix SB
 tmp = (m2 - m1)[np.newaxis]
-sb = (tmp * tmp.T)
+sb = np.matmul(tmp.T, tmp)#(tmp * tmp.T)
+
 assert sb.shape == (2,2)
 print(f"Between-class scatter matrix SB: {sb}")
 
@@ -78,15 +81,14 @@ print(f"Between-class scatter matrix SB: {sb}")
 First, we have to calculate w, which is proportional to the within-class scatter matrix and the direction of the two means
 then, we can quickly calculate J(w), which involves the within and between scatter matrices
 """
-jw = ((m2 - m1) ** 2) / (sw1 ** 2 + sw2 ** 2)
-print("jw shapearooni: " + str(jw.shape))
+jw = ((m2 - m1) ** 2) / ((sw1)** 2 + sw2 ** 2)
+#print("jw shapearooni: " + str(jw.shape))
 print(f"Fisher's criterion: {jw}")
 
-mean_diff = (m2 - m1)[:,np.newaxis]
+mean_diff = (m2 - m1)[:, np.newaxis]
 sw_inv = np.linalg.inv(sw) 
-w = ( sw_inv * mean_diff)
-w = (np.sum(w, axis = 1))[:, np.newaxis]
-print(w.shape)
+w = np.matmul(sw_inv, mean_diff)
+
 assert w.shape == (2,1)
 print(f" Fisher’s linear discriminant: {w}")
 
@@ -95,11 +97,12 @@ print(f" Fisher’s linear discriminant: {w}")
 # ## 5. Project the test data by linear discriminant to get the class prediction by nearest-neighbor rule and calculate the accuracy score 
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
-y_pred = w.T * x_train 
+print(f"x_train.shape: {x_train.shape} x w.T{(w.T).shape}")
+y_pred = np.matmul( x_train, w)
 y_class_pred = []
 
 #calculating the k-nearest neighbors
-
+"""
 min_distance_index = 0
 distance = 0
 #calculating closest point for every data in x
@@ -130,10 +133,9 @@ print(f"Accuracy of test-set {acc}")
 
 # ## 6. Plot the 1) projection line 2) Decision boundary and colorize the data with each class
 # ### the result should be look like this [image](https://i2.kknews.cc/SIG=fe79fb/26q1000on37o7874879n.jpg) (Red line: projection line, Green line: Decision boundary)
+"""
 
-plt.plot(y_pred[y_class_pred == 0], '.', color="red")
-plt.plot(x_train[y_train == 0], '.', color="blue")
-plt.plot(x_train[y_train == 1], '.', color = "green")
-#plt.plot(y_pred[y_class_pred == 1], '.', color="blue")
-plt.plot(jw, '.',color="green")
+color = ['red' if l == 0 else "green" for l in y_train]
+print(color)
+plt.scatter(x_train[:,0], x_train[:,1], color=color) #plotting the two classes
 plt.show()
