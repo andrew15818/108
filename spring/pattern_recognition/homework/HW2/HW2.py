@@ -16,6 +16,31 @@ from sklearn.metrics import accuracy_score
 ### How many closest neighbors we check to make our prediction
 K = 1
 
+##get the index of the nearest neighbor to data[index]
+##TODO: Maybe change this algo to not be O(n^2)
+def get_nearest_neighbor_index(index, data):
+    current = data[index]
+    test = data[1]
+    #print(f"current: {current}\ttest: {test}")
+    min_dist = math.sqrt( (current[0] - test[0]) ** 2 + ( current[1] - test[1]) ** 2) 
+
+    best_index = 0
+    
+    #try to find the closest point from among all the points 
+    for i in range(0, data.shape[0]):
+        if i == index:
+            continue
+        testing = data[i]
+        curr_dist = math.sqrt( (current[0] - testing[0]) ** 2 + ( current[1] - testing[1]) ** 2) 
+
+        #compare the current distance to our current best
+        if(curr_dist < min_dist):
+            min_dist = curr_dist
+            best_index = i 
+    
+        return best_index
+
+
 x_train = pd.read_csv("x_train.csv").values
 y_train = pd.read_csv("y_train.csv").values[:,0]
 x_test = pd.read_csv("x_test.csv").values
@@ -97,46 +122,31 @@ print(f" Fisher’s linear discriminant: {w}")
 # ## 5. Project the test data by linear discriminant to get the class prediction by nearest-neighbor rule and calculate the accuracy score 
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
-print(f"x_train.shape: {x_train.shape} x w.T{(w.T).shape}")
-y_pred = np.matmul( x_train, w.T) 
-print(y_pred.shape)
+y_pred = np.matmul( x_train, w) 
 y_class_pred = []
 
 #calculating the k-nearest neighbors
-"""
-min_distance_index = 0
-distance = 0
-#calculating closest point for every data in x
-for i in range(0, x_train.shape[0]):
-    current = x_train[i]
-    min_distance = 10000
-    #finding its closest point along all the adjacent ones 
-    for j in range(0, x_train.shape[0]):
-        if i == j:
-            continue
-        testing = x_train[j]  
-        distance =  math.sqrt((current[0] - testing[0]) ** 2 + (current[1] - testing[1]) ** 2)
-        if distance < min_distance:
-            min_distance = distance
-            min_distance_index = j
-    #assigning a class prediction for our testing input based on closest data point
-    if(y_train[min_distance_index] == 1):
-        y_class_pred.append(1)
-    else:
+#calculate the nearest neighbors for all the points
+x_copy= (x_train)
+for i in range(0, x_copy.shape[0]):
+    x_copy= (x_train) 
+    c1count = 0 #how many of the closest points belong to class 1 and 2 respectively
+    c2count = 0
+    for j in range(0, K):
+        remove = get_nearest_neighbor_index(i, x_copy)       
+        x_copy = np.delete(x_copy, (remove), axis = 0)
+        if y_train[remove] == 0: #if the jth closest neighbor belongs to class 1
+            c1count += 1
+        elif y_train[remove] == 1:
+            c2count += 1
+    if c1count > c2count:
         y_class_pred.append(0)
-y_class_pred = np.array(y_class_pred)
-print("y_class_pred.shape = \t" + str(y_class_pred.shape))
-#For the accuracy, we want to have a prediction matrix with either 0 or 1 for our test data.
+    else:
+        y_class_pred.append(1)
+
 acc = accuracy_score(y_train, y_class_pred)
-#acc = accuracy_score(y_test, y_pred)
-print(f"Accuracy of test-set {acc}")
 
-
-# ## 6. Plot the 1) projection line 2) Decision boundary and colorize the data with each class
-# ### the result should be look like this [image](https://i2.kknews.cc/SIG=fe79fb/26q1000on37o7874879n.jpg) (Red line: projection line, Green line: Decision boundary)
-"""
-
-color = ['red' if l == 0 else "green" for l in y_train]
-#plt.scatter(x_train[:,0], x_train[:,1], color=color) #plotting the two classes
-plt.scatter(y_pred[0:,], y_pred[:,1], color="red") #plotting the two classes
+print(f"accuracy of y: {acc}")
+color = ['red' if l == 0 else "green" for l in y_class_pred]
+plt.scatter(np.ones((y_pred.shape)), y_pred[:,0], color=color) #plotting the two classes
 plt.show()
