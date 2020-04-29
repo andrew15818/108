@@ -50,7 +50,6 @@ bool Board::reject(const Node* node)
 {
 	int x, y;
 	int adjacent_nodes = 8;
-	//need to check all adjacent nodes
 	for(int i = 0; i < adjacent_nodes; i++)
 	{
 		x = node->x; y = node->y;
@@ -80,23 +79,13 @@ bool Board::reject(const Node* node)
 				x -= 1; y += 1;
 				break;
 		}
-		//
-		if(is_valid(x, y))
-		{
-			Node *tmp = &board[x][y];
-			//checking if we can create an extra mine
-			if(tmp->type == HINT && tmp->remaining == 0)
-			{
-				return true;
-			}
-			//then try and assign a mine here if we can
-			else if(tmp->type == HINT)
-			{
-				tmp->remaining--;
-			}
-		}
+		//skip this node if out of bounds
+		if(!is_valid(x, y)){continue;}
+		//checking if mine number appropriate
+		Node* tmp = &board[x][y];
+		if(tmp->type == HINT && tmp->remaining == 0){return true;}
+		
 	}
-	this->mines--; //not sure if we should remove a mine at this stage?
 	return false; //we cannot reject this node
 } 
 /*To check if a configuration is a possible solution we would need to:
@@ -111,8 +100,8 @@ bool Board::accept()
 	
 	for(int i = 0; i < this->rows; i++){
 		for(int j = 0; j < this->cols; j++){
-			if(board[i][j].type == HINT){
-				std::cout<<"Hello World"<<std::endl;
+			if(board[i][j].type == HINT && board[i][j].remaining != 0){
+				return false;
 			}
 		}
 	}
@@ -139,26 +128,29 @@ void Board::input(int x, int y, int value)
 }
 bool Board::solve_main(const Node* node)
 {
+	if(node == NULL){return false;}
 	/*Main steps in this function:
 	 *1. Check if we should reject this node
 	 *2. Check if it is a solution.
 	 *3. Generate and recurse on the first child.
 	 *4. Generate the successive children and recurse on them.*/
 	//maybe just start with the first or last node in the unassigned list?
-	std::cout<<"in solve_main with: ("<<node->x<<", "<<node->y<<")"<<std::endl;
+	std::cout<<"in solve_main with: ("<<node->x<<", "<<node->y<<") and "<<unassigned.size()<<" nodes"<<std::endl;
 	if(reject(node)){
-		std::cout<<"we have to reject ("<<node->x<< ", "<<node->y<<")"<<std::endl;
+		std::cout<<"\twe have to reject ("<<node->x<< ", "<<node->y<<")"<<std::endl;
 		return false;
 	}
 	else if(accept())
 	{
-		std::cout<<"this config is a possible one! :D"<<std::endl;
+		std::cout<<"\tthis config is a possible one! :D"<<std::endl;
 	}
+	//assign a mine to current child and iterate forward
 	Node* next;
+	//node->type = MINE;
 	for(int i = 0; i < CHILD_NO; i++)
 	{
-		next = unassigned.front();
-		unassigned.pop_front();
+		next = get_closest_node(node);
+		solve_main(next);
 	}
 	return true;
 }
@@ -169,15 +161,22 @@ Node* Board::get_closest_node(const Node* node)
 	Node* tmp;
 	Node *best = unassigned.front();
 	int min_dist = this->rows * this->cols; //farthest away next node can be
-	int curr_dist;
-	for(int i=0; i < unassigned.size(); i++){
-		 tmp = unassigned[i];
-		 curr_dist = man_distance(node, tmp);
-		 if(curr_dist < min_dist){ //if the node we're testing are closer than current min
+	int curr_dist, best_index;
+	std::deque<Node*>::iterator it = unassigned.begin(); //iterator to check for distance
+	std::deque<Node*>::iterator remove; //keep track of closest node iterator to remove it later
+
+	//search for the closest one and remove it from the list
+	while(it != unassigned.end()){
+		curr_dist = man_distance(best, *(it)); 
+		if( curr_dist < min_dist){
 			min_dist = curr_dist;
-			best = tmp;
-		 }
+			best = *(it);
+			remove = it;
+		}
+		it++;
 	}
+	std::cout<<"\t\tabout to erase: ("<<(*remove)->x<<", "<<(*remove)->y<<")"<<std::endl;
+	unassigned.erase(remove);
 	return best;
 }
 //main driver function

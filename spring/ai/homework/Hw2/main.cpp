@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
 	int rows, cols, mines;
 	while(1){
 		std::cout<<"\tInput 1 to keep playing, 0 to exit:"<<std::endl;
-		std::cin>>input;
-		if(input == 0 ){break;}
+		//std::cin>>input;
+		//if(input == 0 ){break;}
 		std::cin>>rows>>cols>>mines;
 		std::cout<<rows<<" rows\t"<<cols<<" columns\t"<<mines<<" mines"<<std::endl;
 		Board board(rows, cols, mines); //create the main board
@@ -34,6 +34,6 @@ int main(int argc, char* argv[])
 			}
 		}
 		board.solve();
-		//board.print_out();
+		board.print_out();
 	}
 }
