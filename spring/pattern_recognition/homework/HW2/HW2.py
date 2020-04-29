@@ -18,28 +18,47 @@ K = 1
 
 ##get the index of the nearest neighbor to data[index]
 ##TODO: Maybe change this algo to not be O(n^2)
-def get_nearest_neighbor_index(index, data):
-    current = data[index]
-    test = data[1]
-    #print(f"current: {current}\ttest: {test}")
-    min_dist = math.sqrt( (current[0] - test[0]) ** 2 + ( current[1] - test[1]) ** 2) 
-
+def get_nearest_neighbor(index, data):
+    testing = data[index % len(data)] 
+    tmp = data[0]
     best_index = 0
-    
-    #try to find the closest point from among all the points 
-    for i in range(0, data.shape[0]):
+    min_dist = math.sqrt((tmp[0] - testing[0]) ** 2 + (tmp[1] - testing[1]) ** 2)
+
+    for i in range(0, len(data)):
         if i == index:
             continue
-        testing = data[i]
-        curr_dist = math.sqrt( (current[0] - testing[0]) ** 2 + ( current[1] - testing[1]) ** 2) 
-
-        #compare the current distance to our current best
+        tmp = data[i]
+        curr_dist = math.sqrt((tmp[0] - testing[0]) ** 2 + (tmp[1] - testing[1]) ** 2)
         if(curr_dist < min_dist):
             min_dist = curr_dist
-            best_index = i 
+            best_index = i
     
-        return best_index
+    return best_index
 
+
+#returns a list or some container with the class predictions 
+def get_class_estimations(x_train):
+    #x_copy = list(x_train)
+    y_class_pred = []
+
+    for i in range(0, x_train.shape[0]): #for all points
+        x_copy = list(x_train)
+        c1count = 0
+        c2count = 0
+        visited_indices = []
+        for j in range(0, K):           #do K neighbors
+            closest = get_nearest_neighbor(i, x_copy)
+            x_copy.pop(closest) 
+            #print(f"\t\tRemoving {closest} from x_copy")
+            if y_train[closest] == 0:
+                c1count += 1
+            else:
+                c2count += 1
+        if(c1count > c2count):
+            y_class_pred.append(0)
+        else:
+            y_class_pred.append(1)
+    return y_class_pred
 
 x_train = pd.read_csv("x_train.csv").values
 y_train = pd.read_csv("y_train.csv").values[:,0]
@@ -122,31 +141,22 @@ print(f" Fisher’s linear discriminant: {w}")
 # ## 5. Project the test data by linear discriminant to get the class prediction by nearest-neighbor rule and calculate the accuracy score 
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
-y_pred = np.matmul( x_train, w) 
+print(f"shapes of w: {w.shape} and x_train: {x_train.shape}")
+y_pred = np.matmul(x_train, w)
+
 y_class_pred = []
 
 #calculating the k-nearest neighbors
 #calculate the nearest neighbors for all the points
-x_copy= (x_train)
-for i in range(0, x_copy.shape[0]):
-    x_copy= (x_train) 
-    c1count = 0 #how many of the closest points belong to class 1 and 2 respectively
-    c2count = 0
-    for j in range(0, K):
-        remove = get_nearest_neighbor_index(i, x_copy)       
-        x_copy = np.delete(x_copy, (remove), axis = 0)
-        if y_train[remove] == 0: #if the jth closest neighbor belongs to class 1
-            c1count += 1
-        elif y_train[remove] == 1:
-            c2count += 1
-    if c1count > c2count:
-        y_class_pred.append(0)
-    else:
-        y_class_pred.append(1)
+x_copy = (x_train)
+y_class_pred = get_class_estimations(x_train)
 
 acc = accuracy_score(y_train, y_class_pred)
 
 print(f"accuracy of y: {acc}")
+
 color = ['red' if l == 0 else "green" for l in y_class_pred]
+
 plt.scatter(np.ones((y_pred.shape)), y_pred[:,0], color=color) #plotting the two classes
+plt.plot(w)
 plt.show()
