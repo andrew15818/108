@@ -46,10 +46,11 @@ bool Board::check_adjacent_cells(const Node* node)
 	}
 	return true;
 }
+//checks for all adjacent cells and returns true if cell cant hold any more bombs.
 bool Board::reject(const Node* node)
 {
 	int x, y;
-	int adjacent_nodes = 8;
+	int adjacent_nodes = 8, mine_count = 0;
 	for(int i = 0; i < adjacent_nodes; i++)
 	{
 		x = node->x; y = node->y;
@@ -79,14 +80,21 @@ bool Board::reject(const Node* node)
 				x -= 1; y += 1;
 				break;
 		}
+		
 		//skip this node if out of bounds
 		if(!is_valid(x, y)){continue;}
+
 		//checking if mine number appropriate
 		Node* tmp = &board[x][y];
-		if(tmp->type == HINT && tmp->remaining == 0){return true;}
-		
+		//if(tmp->type == HINT && tmp->remaining == 0){return true;}
+		if(tmp->type == MINE){//count adjacent mines
+			mine_count++;
+		}
 	}
-	return false; //we cannot reject this node
+	if(node->type == HINT && mine_count > node->value){//true if more mines than node allows
+			return true;
+	} 
+	return false; 
 } 
 /*To check if a configuration is a possible solution we would need to:
  * 	1. Have no leftover mines.
