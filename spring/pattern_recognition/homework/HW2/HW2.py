@@ -14,31 +14,30 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
 ### How many closest neighbors we check to make our prediction
-K = 1
+K = 2
 
 ##get the index of the nearest neighbor to data[index]
 ##TODO: Maybe change this algo to not be O(n^2)
 def get_nearest_neighbor(index, data):
+    
     testing = data[index % len(data)] 
     tmp = data[0]
     best_index = 0
-    min_dist = math.sqrt((tmp[0] - testing[0]) ** 2 + (tmp[1] - testing[1]) ** 2)
-
+    min_dist = math.sqrt( abs(tmp - data[1]) ) #initial min-distance
     for i in range(0, len(data)):
-        if i == index:
+        if i == index: #to avoid a zero minimum distance
             continue
         tmp = data[i]
-        curr_dist = math.sqrt((tmp[0] - testing[0]) ** 2 + (tmp[1] - testing[1]) ** 2)
+        curr_dist = math.sqrt(abs(tmp - testing))
         if(curr_dist < min_dist):
             min_dist = curr_dist
             best_index = i
-    
     return best_index
 
 
 #returns a list or some container with the class predictions 
 def get_class_estimations(x_train):
-    #x_copy = list(x_train)
+
     y_class_pred = []
 
     for i in range(0, x_train.shape[0]): #for all points
@@ -47,9 +46,9 @@ def get_class_estimations(x_train):
         c2count = 0
         visited_indices = []
         for j in range(0, K):           #do K neighbors
-            closest = get_nearest_neighbor(i, x_copy)
+            closest = get_nearest_neighbor(i, x_train)
             x_copy.pop(closest) 
-            #print(f"\t\tRemoving {closest} from x_copy")
+
             if y_train[closest] == 0:
                 c1count += 1
             else:
@@ -142,21 +141,23 @@ print(f" Fisher’s linear discriminant: {w}")
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
 print(f"shapes of w: {w.shape} and x_train: {x_train.shape}")
-y_pred = np.matmul(x_train, w)
+projection = np.matmul(x_train, w)
+y_pred =  projection
 
 y_class_pred = []
 
 #calculating the k-nearest neighbors
-#calculate the nearest neighbors for all the points
 x_copy = (x_train)
-y_class_pred = get_class_estimations(x_train)
+
+y_class_pred = get_class_estimations(y_pred)
 
 acc = accuracy_score(y_train, y_class_pred)
 
 print(f"accuracy of y: {acc}")
 
 color = ['red' if l == 0 else "green" for l in y_class_pred]
-
-plt.scatter(np.ones((y_pred.shape)), y_pred[:,0], color=color) #plotting the two classes
+color2 = ['blue' if l == 0 else "black" for l in y_train]
+plt.scatter(projection[:,0] , y_pred[:,0] * 200, color=color) #plotting the two classes
+plt.scatter(x_train[:,0], x_train[:,1],color=color2) #plotting the two classes
 plt.plot(w)
 plt.show()
