@@ -47,8 +47,20 @@
 			\end{bmatrix}
 		\end{equation*}
 	\subsection{Compute the Fisher's linear discriminant $W$ on training data.}
+		The Fihser's Linear Discriminant can be calculated by the ratio of the between-class
+		variance to the within-class variance. The linear discriminant comes out to be 
+		\begin{equation*}
+			w = 
+			\begin{bmatrix}
+				-0.00432865 \\
+				0.00744446
+			\end{bmatrix}
+		\end{equation*}
 	\subsection{Project the testing data by linear discriminant to get the class prediction by
 		nearest-neighbor rule and calculate your accuracy score on testing data.}
+		The projection of the test data can be done once we have calculated the $w$ on the training
+		data. For this assighment, we can call \texttt{accuracy\_score(...)} from the \texttt{sklearn}
+		module. 
 	\subsection{Plot the \textbf{1) best projection line} on the training data and slow the slope
 		and intercept on the title \textbf{2)colorize the data} with each class \textbf{3) project
 		all data points on your projection line}.}
@@ -92,7 +104,7 @@
 		results eq \ref{eq:eq4} and eq \ref{eq:eq5} for the parameters w and $w_{0}$.}
 		\begin{equation}
 			\label{eq:eq1}
-			\frac{1}{1 + exp(-\alpha) = \phi(\alpha)}
+			\frac{1}{1 + exp(-\alpha) = \sigma(\alpha)}
 		\end{equation}
 		\begin{equation}
 			\label{eq:eq2}
@@ -100,7 +112,7 @@
 		\end{equation}
 		\begin{equation}
 			\label{eq:eq3}
-			p(C_{1}|x) = \phi(w^{T}x + w_{0})
+			p(C_{1}|x) = \sigma(w^{T}x + w_{0})
 		\end{equation}
 		\begin{equation}
 			\label{eq:eq4}
@@ -110,4 +122,10 @@
 			\label{eq:eq5}
 				w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
 		\end{equation}
+		(Eq \ref{eq:eq1}) refers to the \textbf{sigmoid function}, which moves the entire spectrum of real 
+		numbers into the range $(0,1)$. $\alpha$ here refers to the ratio of the two likelihoods, which is the 
+		equivalent as taking $p(x|C_{1})p(C_{1})$ and dividing it by the sum of the probabilities of the two
+		classes. $w_{T}x + w{0}$ will give its relation to the ratio described by $\alpha$. 
+		$\sigma(w^{T}x + w_{0})$ will thus describe the probability that the input belongs to either $C_{1}$ or 
+		$C_{2}$ depending on where it lies along the $y$ axis. 
 \end{document}
