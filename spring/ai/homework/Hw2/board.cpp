@@ -1,7 +1,7 @@
 #include <iostream>
 #include "board.h"
 #include "util.h"
-#define CHILD_NO 4
+#define CHILD_NO 8
 bool Board::check_adjacent_cells(const Node* node)
 {
 	int x, y, adjacent_nodes = 8;
@@ -84,16 +84,12 @@ bool Board::reject(const Node* node)
 		//skip this node if out of bounds
 		if(!is_valid(x, y)){continue;}
 
-		//checking if mine number appropriate
 		Node* tmp = &board[x][y];
-		//if(tmp->type == HINT && tmp->remaining == 0){return true;}
-		if(tmp->type == MINE){//count adjacent mines
-			mine_count++;
+		//adjacent hint node can't hold more mines
+		if(tmp->type == HINT && tmp->remaining <= 0){
+			return true;
 		}
 	}
-	if(node->type == HINT && mine_count > node->value){//true if more mines than node allows
-			return true;
-	} 
 	return false; 
 } 
 /*To check if a configuration is a possible solution we would need to:
@@ -134,33 +130,81 @@ void Board::input(int x, int y, int value)
 		board[x][y].remaining = value;
 	}
 }
-bool Board::solve_main(const Node* node)
+void Board::adjust_adjacent_values(const Node* node, int operation)
+{
+	int x, y;
+	for(int i = 0; i < 8; i++){
+		x = node->x; y = node->y;
+		switch(i){
+			case 0:
+				x -= 1; y-= 1;
+				break;
+			case 1:
+				x -= 1;
+				break;
+			case 2:
+				x -= 1; y += 1;
+				break;
+			case 3:
+				y -= 1;
+				break;
+			case 4:
+				y += 1;
+				break;
+			case 5:
+				x += 1; y -= 1;
+				break;
+			case 6:
+				x += 1;
+				break;
+			case 7:
+				x += 1; y += 1;
+				break;
+		}
+		//decrease the amount of possible mines it can carry
+		if(is_valid(x, y) && board[x][y].type == HINT){
+			(operation == 1) ? board[x][y].remaining++ : board[x][y].remaining--;
+		} 
+	}
+}
+bool Board::solve_main(Node* node)
 {
 	if(node == NULL){return false;}
 	/*Main steps in this function:
-	 *1. Check if we should reject this node
+	 *1. Check adjacent nodes 
 	 *2. Check if it is a solution.
 	 *3. Generate and recurse on the first child.
 	 *4. Generate the successive children and recurse on them.*/
 	//maybe just start with the first or last node in the unassigned list?
 	std::cout<<"in solve_main with: ("<<node->x<<", "<<node->y<<") and "<<unassigned.size()<<" nodes"<<std::endl;
-	if(reject(node)){
-		std::cout<<"\twe have to reject ("<<node->x<< ", "<<node->y<<")"<<std::endl;
+	if(reject(node))
+	{
+		std::cout<<"\tneed to reject ("<<node->x<<", "<<node->y<<")"<<std::endl;
 		return false;
 	}
 	else if(accept())
 	{
-		std::cout<<"\tthis config is a possible one! :D"<<std::endl;
+		return true;
 	}
-	//assign a mine to current child and iterate forward
-	Node* next;
-	//node->type = MINE;
-	for(int i = 0; i < CHILD_NO; i++)
-	{
-		next = get_closest_node(node);
-		solve_main(next);
+	node->type = MINE;
+	adjust_adjacent_values(node, 0); //subtract 1 from possible hint nodes
+	this->mines--; //number of mines we've used
+	std::cout<<"\tASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
+	for(int i = 0; i < CHILD_NO; i++){
+		Node* tmp = get_closest_node(node);
+		if(solve_main(tmp) == true){
+			return true;
+		}
+		unassigned.push_back(tmp);
 	}
-	return true;
+
+	std::cout<<"\tDEASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
+
+	//unassigned.push_back(node);
+	node->type = VAR;
+	adjust_adjacent_values(node, 1);
+	this->mines++;
+	return false;
 }
 //get the closest node using manhattan distance, return it to continue the iteration
 Node* Board::get_closest_node(const Node* node)
@@ -190,6 +234,7 @@ Node* Board::get_closest_node(const Node* node)
 //main driver function
 void Board::solve()
 {
+	//TODO: do this with the closest node rather than constant onE
 	solve_main(&board[0][0]);
 }
 //print out current state of the board
@@ -199,7 +244,18 @@ void Board::print_out()
 	{
 		for(int j = 0;j < BOARD_SIZE; j++)
 		{
-			std::cout<<board[i][j].value<<" ";
+			//std::cout<<board[i][j].value<<" ";
+			switch(board[i][j].type){
+				case MINE:
+					std::cout<<" M ";
+					break;
+				case VAR:
+					std::cout<<" # ";//<<board[i][j].value<<" ";
+					break;
+				case HINT:
+					std::cout<<" "<<board[i][j].value<<" ";
+					break;
+			}
 			if(j == BOARD_SIZE - 1){ std::cout<<std::endl; }
 		}
 	}

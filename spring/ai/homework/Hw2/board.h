@@ -23,7 +23,8 @@ class Board
 		std::deque<Node*> assigned;
 
 		bool check_adjacent_cells(const Node* node);
-		bool solve_main(const Node* node);
+		bool solve_main(Node* node);
+		void adjust_adjacent_values(const Node* node, int operation); //1 for adding 1 to adj. hint nodes, 0 to subtract when assigning mine
 		Node* get_closest_node(const Node* node);
 	public:
 		Board(int rows, int cols, int mines)
