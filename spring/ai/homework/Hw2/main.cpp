@@ -10,9 +10,6 @@
 #include "board.h"
 #include "util.h"
 #define BOARD_SIZE 6
-#define MINE 100
-#define HINT 101
-#define VAR 102
 int main(int argc, char* argv[])
 {
 	print_intro();

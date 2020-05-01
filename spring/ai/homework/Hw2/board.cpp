@@ -1,51 +1,10 @@
 #include <iostream>
 #include "board.h"
 #include "util.h"
-#define CHILD_NO 8
-bool Board::check_adjacent_cells(const Node* node)
-{
-	int x, y, adjacent_nodes = 8;
-//need to check all adjacent nodes
-	for(int i = 0; i < adjacent_nodes; i++)
-	{
-		x = node->x; y = node->y;
-		switch(i % adjacent_nodes){
-			case 0: //left
-				y -= 1;
-				break;
-			case 1: //diagonal up left
-				x -= 1;y -= 1;
-				break;
-			case 2: //straight up
-				 y -= 1;
-				break;
-			case 3: //up right
-				x += 1; y -= 1;
-				break;
-			case 4: //right
-				y+=1;
-				break;
-			case 5: //down right
-				x -= 1; y += 1;
-				break;
-			case 6: //down
-				y += 1;
-				break;
-			case 7: //down left
-				x -= 1; y += 1;
-				break;
-		}
-		//a successful board cannot have a hint node with unassigned mines
-		if( is_valid(x, y) ){
-			Node* tmp = &board[x][y];
-
-			if(tmp->type == HINT && tmp->remaining != 0){
-				return false;
-			}
-		}
-	}
-	return true;
-}
+#define CHILD_NO 4
+#define HEUR_MRV 10000
+#define HEUR_DH 10001
+#define HEUR_NONE 10002
 //checks for all adjacent cells and returns true if cell cant hold any more bombs.
 bool Board::reject(const Node* node)
 {
@@ -79,8 +38,7 @@ bool Board::reject(const Node* node)
 			case 7: //down left
 				x -= 1; y += 1;
 				break;
-		}
-		
+		}		
 		//skip this node if out of bounds
 		if(!is_valid(x, y)){continue;}
 
@@ -176,40 +134,42 @@ bool Board::solve_main(Node* node)
 	 *3. Generate and recurse on the first child.
 	 *4. Generate the successive children and recurse on them.*/
 	//maybe just start with the first or last node in the unassigned list?
-	std::cout<<"in solve_main with: ("<<node->x<<", "<<node->y<<") and "<<unassigned.size()<<" nodes"<<std::endl;
+	//std::cout<<"in solve_main with: ("<<node->x<<", "<<node->y<<") and "<<unassigned.size()<<" nodes"<<std::endl;
+
 	if(reject(node))
 	{
-		std::cout<<"\tneed to reject ("<<node->x<<", "<<node->y<<")"<<std::endl;
+		//std::cout<<"\tneed to reject ("<<node->x<<", "<<node->y<<")"<<std::endl;
 		return false;
 	}
 	else if(accept())
 	{
 		return true;
 	}
+	this->expanded++;
 	node->type = MINE;
 	adjust_adjacent_values(node, 0); //subtract 1 from possible hint nodes
 	this->mines--; //number of mines we've used
-	std::cout<<"\tASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
+	//std::cout<<"\tASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
 	for(int i = 0; i < CHILD_NO; i++){
-		Node* tmp = get_closest_node(node);
+		Node* tmp = get_closest_node(node, HEUR_NONE);
+
 		if(solve_main(tmp) == true){
 			return true;
 		}
 		unassigned.push_back(tmp);
 	}
 
-	std::cout<<"\tDEASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
+	//std::cout<<"\tDEASSIGNING MINE TO ("<<node->x<<","<<node->y<<")"<<std::endl;
 
 	//unassigned.push_back(node);
 	node->type = VAR;
 	adjust_adjacent_values(node, 1);
 	this->mines++;
+
 	return false;
 }
-//get the closest node using manhattan distance, return it to continue the iteration
-Node* Board::get_closest_node(const Node* node)
-{
-	if(unassigned.empty()){return NULL;} 
+Node* Board::no_heuristic(const Node* node){
+if(unassigned.empty()){return NULL;} 
 	Node* tmp;
 	Node *best = unassigned.front();
 	int min_dist = this->rows * this->cols; //farthest away next node can be
@@ -227,15 +187,25 @@ Node* Board::get_closest_node(const Node* node)
 		}
 		it++;
 	}
-	std::cout<<"\t\tabout to erase: ("<<(*remove)->x<<", "<<(*remove)->y<<")"<<std::endl;
+	//std::cout<<"\t\tabout to erase: ("<<(*remove)->x<<", "<<(*remove)->y<<")"<<std::endl;
 	unassigned.erase(remove);
 	return best;
+}
+//get the closest node using manhattan distance, return it to continue the iteration
+Node* Board::get_closest_node(const Node* node, int heuristic)	
+{
+	switch(heuristic){
+		case HEUR_NONE:
+			return no_heuristic(node);	
+	}
 }
 //main driver function
 void Board::solve()
 {
+	this->expanded = 0;
 	//TODO: do this with the closest node rather than constant onE
 	solve_main(&board[0][0]);
+	std::cout<<"EXPANDED "<<this->expanded<<" nodes"<<std::endl;
 }
 //print out current state of the board
 void Board::print_out()
