@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python # coding: utf-8
 
 # ## HW2: Linear Discriminant Analysis
 # In hw2, you need to implement Fisher’s linear discriminant by using only numpy, then train your implemented model by the provided dataset and test the performance with testing data
@@ -23,10 +22,12 @@ def get_nearest_neighbor(index, data):
     testing = data[index % len(data)] 
     tmp = data[0]
     best_index = 0
-    min_dist = math.sqrt( abs(tmp - data[1]) ) #initial min-distance
+    min_dist = ( abs(tmp - data[1]) ) #initial min-distance
     for i in range(0, len(data)):
+        """
         if i == index: #to avoid a zero minimum distance
             continue
+        """
         tmp = data[i]
         curr_dist = math.sqrt(abs(tmp - testing))
         if(curr_dist < min_dist):
@@ -36,29 +37,17 @@ def get_nearest_neighbor(index, data):
 
 
 #returns a list or some container with the class predictions 
-def get_class_estimations(x_train):
+def get_class_estimation(index, x_train):
+    min_dist = np.absolute(x_train[index] - x_train[1])
+    best_index = 0
 
-    y_class_pred = []
 
-    for i in range(0, x_train.shape[0]): #for all points
-        x_copy = list(x_train)
-        c1count = 0
-        c2count = 0
-        visited_indices = []
-        for j in range(0, K):           #do K neighbors
-            closest = get_nearest_neighbor(i, x_train)
-            x_copy.pop(closest) 
-
-            if y_train[closest] == 0:
-                c1count += 1
-            else:
-                c2count += 1
-        if(c1count > c2count):
-            y_class_pred.append(0)
-        else:
-            y_class_pred.append(1)
-    return y_class_pred
-
+    for i in range(0, len(x_train)):
+        dist = np.absolute(x_train[index] - x_train[i])
+        if(dist < min_dist):
+            min_dist = dist
+            best_index = i
+    return i
 x_train = pd.read_csv("x_train.csv").values
 y_train = pd.read_csv("y_train.csv").values[:,0]
 x_test = pd.read_csv("x_test.csv").values
@@ -131,7 +120,7 @@ print(f"Fisher's criterion: {jw}")
 mean_diff = (m2 - m1)[:, np.newaxis]
 sw_inv = np.linalg.inv(sw) 
 w = np.matmul(sw_inv, mean_diff)
-
+w *= 100
 assert w.shape == (2,1)
 print(f" Fisher’s linear discriminant: {w}")
 
@@ -141,23 +130,56 @@ print(f" Fisher’s linear discriminant: {w}")
 # you can use accuracy_score function from sklearn.metric.accuracy_score
 # this is projecting the training data?
 print(f"shapes of w: {w.shape} and x_train: {x_train.shape}")
-projection = np.matmul(x_train, w)
-y_pred =  projection
 
-y_class_pred = []
+train_projection = np.matmul(x_train, w)
+test_projection  = np.matmul(x_test, w)
+projection_line = np.matmul(train_projection, w.T)
+y_test_class_pred = np.zeros(test_projection.shape)
+
+#For each point in testing set, calculate nearest point in training set
+for i in range(0, test_projection.shape[0]):
+    min_dist = np.absolute(test_projection[i] - train_projection[0]) # just placeholder min distance
+    best_index = 0
+
+    for j in range(0, train_projection.shape[0]):
+        curr_dist = np.absolute( test_projection[i] - train_projection[j])
+
+        if curr_dist < min_dist: #if we found a closer point in training data
+            min_dist = curr_dist
+            best_index = j  
+
+    y_test_class_pred[i] = ( y_train[best_index])
 
 #calculating the k-nearest neighbors
-x_copy = (x_train)
+rise = projection_line[100]
+run = projection_line[2]
+slope =  (rise[1] - run[1]) / (rise[0] - run[0]) 
 
-y_class_pred = get_class_estimations(y_pred)
+y_intercept =   rise[1] - (slope *rise[0])
+print(f"rise : {rise} \t run: {run} \t slope {slope} \t y-intercept: {y_intercept}")
+print(y_intercept)
 
-acc = accuracy_score(y_train, y_class_pred)
+print(f"slope: {slope}")
+acc = accuracy_score(y_test, y_test_class_pred)
 
 print(f"accuracy of y: {acc}")
+color = []
+for i in y_train:
+    if i == 0:
+        color.append("green")
+    else:
+        color.append("blue")
 
-color = ['red' if l == 0 else "green" for l in y_class_pred]
-color2 = ['blue' if l == 0 else "black" for l in y_train]
-plt.scatter(projection[:,0] , y_pred[:,0] * 200, color=color) #plotting the two classes
-plt.scatter(x_train[:,0], x_train[:,1],color=color2) #plotting the two classes
-plt.plot(w)
+#Plotting the classes, and the two 
+colors_train = ["green" if  l==0 else "orange" for l in y_train]
+colors_test = ["green" if  l==0 else "orange" for l in y_test]
+proj_line_c1 = projection_line[y_train == 1]
+proj_line_c2 = projection_line[y_train == 0]
+
+plt.plot(proj_line_c1[:,0], proj_line_c1[:,1],'.' ,color = "red")
+plt.plot(proj_line_c2[:,0], proj_line_c2[:,1],'.' ,color = "green")
+
+plt.plot(c1[:,0], c1[:,1],'+' ,color="green")
+plt.plot(c2[:,0], c2[:,1],'+' ,color="red")
+plt.title("slope: " + str(slope)) 
 plt.show()
