@@ -4,10 +4,12 @@
 \usepackage{helvet}
 \usepackage{xeCJK}
 \usepackage{amsmath}
+\usepackage{graphicx}
 %changing the main font
 \renewcommand{\familydefault}{\sfdefault}
 %cool traditional chinese font for my name :^D
-\setCJKmainfont{Noto Serif CJK TC}
+\setCJKmainfont{FandolKai-Regular.otf}
+
 \title{Introduction to Pattern Recognition Homework 2 Report}
 \author{Andr\'es Ponce(彭思安) \\
 \and
@@ -60,45 +62,41 @@
 		nearest-neighbor rule and calculate your accuracy score on testing data.}
 		The projection of the test data can be done once we have calculated the $w$ on the training
 		data. For this assighment, we can call \texttt{accuracy\_score(...)} from the \texttt{sklearn}
-		module. 
+		module.  To keep the code simple, but maybe at a loss of accuracy, only the nearest neighbor
+		was calculated. For the testing data, we find the closest point in the training data and 
+		assign it the same class. The final result for accuracy from \texttt{sklearn.accuracy\_score}
+		was $0.88$.
 	\subsection{Plot the \textbf{1) best projection line} on the training data and slow the slope
 		and intercept on the title \textbf{2)colorize the data} with each class \textbf{3) project
 		all data points on your projection line}.}
+		Below is the plot for $C_{1}$ and $C_{2}$ on the testing data. The $+$ symbols indicate the original
+		class data received from \texttt{x\_train} and \texttt{y\_train}. The \textit{overlapping} red and
+		green circles are the class data projected onto the line that best separates the two classes. 
+
+
+			\begin{figure}
+				\includegraphics[scale=0.5]{training}
+					\centering
+				\caption{The class data is plotted along the line that maximizes the separation 
+				between the classes.}
+			\end{figure}
+
 \section{Questions}
 	\subsection{Show that maximization of the class separation criterion given by 
 		$L(\lambda, w) = w^{T}(m_{2} - m_{1})  + \lambda(w^{T}w - 1)$ with respect to w, using a
 		Lagrange multiplier to enforce the constraint $w^{T}w = 1$, leads to the result that 
 		$w \propto (m_{2} - m_{1})$.}
-
-		\textbf{Lagrange Multipliers} allow us to maximize a function $L$ given a constraint $g$.
-		To do this, we have  the initial equation $\nabla L(w, \lambda) = \alpha \nabla g(w, \lambda)$. Where 
-		$\alpha$ is the Lagrange Multiplier in this equation. Since we apply the multiplier to each
-		variable individually, then we have to find the multiplier based on the component functions 
-		for $L$ and $g$. Thus we have to solve the system of equations 
-		\[ L_{\lambda} = \alpha g_{\lambda} \quad\quad L_{w} = \alpha g_{w} \]
-		So, we have to differentiate with respect to $\lambda$ and $w$, since we are dealing with the gradient
-		vector. When we set up the equations, we get the system of equations
-		\begin{subequations}
-			\begin{equation}
-				w^{T}w -1 = 0
-			\end{equation}
-			\begin{equation}
-				\label{eq: fw}
-				m_{2} - m_{1} = \alpha
-			\end{equation}
-			\begin{equation}
-				\label{eq:constraint}
-				w^{T}w = 1
-			\end{equation}
-		\end{subequations}
-		Then, multiplying (\ref{eq:constraint}) by (\ref{eq: fw}), we get
-		\[(m_{2} - m_{1})(w^{T}w) = \alpha\]
-		which, when divided by $m_{2} - m_{1}$ gives 
-		\[w^{T}w = \frac{\alpha}{m_{2} - m_{1}}\]
-
-		Since $w_{T}w$ is proportional to $m_{2} - m_{1}$, then $w$ will also be. 
-		Thus, using Lagrange Multipliers we have shown that $w \propto m_{2} - m_{1}$ 
-	%second question
+		
+		From the definition of the between-class covariance matrix, we know $S_{B}$ is always 
+		a scalar of $m_{2} - m_{1}$. When we derive w.r.t. w, we get:
+		\[\frac{\partial w}{\partial L} = (m_{2} - m_{1}) - \lambda w\]
+		
+		In order to maximize this value, we can set the partial derivative of $L$ equal to 0,
+		and achieve the following result
+		\[ (m_{2} - m_{1}) - \lambda w = 0\]
+		\[ (m_{2} - m_{1}) = \lambda w \]
+		And thus this implies that $w \propto (m_{2} - m_{1})$. 
+		%second question
 	\subsection{Using eq \ref{eq:eq1} and eq \ref{eq:eq2}, derive the result eq \ref{eq:eq3} for the posterior class
 		probability in the two-class generative model with Gaussian densities, and verify the
 		results eq \ref{eq:eq4} and eq \ref{eq:eq5} for the parameters w and $w_{0}$.}
@@ -122,10 +120,12 @@
 			\label{eq:eq5}
 				w_{0} = -\frac{1}{2}\mu^{T}_{1}\sum_{}^{}^{-1}\mu_{1} + \frac{1}{2}\mu_{2}^{T}\sum_{}^{}^{-1}\mu_{2} + ln\frac{p(C_{1})}{p(C_{2})}
 		\end{equation}
-		(Eq \ref{eq:eq1}) refers to the \textbf{sigmoid function}, which moves the entire spectrum of real 
-		numbers into the range $(0,1)$. $\alpha$ here refers to the ratio of the two likelihoods, which is the 
-		equivalent as taking $p(x|C_{1})p(C_{1})$ and dividing it by the sum of the probabilities of the two
-		classes. $w_{T}x + w{0}$ will give its relation to the ratio described by $\alpha$. 
-		$\sigma(w^{T}x + w_{0})$ will thus describe the probability that the input belongs to either $C_{1}$ or 
-		$C_{2}$ depending on where it lies along the $y$ axis. 
-\end{document}
+
+		The posterior class probability is directly related to the \textbf{sigmoid function} becasue since 
+		all the real numbers live in (0,1), then a value closer to 1 will mean a higher chance p is in $C_{1}$. 
+		Thus, our input $w^{T}x + w_{0}$ will directly determine how confident we are in x belonging in $C{1}$,
+		which shows that these two are equal.
+
+		For eq 4 and eq 5, assuming an equal covariance matrix for both classes, the square values will
+		cancel out once the vector multiplications are done, and thus eq. 4 verifies $ w_{0}$. 
+		\end{document}
