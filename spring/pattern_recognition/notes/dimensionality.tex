@@ -2,6 +2,7 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \graphicspath{ {./images/} }
+\renewcommand{\vec}[1]{\mathbf{#1}} %make \vec command turn vectors bold instead
 \title{Dimensionality Reduction}
 \author{Andr\'es Ponce}
 
@@ -78,5 +79,12 @@ $\tilde{x}_{n}$ can be written as
 			corresponding eigenvalues, and calculate their covariance from the mean.}
 	\end{figure}
 \end{center}
+
+In this formulation, all the data points have their own coefficients $\{z_{ni}\}$ for $M$ basis
+vectors, and a set of constants across all data points $\{b_{i}\}$. Then, we want to minimize the
+error projection formula
+\[ \tilde{J} = \vec{u^{T}_{2}}S\vec{u_{2}} + \lambda_{2}(1 - \vec{u}^{T}\vec{u_{2}})\]
+
+When we take the derivative with respect to $z_{nj}$ and $b_{j}$, we then can maximize this formula.
 \end{document}
 
