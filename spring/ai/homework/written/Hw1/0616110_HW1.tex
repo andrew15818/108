@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage{xeCJK} %for Chinese name
+%\usepackage{helvet}
+\usepackage[margin=1in]{geometry}
+
+\renewcommand{\familydefault}{\sfdefault}
+\title{Introduction To Artificial Intelligence Written Assignment 1}
+\author{Andr\'es Ponce(彭思安) \\
+\and
+0616110}
+\begin{document}
+\maketitle
+\section{For the two videos shown in our first class(one on Robot Mouse Races, and the other one Robothespian)
+, describe their respective PEAS.}
+PEAS is an acronyn for \textbf{P}erformance Measure, \textbf{E}nvironment, \textbf{A}ctuators, and
+\textbf{S}ensors. These are 5 elements of a rational agent. A \textbf{performance measure} 
+refers to the question:
+How do we measure whether an agent is performing well? This will determine what factors need to be changed
+for the agent to accomplish its objective. The \textbf{environment} refers to the external world in which
+our object interacts(a game board, a road, etc...). The \textbf{Actuators} are the possible actions that 
+our agent can perform, such as a move in a game, or turning right or left on an intersection. The sensors
+are the parts of the agent that detect the external conditions and provide the information the agent uses
+to make its decision.
+
+RoboThespian is a humanoid-looking robot designed to complete multiple tasks that have some resemblance to 
+human tasks. It is advertised as being able to talk and interact with other humans, and even simulate 
+emotional responses. For RoboThespian, PEAS might look something like:
+\begin{itemize}
+	\item \textbf{Performance Measure} Since RoboThespian was designed originally to interact with others,	
+			a possible perfomance measure could be a positive reaction from the people it interacts with,
+			such as a laugh. 
+			However, since RoboThespian can perform multiple activites (sing, act, etc...), an approach with 
+			multiple performance measures for each activity might be more accurate. The first approach might	
+			be more suitable if RoboThespian is interacting casually with other people rather than doing a
+			specific activity.
+	\item \textbf{Environment} Since RoboThespian relies on interaction, the environment would have to be 
+			a place with one or more people for it to perform some actions and receive input in acoordance 
+			to the rest of the model.
+	\item \textbf{Actuators} Regardless of what acitivity RoboThespian is performing, some possible 
+			actions for it to take might be speaking (possibly with different tone of voice and pitch,etc...),
+			singing, moving its limbs, blinking, or some other physical response.
+	\item \textbf{Sensors} RoboThespian could receive its input from the audience via a camera, physical 
+			sensors on it's hands, or some other way to gauge the audience's response.
+\end{itemize}
+
+Robot Mouse Races, on the other hand, describe how a ``mouse", programmed in a certain way, can run through 
+a maze without help and even find the best route through it.  Some of this agent's features are described below:
+
+\begin{itemize}
+	\item \textbf{Performance Measure} The performance measure could be quantified in how long the mouse takes to 
+			complete the maze. 
+	\item \textbf{Environment} The environment for the mouse would be a maze, the space where it receives inputs
+			and makes decisions.
+	\item \textbf{Actuators} The mouse would could either move forward, backward, turn left, turn right,
+			or stop. 
+	\item \textbf{Sensors} The sensors on the mouse would probably include some sort of camera to see what lies
+			in front or to the sides. Also it might include some proximity sensor to indicate when it will
+			hit a wall or when there is an open turn it can make, possibly at an intersection.
+\end{itemize}
+
+\section{In a popular English word game, the goal is to convert a given English word to another given English
+word of the same length by changing one letter at a tie. Each intermediate word needs to be in a standard 
+dictionary. For example, if the initial word is DOG and the destination word is CAT, the following is a possible
+series of words: $DOG\rightarrow DOT\rightarrow HOT\rightarrow HAT \rightarrow CAT$. 
+Now you are given this set of two-letter English words as your 
+dictionary: \{AN, AM, AS, AT, AX, BE, BY, GO, HE, HI, IT, IS, IN, IF, ME, MY, NO, OF, OH, OK, ON, OR,
+OX, SO, TO, UP, US, WE\}}
+	\subsection{Find a solution from AT to IN using breadth-first search(BFS). When expanding a node,
+		generate its children in alphabetical order. Use no repeated state checking. Give separated lists of 
+		all the generated nodes and expanded nodes, both in the correct order.}
+		\label{subsec:bfs}
+		Since we can only change oen letter at a time, at each node we can have up to two children, 
+		one where we change the first letter and one where we change the second letter in the word.	From the 
+		starting node AT, two possible solutions might look like: 
+		\[ \textrm{AT} \rightarrow \textrm{AN} \rightarrow \textrm{IN}\]
+		\[ \textrm{AT} \rightarrow \textrm{IT} \rightarrow \textrm{IN}\]
+
+		The nodes expanded would be: AT, AN. 
+
+		All the nodes generated would be: AT, AN, IT, IN.
+	\subsection{Explain why Hamming distance (the number of positions where the two words have 
+		different letters) can be used as an admissible heuristic for this problem. You need to 
+		provide a reasonable explanation.}
+		\label{subsec:hamming}
+		An \textbf{admissible} heuristic is one where the function $h(n)$ never overestimates the
+		the true cost from the current node $n$ to the goal node. 
+		
+		In this problem, $h(n) \in \{0,1,2\}$, since for two letter words, the most they can differ is in their
+		two letters, and will differ by none if they are the same word. We have to then show that $h(n)$ will 
+		not overestimate whenever it is 0,1, or 2. 
+
+		If $h(n) = 0$, then both of the letters in $n$ are the same as the ones in the target, which would 
+		imply we reached the target and thus need to change 0 letters.
+	
+		If $h(n = 1)$, then the current word and the target differ by only one. In this case, the minimum amount
+		of changes needed to reach the target word is 1, so $h$ will does not overestimate.
+
+		Similar to the case where $h(n) = 1$, if $h(n = 2)$ then there are at least two words in between
+		$n$ and our target, where one letter is different in each. 
+
+		Since the true cost of the function will always be at least the Hamming distance, $h(n)$ is an 
+		admissible heuristic.
+	\subsection{Repeat (\ref{subsec:bfs}) using A* search with the heuristic in (\ref{subsec:hamming}).}
+\end{document}
+
