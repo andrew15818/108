@@ -3,7 +3,7 @@
 %\usepackage{helvet}
 \usepackage[margin=1in]{geometry}
 \usepackage{tikz}%for math trees
-
+\setCJKmainfont{Noto Serif CJK TC}
 \renewcommand{\familydefault}{\sfdefault}
 \title{Introduction To Artificial Intelligence Written Assignment 1}
 \author{Andr\'es Ponce(彭思安) \\
@@ -182,5 +182,75 @@ show the results.}
 	\end{center}
 	\subsection{Solve this puzzle by hand using backtracking with forward checking and the MRV, degree, and 
 	least-constraining-value heuristics. Note that the solution may not be unique.}
+		\subsubsection{MRV Heuristic}
+			With the \textbf{M}inimum \textbf{R}emaining \textbf{V}alues heuristic, we always choose to 
+			assign the variable that has the minimum amount of legal values. Our initial values for the
+			MRV heuristic, which will guide our decision, are shown in the table below.
+			\begin{center}
+				\begin{tabular}{|l | r | c |}
+					\hline
+						F  & 9 & can be any non-zero num.\\\hline
+						I  & 4 & only if I/2 is also possible.\\\hline
+						O  & 4 & only if 2xO is also possible.\\\hline
+						V  & 7 & Non-zero, constraints also occ. 2 numbers and smallest nums.\\\hline
+						U  & 7 & Non-zero, not largest, not other constraint.\\\hline
+						E  & 9 & Non-zero numbers.\\\hline
+						R  & 1 & Can only be zero.\\\hline
+						N  & 7 & Non-zero, not largest, not other constraint.\\
+					\hline
+				\end{tabular}
+			\end{center}
+			From the formula, we can see
+			that $R$ only has one posible value, since $E - R = E$  implies $R = 0$.
+
+			For the next two variables, we have $I$ and $O$ related because $O$ is one-half of $I$, which leaves
+			4 values for them to have. This means
+			that $I$ has to be an even number, and $O$ has to be its half. For this, we can assign 2 to $O$ and 
+			4 to $I$. 
+
+			We now have 7 values remaining. 
+			For the next couple variables, $U, V,\textrm{and } M$, they can all hold 5 values each (roughly), 
+			based on the ones we have used and that two other variables have to be occupied by its constraints. 
+			We know $N$ is the largest because it is constrained by a sum of the two other variables. For 
+			this, we can assign a number such as 7. Now, we have to find two numbers which add to this, 
+			and we can use $U=1$ and $N = 6$.
+
+			The two variables with the greatest amounts of possible choices are $E \textrm{ and } F$. F is
+			subtracted from itself and we already concluded that R is 0, so we can choose any of the remaining
+			digits for these. $F = 3$ and $E = 9$ work. Since the next variable(s) to be assigned were chosen
+			based on how many values we could choose from, this is an example of the MRV heuristic.
+		\subsubsection{Degree}
+			For the \textbf{Degree} heuristic, we have to assign the variables with the most constraints on the
+			remaining variables. For this problem, we would have to start with $V, U, \textrm{ or }N$, since these
+			constrain two different variables each. The amount of variables that each variable constrains
+			is shown below. Again, since we are using forward checking, after each assignment we decrease the 
+			domains of the other variables if applicable.
+			\begin{center}
+				\begin{tabular}{| l | r | c}
+				\hline
+				F & 0\\\hline 
+				I & 1\\\hline
+				O & 1\\\hline
+				V & 2\\\hline
+				U & 2\\\hline
+				E & 1\\\hline
+				R & 0\\\hline
+				N & 2\\\hline
+				\end{tabular}
+			\end{center}
+			The values with the most constraints on other variables in this problem are $V, U, \textrm{ and }N$.
+			To satisfy V, we have to select only two numbers for the $U,V$ such that their sum are available 
+			numbers. Since this is the earliest assignment, we can choose most of the values in the domain. We 
+			can choose $5, 2, 3$ for V, U, and N, respectively. After we assign each variable, we remove it from
+			the set of possible values for the unassigned variables.
+
+			Then, we have a couple variables that only have 1 constraint. For I, we can choose a variable whose
+			half is in the set of available values. We can choose $8$, since $4$ is still available. This $4$
+			we can still assign to O. For $E$, we can choose any variable since E's formula allows E to be any 
+			vlaue.
+
+		Then, we have F, which has no constraints because we are subtracting it from itself, and R, which was to
+		be zero by its constraint equation. We can choose 7 for F and 0 for R, respectively.
+		\subsubsection{}
 \end{document}
 
