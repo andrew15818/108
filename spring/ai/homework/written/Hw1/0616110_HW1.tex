@@ -2,6 +2,7 @@
 \usepackage{xeCJK} %for Chinese name
 %\usepackage{helvet}
 \usepackage[margin=1in]{geometry}
+\usepackage{tikz}%for math trees
 
 \renewcommand{\familydefault}{\sfdefault}
 \title{Introduction To Artificial Intelligence Written Assignment 1}
@@ -69,16 +70,35 @@ OX, SO, TO, UP, US, WE\}}
 		generate its children in alphabetical order. Use no repeated state checking. Give separated lists of 
 		all the generated nodes and expanded nodes, both in the correct order.}
 		\label{subsec:bfs}
-		Since we can only change oen letter at a time, at each node we can have up to two children, 
-		one where we change the first letter and one where we change the second letter in the word.	From the 
-		starting node AT, two possible solutions might look like: 
-		\[ \textrm{AT} \rightarrow \textrm{AN} \rightarrow \textrm{IN}\]
-		\[ \textrm{AT} \rightarrow \textrm{IT} \rightarrow \textrm{IN}\]
+		\textbf{Breadth-First Search} works by analyzing all the nodes a certain distance from the root
+		before moving on to the next layer of nodes. In this game, since we can only change one letter of the
+		word at every stage, in the first layer we will look at all the nodes that start with A (except for AT),
+		and all the nodes that end with T. Our tree will resemble
+		\begin{center}
+		\begin{tikzpicture}[sibling distance=3em]
+				\node{AT}
+					child { node {AM} 
+						child {node {ME}}
+						child {node {MY}}
+					}
+					child [missing] %add empty children for spacing
+					child { node {AN} 
+						child{ node {IN}}
+					}
+					child [missing]
+					child { node {AS} }
+					child [missing]
+					child { node {AX} }
+					child [missing]
+					child { node {IT} };
+		\end{tikzpicture}
+		\end{center}	
+		The algorithm will first add into the open set all the nodes that start with A or end with T. Since 
+		AM is alphabetically before AN, it will be explored first. The generated nodes will be(in the order
+		they are generated): AT, AM, AS, AX, IT, ME, MY, IN.
 
-		The nodes expanded would be: AT, AN. 
-
-		All the nodes generated would be: AT, AN, IT, IN.
-	\subsection{Explain why Hamming distance (the number of positions where the two words have 
+		The fully explored nodes will be (in the order they are explored): AT, AM.
+		\subsection{Explain why Hamming distance (the number of positions where the two words have 
 		different letters) can be used as an admissible heuristic for this problem. You need to 
 		provide a reasonable explanation.}
 		\label{subsec:hamming}
@@ -101,5 +121,66 @@ OX, SO, TO, UP, US, WE\}}
 		Since the true cost of the function will always be at least the Hamming distance, $h(n)$ is an 
 		admissible heuristic.
 	\subsection{Repeat (\ref{subsec:bfs}) using A* search with the heuristic in (\ref{subsec:hamming}).}
+		The A* algorithm uses a heuristic to determine which nodes it should expand. It tries to minimize the 
+		distance from the root node to the target node by finding a minimal $f(n) = g(n) + h(n)$ for every node
+		it encounters. 
+
+		At the root node AT, it will generate all its children and calculate their $f(n)$ values. The children
+		will all be added to the Open set, however, AN and IT will have  $f(n) = 2$, so they will be first
+		nodes to come out of the Open set at the next iteration. 
+
+		Using A*, the generated nodes in order will be: AT, AM, AN, AS, AX, IT. The expanded nodes will be AT and 
+		AN.
+\section{ We have three variables X, Y, and Z. Their initial domains are digits \{0, 1,...,9\}. Given the
+constraints $X = Y^{2}$ and $X=Z^{3}$, use AC-3 to update their domains to make them arc-consistent. Don't just
+show the results.}
+
+	An arc is \textbf{arc consistent} if, for a constraint $\{X_{i}, X_{j}\}$ all values of $X_{i}$ allow for
+	some values of $X_{j}$. The AC-3 algorithm will take in a set of all arcs, in this problem 
+	$(X, Y), (X, Z)$, check which numbers would allow the constraint to be satisfied, and discard from the 
+	domains those which do not leave a possible value.
+
+	Each of the binary constraints can be represented by two arcs, and we place all these arcs into a set,which is
+	$\{(X\rightarrow Y),(Y\rightarrow X),(X\rightarrow Z),(Z\rightarrow X)\}$.
+	
+	When checking the first arc $(X\rightarrow Y)$, we leave in $D_{X}$ only those numbers that are squares and
+	less than 10. Since our set of constraints still holds all the other arcs that involve X, we move on to the 
+	next arc. For $(Y\rightarrow X)$, we leave only those numbers in Y that are perfect squares. So at this 
+	point $D_{X}=[0,1,4,9]$ and $D_{Y}=[0,1,2,3]$. 
+
+	For the third arc $(X\rightarrow Z)$, we leave in $D_{X}$ only those numbers that are also perfect cubes. 
+	Since we modified $D_{X}$, we now need to add to the set of open arcs $(Y\rightarrow X)$, since now $D_{Y}$
+	might need to be updated. For the arc $(Z\rightarrow X)$, we leave only those numbers who when raised 
+	to the third power still exist in X. At this point $D_{X}=[0,1]$ and $D_{Z}=[0,1]$. 
+
+	Now, we still have to re-check the arc $(Y\rightarrow X)$. Since only 0 and 1 will be in $D_{X}$ when 
+	squared, $D_{Y}$ will also only contain those two numbers. 
+
+	In the end, our three domains all contain the same numbers, namely those numbers less than 10 which are 
+	perfect squares and also perfect cubes. 
+	\[ D_{X} = D_{Y} = D_{Z} = [0,1]\]
+
+\section{Consider the following cryptoarithmetic puzzle: FIVE - FOUR = ONE.}
+	\subsection{Write down all the constraints. All the variables (symbols) should represent different digits.}
+	The constraints in this problem would be all the relations that restrict the possible values of our symbols.
+	Since $F - F = 0$, $F$ would be able to hold any value in the domain $[0-9]$. For the rest of the symbols,
+	we could solve for each variable in the small equation in which they appear. For example, $I= 2O$ and 
+	$O = \frac{1}{2}I$. If we write each symbol in this way, our set of constraints would be:
+	\begin{center}
+		\begin{tabular}{|l | r | c |}
+			\hline
+				F  & $[0-9]$ \\ \hline
+				I  & $2O$\\ \hline
+				O  & $\frac{1}{2}I$\\ \hline
+				V  & $N + U$\\ \hline
+				U  & $V - N$\\ \hline
+				E  & $[0-9]$\\ \hline
+				R  & $0$ \\ \hline
+				N  & $V - U$\\ 
+			\hline
+		\end{tabular}	
+	\end{center}
+	\subsection{Solve this puzzle by hand using backtracking with forward checking and the MRV, degree, and 
+	least-constraining-value heuristics. Note that the solution may not be unique.}
 \end{document}
 
