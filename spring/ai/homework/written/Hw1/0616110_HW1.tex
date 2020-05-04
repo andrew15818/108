@@ -251,6 +251,29 @@ show the results.}
 
 		Then, we have F, which has no constraints because we are subtracting it from itself, and R, which was to
 		be zero by its constraint equation. We can choose 7 for F and 0 for R, respectively.
-		\subsubsection{}
+		\subsubsection{Least-Constraining-Values}
+		For the least-constraining values heuristic, we look for the values that have the least influence 
+		on the constraints of other variables. We can first assign 0 to R, since no other variable can 
+		be zero, since every other symbol's constraints involves yet another variable and digits cannot
+		be repeated.
+
+		For the next value, we can assign F and E, since they also do not depend on other variables. We 
+		should choose odd numbers, since I and O will both need to be even in their assignments. We 
+		should also maybe choose larger numbers, since it miight will be easier to assing V's value 
+		with smaller numbers. For F and E, we can assign 9 and 7, respectively.
+
+		For I and O, with the same idea, we can assign the largest possible values to make V, U, and N's
+		satisfaction easier. The largest even numbers for I and O would be 8 and 4, respectively, since I 
+		has to be twice the value of O.
+
+		For the last pair of variables, we can choose more freely, since more of the smaller numbers are
+		available, and finding a sum of two numbers whose result is in also available is easier. For
+		V, U, and N, we could assign 3, 2, 1, respectively, or 5, 2, 3, or 5, 1 ,6. Since we took this 
+		in mind when assigning previous constraints, we now have multiple choices for these variables.
+\section{Starting from the game state of tic-tac-toe-here:}
+	\subsection{Build the whole game tree until terminal states. Give the minimax values of all the nodes.}
+		For the values on the leaf nodes, we can choose +1 if O wins, 0 for draw and -1 for O losing.
+	\subsection{Reorder the nodes for optimal $\alpha-\beta$ pruning. How many nodes need to be checked 
+	during minimax search?}
 \end{document}
 
