@@ -3,6 +3,7 @@
 %\usepackage{helvet}
 \usepackage[margin=1in]{geometry}
 \usepackage{tikz}%for math trees
+\usepackage{amsmath}
 \setCJKmainfont{Noto Serif CJK TC}
 \renewcommand{\familydefault}{\sfdefault}
 \title{Introduction To Artificial Intelligence Written Assignment 1}
@@ -250,7 +251,7 @@ show the results.}
 			vlaue.
 
 		Then, we have F, which has no constraints because we are subtracting it from itself, and R, which was to
-		be zero by its constraint equation. We can choose 7 for F and 0 for R, respectively.
+		be zero by its constraint equation. We can choose 7 for F and 0 for R, resPectively.
 		\subsubsection{Least-Constraining-Values}
 		For the least-constraining values heuristic, we look for the values that have the least influence 
 		on the constraints of other variables. We can first assign 0 to R, since no other variable can 
@@ -275,5 +276,42 @@ show the results.}
 		For the values on the leaf nodes, we can choose +1 if O wins, 0 for draw and -1 for O losing.
 	\subsection{Reorder the nodes for optimal $\alpha-\beta$ pruning. How many nodes need to be checked 
 	during minimax search?}
-\end{document}
+		For optimal $\alpha-\beta$ pruning, we can optmially order the nodes if for each MIN node they 
+		are expended by lowest-value first, and for MAX if they are expanded by highest-value first. 
+		We use the same algorithm for minimax but add an extra check for the values of $\alpha$ and $\beta$
+		to aid in our computation.
+\section{A propositional KB database contains these sentences
+\[A,B,P\Rightarrow Q, L\land M\Rightarrow P, L\land B\Rightarrow M, A\land B\Rightarrow L, A\land P\Rightarrow L \]
+}
+	\subsection{Convert them into CNF}
+	In order to convert the clauses to CNF, we need to end up with a single set of conjunctions. For 
+	the implication $P\Rightarrow Q$, we can turn it into $\neg P \lor Q$, and we will also use 
+	DeMorgan's Laws for the last couple of clauses.
 
+	The final set of these clauses in Conjunctive Normal Form will look like:
+	\begin{equation}
+			(A)\land(B)\land(\neg P \lor Q)\land(\neg L \lor \neg M \lor P) \land(\neg L \lor \neg B \lor M)
+			\land(\neg A \lor \neg B \lor L) \land(\neg A\lor \neg P \lor L)
+	\end{equation}
+	\subsection{Use resolution to prove Q.}
+		For this problem, we need to prove a couple results prior to proving $Q$.
+		We can conclude L from:
+		\begin{equation}
+			(A)\land(B)\land(\neg A \lor \neg B\lor L ) \Rightarrow L
+		\end{equation}
+		Next, we can see that
+		\begin{equation}
+			\ref{eq:notM}
+			 L \land(\neg L \lor \neg M \lor P) \Rightarrow \neg M \lor P
+		\end{equation}
+		To show that M is true, we can do:
+		\begin{equation}
+			\ref{eq:M}
+		 	(B) \land (L) \land(\neg L \lor \neg B \lor M)\Rightarrow M
+		\end{equation}
+		Since we concluded M from (\ref{eq:M}) that M is true, then the negation of M is false and from
+		(\ref{eq:notM}) we conclude P.
+
+		Once we have P, from $(\neg P \lor Q)$ we can conclude Q. Thus we can conclude that the KB cannot
+		be true and $\neg Q$ at the same time.
+\end{document}
