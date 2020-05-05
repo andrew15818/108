@@ -3,6 +3,7 @@
 %\usepackage{helvet}
 \usepackage[margin=1in]{geometry}
 \usepackage{tikz}%for math trees
+\usepackage{graphicx}
 \usepackage{amsmath}
 \setCJKmainfont{Noto Serif CJK TC}
 \renewcommand{\familydefault}{\sfdefault}
@@ -274,12 +275,28 @@ show the results.}
 \section{Starting from the game state of tic-tac-toe-here:}
 	\subsection{Build the whole game tree until terminal states. Give the minimax values of all the nodes.}
 		For the values on the leaf nodes, we can choose +1 if O wins, 0 for draw and -1 for O losing.
+
+		\begin{center}
+		\includegraphics[scale=0.1, angle=90]{tree}
+		\end{center}
 	\subsection{Reorder the nodes for optimal $\alpha-\beta$ pruning. How many nodes need to be checked 
 	during minimax search?}
-		For optimal $\alpha-\beta$ pruning, we can optmially order the nodes if for each MIN node they 
-		are expended by lowest-value first, and for MAX if they are expanded by highest-value first. 
-		We use the same algorithm for minimax but add an extra check for the values of $\alpha$ and $\beta$
-		to aid in our computation.
+		During $\alpha - \beta$ pruning, we can optimally order the nodes for each player. If we are at 
+		a MAX node, if we order the children from the highest value to the lowest, the likelihood that
+		we quickly find whether a value better than $\beta$ exists will be greater. And in the opposite way
+		for MIN, if we order the children from lower to higher value, the chance that we find a value
+		lower than $\alpha$ is greatest. Going from the minimax values in the (blurry) image for the 
+		previous questions, we can order the nodes optimally as follows:
+
+		\begin{center}
+		\includegraphics[scale=0.2,angle=90]{alpha-beta}
+		\end{center}
+
+		With the nodes organized optimally, we only need to search 3 nodes. When we recurse on the 
+		leftmost branch of zeros, we get a value that's bigger than the initial $\beta$ and lower than 
+		the initial $\alpha$. In an ideal configuration, the first node that the MIN player checks
+		is the highest-valued of its descendants, and for MIN it is the lowest-valued of its descendants.
+
 \section{A propositional KB database contains these sentences
 \[A,B,P\Rightarrow Q, L\land M\Rightarrow P, L\land B\Rightarrow M, A\land B\Rightarrow L, A\land P\Rightarrow L \]
 }
@@ -294,6 +311,10 @@ show the results.}
 			\land(\neg A \lor \neg B \lor L) \land(\neg A\lor \neg P \lor L)
 	\end{equation}
 	\subsection{Use resolution to prove Q.}
+		\textbf{Resolution} involves showing that, given a knowledge base KB, both 
+		$\textrm{KB}\land\neg Q$ is unsatisfiable. To show this, we can show that Q is true, and if this
+		is the case then $\neg Q$ cannot be true.
+
 		For this problem, we need to prove a couple results prior to proving $Q$.
 		We can conclude L from:
 		\begin{equation}
@@ -301,12 +322,12 @@ show the results.}
 		\end{equation}
 		Next, we can see that
 		\begin{equation}
-			\ref{eq:notM}
+			\label{eq:notM}
 			 L \land(\neg L \lor \neg M \lor P) \Rightarrow \neg M \lor P
 		\end{equation}
 		To show that M is true, we can do:
 		\begin{equation}
-			\ref{eq:M}
+			\label{eq:M}
 		 	(B) \land (L) \land(\neg L \lor \neg B \lor M)\Rightarrow M
 		\end{equation}
 		Since we concluded M from (\ref{eq:M}) that M is true, then the negation of M is false and from
