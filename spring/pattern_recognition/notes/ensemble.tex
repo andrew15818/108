@@ -108,7 +108,8 @@ area in our image.
 \subsection{Boosting for face detection}
 So far, we've only used Viola-Jones to detect faces through the integral image. Then how do we use boosting
 with this approach? Similar to the definition covered before, we can use each one of the different classifiers
-for the rectangle areas. We can constuct a weak learner such that 
+for the rectangle areas. We can constuct a weak learner such that \footnote{Remember a weak learner will just
+work on a single recatangle area with the image.}
 
 \[h(x) =  
 	\begin{cases}
@@ -117,5 +118,20 @@ for the rectangle areas. We can constuct a weak learner such that
 	\end{cases}
 \]
 where $p_{t}$ is the polarity, $f_{t}(x)$ is the value of the rectangle feature, and $\theta_{t}$ is some
-threshold. $\theta_{t}$ gives us our decision boundary. 
+threshold. $\theta_{t}$ gives us our decision boundary. Thus we have over 160,000 weak learners.
+This face detector has complexity $O(MNK)$ for its training cycle, where $M$ is the number of iterations,
+$N$ is the training examples, and $K$ is thnumber of rectangle features.
+The procedure for Viola-Jones boosting can be summarized as:
+\begin{enumerate}	
+	\item Evaluate the \textbf{feature rectangle} on each example.
+	\item select best \textbf{threshold/parity} for each rectangle feature
+	\item Select best \textbf{threshold/parity/rectangle-feature combination}
+	\item Reweigh examples
+\end{enumerate}
+\section{Attentional Cascade}
+With an \textbf{Attentional Cascade},the idea is to run a sub window of an image through increasingly strict
+classifiers, and reject it as soon as one of the classifiers returns negative. With this approach, the rate
+of \textbf{false positives} is the product of the false positive rates of each individual classifier, which may
+be very little in the end.
+\section{Decision Trees}
 \end{document}
