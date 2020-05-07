@@ -1,5 +1,6 @@
 \documentclass{tufte-handout}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \graphicspath{ {./images/} }
 \renewcommand{\vec}[1]{\mathbf{#1}} %make \vec command turn vectors bold instead
 
@@ -61,4 +62,60 @@ The AdaBoost algorithm will try to maximize the margins of our variables by mini
 \textbf{exponential loss} of the predictions.
 \[loss_{exp}[H(x)]= E_{x,y}[e^{-yH(x)}]\]
 
+\section{Face Detection using AdaBoost}
+To perform facial detection on an image, we can use \textbf{sliding windows} which apply some model to 
+different portions of the image. However, this approach might be a bit challenging because of the 
+large amount of areas that we would need to detect in a single image. Since the amount of pixels might be
+very large, we would need to beware of the amount of false-positives that are possible. For this problem,
+the \textbf{Viola-Jones} method is quite useful.
+\subsection{Viola-Jones Face Detector}
+
+The Viola-Jones method for detecting faces relies on finding \textbf{rectangle features} in images.
+Since a face can have eyes, nose, etc... we can measure the difference in pixel areas between similar pattern
+across faces. For example, if we have an idea of how different the eyes and nose should look like, we can use
+a model similar to Figure \ref{fig:features} to measure that area. If the end result is something which we might
+expect, then we can feel confident in saying there is a face or other feature inside.
+
+\begin{marginfigure}
+		\includegraphics[scale=0.3]{rect_features}	
+		\caption{In Viola-Jones, there are four types of features of rectangular features. Different
+			models might be applicable to different parts of the face.We have to take
+			the difference of the clear and the black areas. C might be used to measure eyes and nose area;
+			B for eyes and mouth, etc...
+			\label{fig:features}
+			}
+\end{marginfigure}
+
+A ``feature" in Viola-Jones corresponds to a difference in pixel values. That's why having different models
+with clear/black parts is useful: it can help us detect different parts in a face. Thus, for a feature value
+$f(x)$ given an input image vector $x$ can be written as:
+
+\[ \textrm{Feature Value} = \sum{}^{}(\textrm{Pixels in white area}) - \sum_{}^{}(\textrm{Pixels in black area}) \]
+
+The next distinguishing feature of Viola-Jones facial recognition involves the \textbf{integral image}.This
+aspect involves keeping a record of the sum of all preceding parts of an image. For an integral image $ii$,
+the value $ii(x, y)$ is the sum of all values \textit{above and to the left of x, y}. 
+
+\begin{marginfigure}
+		\includegraphics[scale=0.3]{integral}
+		\caption{The value at $ii(x, y)$ is the sum of all the values that came before it.}
+\end{marginfigure}
+
+This way of storing cumulative image values makes finding the overall value in a rectangular area quite easy. 
+In the end, we only need a constant number of additions to calculate the feature value of any rectangular 
+area in our image.
+
+\subsection{Boosting for face detection}
+So far, we've only used Viola-Jones to detect faces through the integral image. Then how do we use boosting
+with this approach? Similar to the definition covered before, we can use each one of the different classifiers
+for the rectangle areas. We can constuct a weak learner such that 
+
+\[h(x) =  
+	\begin{cases}
+			1 & p_{t}f_{t} > p_{t}\theta_{t} \\
+			0 & \textrm{otherwise}
+	\end{cases}
+\]
+where $p_{t}$ is the polarity, $f_{t}(x)$ is the value of the rectangle feature, and $\theta_{t}$ is some
+threshold. $\theta_{t}$ gives us our decision boundary. 
 \end{document}
