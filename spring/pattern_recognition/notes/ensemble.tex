@@ -134,4 +134,12 @@ classifiers, and reject it as soon as one of the classifiers returns negative. W
 of \textbf{false positives} is the product of the false positive rates of each individual classifier, which may
 be very little in the end.
 \section{Decision Trees}
+With \textbf{decision trees}, the idea is to split the space and traverse it in the same way we would a binary tree.
+We use a divide-and-conquer approach.\footnote{Remember a dnd splits the problem into smaller instances, }
+The idea is we have some function $f_{m}(x)$ at each tree node, and depending on its result we take one branch. 
+We continue this until we reach a leaf node and can make a classification.
+
+The way a decision is made with a tree might seem quite natural to humans, since analyzing one 
+variable at a time might seem more intuitive to make a decision..
+
 \end{document}
