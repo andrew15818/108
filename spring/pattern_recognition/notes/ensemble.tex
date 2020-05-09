@@ -141,5 +141,16 @@ We continue this until we reach a leaf node and can make a classification.
 
 The way a decision is made with a tree might seem quite natural to humans, since analyzing one 
 variable at a time might seem more intuitive to make a decision..
+\subsection{Decision Tree Induction}
+To build the tree, we could first start by splitting the data into two sections, and then recursively try to 
+split the two subsets of data themselves. We stop adding nodes when some criterion is met for the error, or 
+as a function of the input size and  model complexity. At each decison node, we can either look at
+\textbf{univariate} attributes or \textbf{multivariate}.
+
+Once we start splitting the dataset, we can measure its level of \textbf{purity} by seeing if for every class
+$C_{k}$ there are any data points in its space that do not belong to it, that belong to another class $C_{p}$,
+for example. We can measure the uncertainty and impurity by the following formula: \footnote{$p_{m}^{k}$ gives
+the probability of class $C_{k}$}
+\[ I_{m} = - \sum_{k = 1}^{K} p_{m}^{k} \log p_{m}^{k}\]
 
 \end{document}
