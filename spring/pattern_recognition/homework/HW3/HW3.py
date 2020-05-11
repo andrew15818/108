@@ -66,11 +66,24 @@ class DecisionTree():
         self.criterion = criterion
         self.max_depth = max_depth
         self.tree(x_train)
+        self.count = 0 # count of how many iterations
+
         return None
 
     # maybe build the tree here?
     def tree(self, data):
+        # checking end conditions, if
+        if self.max_depth == None:
+            continue 
+        elif self.count == self.max_depth:
+            return None
 
+        # finding the unused feature with the smallest impurity
+        for i in feature_names:
+            if i not in used :
+                print(i)
+        
+        return None;
 
 
 # ### Question 2.1
@@ -81,7 +94,7 @@ class DecisionTree():
 clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
 clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
 
-
+clf_depth3.tree(x_train)
 # ### Question 2.2
 # Using Max_depth=3, showing the accuracy score of test data by Criterion=‘gini’ and Criterion=’entropy’, respectively.
 # 
