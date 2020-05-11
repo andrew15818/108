@@ -16,32 +16,45 @@ data = load_breast_cancer()
 feature_names = data['feature_names']
 print(feature_names)
 
-x_train = pd.read_csv("x_train.csv")
-y_train = pd.read_csv("y_train.csv")
+x_train = (pd.read_csv("x_train.csv"))
+y_train = (pd.read_csv("y_train.csv"))
 x_test = pd.read_csv("x_test.csv")
 y_test = pd.read_csv("y_test.csv")
+
+labels = []
+# add the class label as an extra column for every row
+training_data = np.column_stack((x_train, y_train))
 
 
 # ## Question 1
 # Gini Index or Entropy is often used for measuring the “best” splitting of the data. Please compute the Entropy and Gini Index of provided data. 
 # Please use the formula from [page 7 of hw3 slides](https://docs.google.com/presentation/d/1ish3jEr_6be0FK4kgOZa12nYAyJFh0P2LCNsNPOCiXo/edit#slide=id.g7703d1636d_0_21)
 
-
+# Maybe want to turn y_train into np.array beforehand?
 def gini(sequence):
-    c1 = sequence[sequence == 1] # items in first class
-    c2 = sequence[sequence == 2] # items in second class
-
+   
+    sequence = np.array(sequence)
+    c1 = [i for i in sequence if i in class1]
+    c2 = [i for i in sequence if i in class2]
+    print(f"len(c1): {len(c1)} \t len(c2): {len(c2)}")
     impurity = (len(c1) / len(sequence)) ** 2 + (len(c2) / len(sequence)) ** 2
     return impurity 
 
 def entropy(sequence):
-    c1 = sequence[sequence == 1]
-    c2 = sequence[sequence == 2]
+    
+    sequence = np.array(sequence)
+    training = np.array(y_train)
+
+    c1 = sequence[training[:,0] == 0] # elements belonging in class 1
+    c2 = sequence[training[:,0] == 1] # elements belonging in class 2
+
     p1 = len(c1) / len(sequence) # probability of point being in class 1
     p2 = len(c2) / len(sequence) # probability of point being in class 2
 
+
     ent = p1 * math.log(p1, 2) + p2 * math.log(p2, 2)
     return -ent
+
 
 
 # 1 = class 1,
@@ -50,8 +63,8 @@ data = np.array([1,2,1,1,1,1,2,2,1,1,2])
 
 
 
-print("Gini of data is ", gini(data))
-print("Entropy of data is ", entropy(data))
+# print("Gini of data is ", gini(data))
+# print("Entropy of data is ", entropy(data))
 
 
 # ## Question 2
@@ -65,31 +78,20 @@ class DecisionTree():
     def __init__(self, criterion='gini', max_depth=None):
         self.criterion = criterion
         self.max_depth = max_depth
-        self.tree(x_train)
         self.count = 0 # count of how many iterations
-
+        self.used = [] # names of used features
+        self.tree(x_train) 
         return None
 
     # maybe build the tree here?
     def tree(self, data):
-        # checking end conditions, if
-        if self.max_depth == None:
-            continue 
-        elif self.count == self.max_depth:
-            return None
+        # add the value of the label to the x_train
 
-        # finding the unused feature with the smallest impurity
-        for i in feature_names:
-            if i not in used :
-                print(i)
+        return None
         
-        return None;
-
-
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
-
 
 clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
 clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
