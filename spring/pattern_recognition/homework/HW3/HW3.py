@@ -7,6 +7,7 @@
 # Please note that only **NUMPY** can be used to implement your model, you will get no points by simply calling sklearn.tree.DecisionTreeClassifier
 
 import math
+import statistics as st
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
@@ -24,7 +25,7 @@ y_test = pd.read_csv("y_test.csv")
 labels = []
 # add the class label as an extra column for every row
 training_data = np.column_stack((x_train, y_train))
-
+x_train['label'] = y_train
 
 # ## Question 1
 # Gini Index or Entropy is often used for measuring the “best” splitting of the data. Please compute the Entropy and Gini Index of provided data. 
@@ -34,29 +35,29 @@ training_data = np.column_stack((x_train, y_train))
 def gini(sequence):
    
     sequence = np.array(sequence)
-    c1 = [i for i in sequence if i in class1]
-    c2 = [i for i in sequence if i in class2]
-    print(f"len(c1): {len(c1)} \t len(c2): {len(c2)}")
+    #print(sequence[0,-1])
+    c1 = sequence[sequence[:,-1] == 0]
+    c2 = sequence[sequence[:,-1] == 1]
+
     impurity = (len(c1) / len(sequence)) ** 2 + (len(c2) / len(sequence)) ** 2
-    return impurity 
+
+    return  1 - impurity 
 
 def entropy(sequence):
     
     sequence = np.array(sequence)
-    training = np.array(y_train)
-
-    c1 = sequence[training[:,0] == 0] # elements belonging in class 1
-    c2 = sequence[training[:,0] == 1] # elements belonging in class 2
-
+    c1 = sequence[sequence[:,-1] == 0]
+    c2 = sequence[sequence[:,-1] == 1]
+    
     p1 = len(c1) / len(sequence) # probability of point being in class 1
     p2 = len(c2) / len(sequence) # probability of point being in class 2
-
+    # print(f"p1: {p1} \t p2:{p2} ")
 
     ent = p1 * math.log(p1, 2) + p2 * math.log(p2, 2)
     return -ent
 
 
-
+gini(training_data)
 # 1 = class 1,
 # 2 = class 2
 data = np.array([1,2,1,1,1,1,2,2,1,1,2])
@@ -80,15 +81,30 @@ class DecisionTree():
         self.max_depth = max_depth
         self.count = 0 # count of how many iterations
         self.used = [] # names of used features
-        self.tree(x_train) 
+        self.tree(x_train)
         return None
 
     # maybe build the tree here?
     def tree(self, data):
-        # add the value of the label to the x_train
 
-        return None
-        
+        purity = gini(data) if self.criterion == 'gini' else entropy(data)
+        # for all the features
+        for i in feature_names:
+            tmp = data[i]
+
+            # the threshold for the partition will be the average 
+            # value of the data field. Maybe some other way?
+            threshold = st.mean(tmp)
+            print(f"avg for {i}: {threshold}")
+            less_than = []
+            greater_than = []
+
+            # partition the nodes if the value is lesser or greater
+            for j in range(tmp.shape[0]):
+                if tmp[j] < threshold:
+                    less_than.append(data.iloc[j])
+                else:
+                     greater_than.append(data.iloc[j])
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
