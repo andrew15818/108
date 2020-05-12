@@ -83,28 +83,57 @@ class DecisionTree():
         self.used = [] # names of used features
         self.tree(x_train)
         return None
+    # get the purity of the split using this feature, weight it using the number of elements
+    def branch_purity(self, left, right):
+        purity_left = gini(left) if self.criterion == 'gini' else entropy(left)
+        purity_right = gini(right) if self.criterion == 'gini' else entropy(right)
+        bias_left = len(left) / (len(left) + len(right))
+        bias_right = len(right) / (len(left) + len(right))
+        return purity_left * bias_left + purity_right * bias_right
 
     # maybe build the tree here?
     def tree(self, data):
 
+        if self.count == self.max_depth:
+            return 
         purity = gini(data) if self.criterion == 'gini' else entropy(data)
         # for all the features
+        # print(data)
         for i in feature_names:
             tmp = data[i]
 
             # the threshold for the partition will be the average 
             # value of the data field. Maybe some other way?
             threshold = st.mean(tmp)
-            print(f"avg for {i}: {threshold}")
-            less_than = []
-            greater_than = []
 
+            less_than  = pd.DataFrame(columns=x_train.columns)
+            greater_than = pd.DataFrame(columns=x_train.columns)
+            
+            best_feature = " "
+            best_purity = 10000
             # partition the nodes if the value is lesser or greater
             for j in range(tmp.shape[0]):
-                if tmp[j] < threshold:
-                    less_than.append(data.iloc[j])
+                # print(tmp[j])
+                if tmp[j]  <  threshold:
+                    # less_than.append(data.iloc[j])
+                    less_than.loc[less_than.size ] = data.iloc[j] 
                 else:
-                     greater_than.append(data.iloc[j])
+                    #greater_than.append(data.iloc[j])
+                    greater_than.loc[less_than.size ] = data.iloc[j] 
+
+            tmp_purity = self.branch_purity(less_than, greater_than)
+            # checking for value with 
+            if tmp_purity < best_purity:
+                best_purity = tmp_purity
+                best_feature = i
+                best_less_than = less_than # make sure these values are actually the ones we want to assign
+                best_greater_than = greater_than
+        print(f"best feature is : {best_feature}")
+        self.count += 1
+        # recurse on the children
+        print(less_than.shape) 
+        #self.tree(best_less_than)
+        #self.tree(best_right_than)
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
