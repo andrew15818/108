@@ -74,15 +74,29 @@ data = np.array([1,2,1,1,1,1,2,2,1,1,2])
 # 1. **Criterion**: The function to measure the quality of a split. Your model should support “gini” for the Gini impurity and “entropy” for the information gain. 
 # 2. **Max_depth**: The maximum depth of the tree. If Max_depth=None, then nodes are expanded until all leaves are pure. Max_depth=1 equals to split data once
 # 
+class Node():
+    def __init__(self, data):
+        self.right = None
+        self.left = None
+
+        # this should be our input dataFrame
+        self.data = data
+
+        # use these two when doing the actual classification
+        self.label = None
+        self.is_leaf = False
 
 class DecisionTree():
     def __init__(self, criterion='gini', max_depth=None):
+
         self.criterion = criterion
         self.max_depth = max_depth
         self.count = 0 # count of how many iterations
         self.used = [] # names of used features
+        root = Node(x_train)
         self.tree(x_train)
         return None
+
     # get the purity of the split using this feature, weight it using the number of elements
     def branch_purity(self, left, right):
         purity_left = gini(left) if self.criterion == 'gini' else entropy(left)
@@ -96,9 +110,19 @@ class DecisionTree():
 
         if self.count == self.max_depth:
             return 
+        elif data.shape[0] == 0:
+            print('\t no more data')
+            return
+
+
+
         purity = gini(data) if self.criterion == 'gini' else entropy(data)
-        if purity < 0.01 :
+
+        print(f"\tdata shape : {data.shape} purity: {purity}")
+        if purity == 0:
+            print('\tpurity is 0, returning')
             return 
+        
         # for all the features
         # print(data)
         for i in feature_names:
@@ -147,14 +171,17 @@ class DecisionTree():
         print(f"\tbest feature is : {best_feature}")
         self.count += 1
         # recurse on the children
-        self.tree(best_less_than)
+        print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}")
+        print('going left') 
+        self.tree(best_less_than) 
+        print('going right')
         self.tree(best_right_than)
 
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
-
-clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
+testo = DecisionTree(criterion='gini', max_depth=None)
+#clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
 #clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
 
 
