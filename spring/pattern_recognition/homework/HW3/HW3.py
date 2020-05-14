@@ -75,56 +75,87 @@ data = np.array([1,2,1,1,1,1,2,2,1,1,2])
 # 2. **Max_depth**: The maximum depth of the tree. If Max_depth=None, then nodes are expanded until all leaves are pure. Max_depth=1 equals to split data once
 # 
 class Node():
-    def __init__(self, data):
+    def __init__(self,):
         self.right = None
         self.left = None
-
-        # this should be our input dataFrame
-        self.data = data
+        self.threshold = 0
+        self.feature = ""
+        # self.data = data
 
         # use these two when doing the actual classification
         self.label = None
         self.is_leaf = False
+        self.count = 0 # distance from the root node
 
 class DecisionTree():
     def __init__(self, criterion='gini', max_depth=None):
 
         self.criterion = criterion
         self.max_depth = max_depth
-        self.count = 0 # count of how many iterations
+        # self.count = 0 # count of how many iterations
         self.used = [] # names of used features
-        root = Node(x_train)
-        self.tree(x_train)
-        return None
+        self.root = Node()
+        self.root = self.tree(x_train, self.root)
+
 
     # get the purity of the split using this feature, weight it using the number of elements
     def branch_purity(self, left, right):
+        #the overall purity of a branch is the combined purity both children
         purity_left = gini(left) if self.criterion == 'gini' else entropy(left)
         purity_right = gini(right) if self.criterion == 'gini' else entropy(right)
+
+        # weighing the bias depending on how many items of a given class there are
         bias_left = len(left) / (len(left) + len(right))
         bias_right = len(right) / (len(left) + len(right))
         return purity_left * bias_left + purity_right * bias_right
 
-    # maybe build the tree here?
-    def tree(self, data):
-
-        if self.count == self.max_depth:
-            return 
-        elif data.shape[0] == 0:
-            print('\t no more data')
+    def print_tree_helper(self, node):
+        if node == None:
             return
+        elif node.is_leaf == True:
+            print(node.label)
+        
+        self.print_tree_helper(node.left)
+        print(f"feature name: {node.feature}\t feature threshold: {node.threshold}")
+        self.print_tree_helper(node.right)
 
+    def  print_tree(self):
+        if self.root == None:
+            print("root is None!")
+        
+        self.print_tree_helper(self.root)
 
+    # maybe build the tree here?
+    def tree(self, data, parent):
+        curr_node = Node() 
+        curr_node.count =  parent.count + 1
+        print(f"node at depth: {curr_node.count}")
 
+        # if reached the depth limit, add a node based on which class has most nodes in data 
+        if curr_node.count == self.max_depth:
+            class1_count = len([ i for i in data['label'] if i == 0])
+            class2_count = len([i for i in data['label'] if i == 1])
+
+            print(f"\t\tReached the count limit: {class1_count}, {class2_count}")
+            curr_node.label = 0 if class1_count >= class2_count else 1
+            return curr_node
+
+        elif data.shape[0] == 0:
+            return None
+        
         purity = gini(data) if self.criterion == 'gini' else entropy(data)
 
         print(f"\tdata shape : {data.shape} purity: {purity}")
+
+        #all nodes belong to onlly one class
         if purity == 0:
+            curr_node.is_leaf = True
+            curr_node.label = data['label'][0] # since all nodes are from same class, assign the first data label
+            print(f" \tlabel once we reach the end of the node:{ curr_node.label}")
             print('\tpurity is 0, returning')
-            return 
+            return  curr_node
         
         # for all the features
-        # print(data)
         for i in feature_names:
             # only use features that we have not split on
             if i in self.used:
@@ -134,6 +165,7 @@ class DecisionTree():
             # the threshold for the partition will be the average 
             # value of the data field. Maybe some other way?
             threshold = st.mean(tmp)
+            curr_node.threshold = threshold
 
             # here, store values greater and lesser than threshold
             less_than  = pd.DataFrame(columns=x_train.columns)
@@ -144,44 +176,44 @@ class DecisionTree():
             less_count = 0
             great_count = 0
             best_less_than = pd.DataFrame(columns=x_train.columns)
-            best_right_than = pd.DataFrame(columns=x_train.columns)
+            best_greater_than = pd.DataFrame(columns=x_train.columns)
 
             # partition the nodes if the value is lesser or greater
             for j in range(tmp.shape[0]):
-                # print(tmp[j])
                 if tmp[j]  <=  threshold:
-                    
-                    # less_than.append(data.iloc[j], ignore_index=True)
                     less_than.loc[less_count] = data.iloc[j] 
                     less_count += 1
                 else:
-
                     greater_than.loc[great_count] = data.iloc[j] 
                     great_count += 1 
-                    # print(f"for {j} we include in greater_than, size: {len(greater_than)}")
+
             tmp_purity = self.branch_purity(less_than, greater_than)
             # checking for value with best purity
-            if tmp_purity < best_purity:
+            if tmp_purity <= best_purity:
                 best_purity = tmp_purity
                 best_feature = i
                 best_less_than = less_than # make sure these values are actually the ones we want to assign
                 best_greater_than = greater_than
 
+        curr_node.feature = best_feature
         self.used.append(best_feature)
-        print(f"\tbest feature is : {best_feature}")
-        self.count += 1
-        # recurse on the children
-        print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}")
-        print('going left') 
-        self.tree(best_less_than) 
-        print('going right')
-        self.tree(best_right_than)
+        # curr_node.count = parent.count + 1
 
+        print(f"\tbest feature is : {best_feature}")
+        print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}") 
+
+        # recurse on the children
+        curr_node.right = self.tree(best_greater_than, curr_node)
+
+        curr_node.left = self.tree(best_less_than, curr_node) 
+        return curr_node
+        
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
-testo = DecisionTree(criterion='gini', max_depth=None)
-#clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
+# testo = DecisionTree(criterion='gini', max_depth=None)
+clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
+clf_depth3.print_tree()
 #clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
 
 
