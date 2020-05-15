@@ -47,7 +47,8 @@ Decision Trees and Random Forests}
 		to $C_{1}$ and m points are assigned to $C_{2}$. Similarly, suppose that a second tree model $B$
 		splits them into (200, 400) and (200, 0). Evaluate the misclassification rate for the two trees
 		and hence show that they are equal.}
-
+		
+		The misclassification rate involves calculating 
 	\subsection{Similarly, evaluate the cross-entropy 
 		\[ Entropy = - \sum_{k = 1}^{K}p_{k}log_{2}p_{k}\]
 		and the Gini index
@@ -55,5 +56,17 @@ Decision Trees and Random Forests}
 		for the two trees and show that they are both lower for tree B than for tree A. Define $p_{k}$
 		to be the proportion of data points in region $R$ assigned to class k, where $k = 1,...,K$.
 		}
+		The calculations for entropy and the Gini index for the two trees are as follows
+
+		\begin{centering}
+		\begin{tabular}{|c | c | c |}
+			\hline
+			 & Gini & Entropy\\\hline
+			Tree A & $0.25$ & 0.81\\\hline
+			Tree B & $0.556$ & 0.91 \\
+			\hline
+		\end{tabular}
+		\end{centering}
+
 
 \end{document}
