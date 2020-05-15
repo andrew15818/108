@@ -10,6 +10,7 @@ import math
 import statistics as st
 import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_breast_cancer
 
 
@@ -30,6 +31,25 @@ x_train['label'] = y_train
 # ## Question 1
 # Gini Index or Entropy is often used for measuring the “best” splitting of the data. Please compute the Entropy and Gini Index of provided data. 
 # Please use the formula from [page 7 of hw3 slides](https://docs.google.com/presentation/d/1ish3jEr_6be0FK4kgOZa12nYAyJFh0P2LCNsNPOCiXo/edit#slide=id.g7703d1636d_0_21)
+def gini_sequence(sequence):
+    c1 = len([i for i in sequence if i == 1])
+    c2 = len([i for i in sequence if i == 2])
+
+    p1 = c1 / len(sequence)
+    p2 = c2 / len(sequence)
+
+    return 1 - (p1 ** 2) - (p2 ** 2)
+
+
+def entropy_sequence(sequence):
+    c1 = len([i for i in sequence if i == 1])
+    c2 = len([i for i in sequence if i == 2])
+
+    p1 = c1 / len(sequence)
+    p2 = c2 / len(sequence)
+
+    ent = p1 * math.log(p1, 2) + p2 * math.log(p2, 2)
+    return -ent
 
 # Maybe want to turn y_train into np.array beforehand?
 def gini(sequence):
@@ -57,11 +77,12 @@ def entropy(sequence):
     return -ent
 
 
-gini(training_data)
+
 # 1 = class 1,
 # 2 = class 2
-data = np.array([1,2,1,1,1,1,2,2,1,1,2])
 
+data = np.array([1,2,1,1,1,1,2,2,1,1,2])
+# print(f"gini of sample data: {gini_sequence(data)} and entropy: {entropy_sequence(data)}")
 
 
 # print("Gini of data is ", gini(data))
@@ -113,10 +134,11 @@ class DecisionTree():
         if node == None:
             return
         elif node.is_leaf == True:
-            print(node.label)
-        
-        self.print_tree_helper(node.left)
+            print(f"\treached label node with label: {node.label}")
+            return
         print(f"feature name: {node.feature}\t feature threshold: {node.threshold}")
+        self.print_tree_helper(node.left)
+        
         self.print_tree_helper(node.right)
 
     def  print_tree(self):
@@ -138,6 +160,8 @@ class DecisionTree():
 
             print(f"\t\tReached the count limit: {class1_count}, {class2_count}")
             curr_node.label = 0 if class1_count >= class2_count else 1
+            curr_node.is_leaf = True
+            curr_node.feature = 'putarino'
             return curr_node
 
         elif data.shape[0] == 0:
@@ -207,12 +231,45 @@ class DecisionTree():
 
         curr_node.left = self.tree(best_less_than, curr_node) 
         return curr_node
+
+    # recurse through the tree 
+    def classify_node(self, node, data):
+        # stop the recursion
+        if node.is_leaf == True:   
+
+            return node.label
+
+        feature = node.feature
+
+        # recurse on children node
+        if data[feature] <= node.threshold:
+            return self.classify_node(node.left, data)
+
+        elif data[feature] > node.threshold:
+            return self.classify_node(node.right, data)
+
+    # classify all the nodes in the test sequence
+    def classify(self, data):
+        print(f"roots' feature: {self.root.feature}")
+        classification = []
+
+        # classify the nodes individually
+        for i in range(data.shape[0]):
+            tmp = data.loc[i] 
+
+            classification.append( self.classify_node(self.root, tmp) )
+
+        return classification
+
+       
         
 # ### Question 2.1
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
 # testo = DecisionTree(criterion='gini', max_depth=None)
 clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
+class_predictions = clf_depth3.classify(x_test)
+print(f"accuracy: {accuracy_score(y_test, class_predictions)}")
 clf_depth3.print_tree()
 #clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
 
