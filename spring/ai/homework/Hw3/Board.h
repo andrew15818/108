@@ -6,11 +6,12 @@
 enum Type
 {
 	mine,
-	hint
+	hint,
+	safe
 };
 /*For the status, we can know the status 
 of a cell without actually querying it,
-so it can ben 'mined' since we know its 
+so it can be 'mined' since we know its 
 status beforehand.*/
 struct Node
 {
