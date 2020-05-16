@@ -193,7 +193,7 @@ class DecisionTree():
 
             # the threshold for the partition will be the average 
             # value of the data field. Maybe some other way?
-            threshold = st.mean(datarow)
+            threshold = st.median(datarow)
             curr_node.threshold = threshold
 
             # here, store values greater and lesser than threshold
