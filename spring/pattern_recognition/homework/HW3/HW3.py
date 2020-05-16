@@ -154,14 +154,13 @@ class DecisionTree():
         print(f"node at depth: {curr_node.count}")
 
         # if reached the depth limit, add a node based on which class has most nodes in data 
-        if curr_node.count == self.max_depth:
+        if curr_node.count > self.max_depth:
             class1_count = len([ i for i in data['label'] if i == 0])
             class2_count = len([i for i in data['label'] if i == 1])
 
             print(f"\t\tReached the count limit: {class1_count}, {class2_count}")
             curr_node.label = 0 if class1_count >= class2_count else 1
-            curr_node.is_leaf = True
-            curr_node.feature = 'putarino'
+            curr_node.is_leaf = True 
             return curr_node
 
         elif data.shape[0] == 0:
@@ -174,56 +173,59 @@ class DecisionTree():
         #all nodes belong to onlly one class
         if purity == 0:
             curr_node.is_leaf = True
-            curr_node.label = data['label'][0] # since all nodes are from same class, assign the first data label
+            curr_node.label = data['label'].iloc[0] # since all nodes are from same class, assign the first data label
             print(f" \tlabel once we reach the end of the node:{ curr_node.label}")
             print('\tpurity is 0, returning')
             return  curr_node
         
+        best_feature = " "
+        best_purity = 100000
+        less_count = 0
+        great_count = 0
+        best_less_than = pd.DataFrame(columns=x_train.columns)
+        best_greater_than = pd.DataFrame(columns=x_train.columns)
         # for all the features
         for i in feature_names:
             # only use features that we have not split on
-            if i in self.used:
-                continue
-            tmp = data[i]
+            # if i in self.used:
+            #    continue
+            datarow = data[i]
 
             # the threshold for the partition will be the average 
             # value of the data field. Maybe some other way?
-            threshold = st.mean(tmp)
+            threshold = st.mean(datarow)
             curr_node.threshold = threshold
 
             # here, store values greater and lesser than threshold
             less_than  = pd.DataFrame(columns=x_train.columns)
             greater_than = pd.DataFrame(columns=x_train.columns)
              
-            best_feature = " "
-            best_purity = 10000
-            less_count = 0
-            great_count = 0
-            best_less_than = pd.DataFrame(columns=x_train.columns)
-            best_greater_than = pd.DataFrame(columns=x_train.columns)
-
+            
             # partition the nodes if the value is lesser or greater
-            for j in range(tmp.shape[0]):
-                if tmp[j]  <=  threshold:
+            for j in range(datarow.shape[0]):
+                if datarow.iloc[j]  <=  threshold:
                     less_than.loc[less_count] = data.iloc[j] 
                     less_count += 1
                 else:
                     greater_than.loc[great_count] = data.iloc[j] 
                     great_count += 1 
-
+            # print(f"less_than.shape: {less_than.shape}, greater_than.shape :{greater_than.shape}")
             tmp_purity = self.branch_purity(less_than, greater_than)
+            tmp_purity = purity - tmp_purity
+
             # checking for value with best purity
-            if tmp_purity <= best_purity:
+            if tmp_purity <= best_purity: 
                 best_purity = tmp_purity
                 best_feature = i
                 best_less_than = less_than # make sure these values are actually the ones we want to assign
                 best_greater_than = greater_than
 
+
         curr_node.feature = best_feature
         self.used.append(best_feature)
         # curr_node.count = parent.count + 1
 
-        print(f"\tbest feature is : {best_feature}")
+        print(f"\tbest feature is : {best_feature} with threshold: {threshold}")
         print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}") 
 
         # recurse on the children
