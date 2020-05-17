@@ -25,13 +25,16 @@ void Board::calculate_hints()
 			int x, y;
 			for(int rows = -1; rows <= 1; rows++){
 				for(int cols = -1; cols <= 1; cols++){
+					if(rows == 0 && cols == 0){continue;}
 					x = i + rows; y = j + cols;  
 					
 					
 					if(!is_valid(x, y, this->rows, this->cols)){continue;}
-					printf("(%d, %d)\n", x, y);
 					tmp = &board[x][y];
-					printf("for node (%d, %d) checking: (%d, %d)\n", current->x, current->y, tmp->x, tmp->y);
+
+					if(tmp->type == mine){
+						current->adjacent++;
+					}
 				}
 			}
 		}
@@ -52,7 +55,8 @@ void Board::print()
 {
 	for(int i = 0; i < this->rows; i++){
 		for(int j = 0; j < this->cols; j++){
-			printf("%d ", board[i][j].adjacent);	
+			//printf("%d ", board[i][j].adjacent);	
+			(board[i][j].type == mine)? printf("-1"): printf(" %d", board[i][j].adjacent);
 			if(j == this->cols -1) printf("\n");
 		}
 	}	
