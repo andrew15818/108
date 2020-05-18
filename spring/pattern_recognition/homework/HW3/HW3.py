@@ -147,6 +147,40 @@ class DecisionTree():
         
         self.print_tree_helper(self.root)
 
+    # just to avoid having an if-else every time we want the purity
+    def purity(self, data):
+        if data.shape[0] == 0:
+            return 0
+        return gini(data) if self.criterion == 'gini' else entropy(data)
+
+    def best_split_on_feature(self, feature_column, data):
+
+        best_thresh = None 
+        best_purity = 10000
+        best_left = None
+        best_right = None
+
+        for i in range(feature_column.shape[0]):
+            
+            right = []
+            curr_thresh = feature_column[i] 
+
+            left = [data.iloc[row] for row in range(feature_column.shape[0]) if feature_column[row] <= curr_thresh]
+            right = [data.iloc[row] for row in range(feature_column.shape[0]) if feature_column[row] > curr_thresh]
+
+            # turning them into dataframes
+            left = pd.DataFrame(left, columns=x_train.columns)
+            right = pd.DataFrame(right, columns=x_train.columns)
+
+            curr_purity = self.purity(left) + self.purity(right)
+
+            if curr_purity < best_purity:
+                best_thresh = curr_thresh
+                best_purity =curr_purity
+                best_left = left.copy()
+                best_right = right.copy()
+        return best_thresh, best_right, best_left
+
     # maybe build the tree here?
     def tree(self, data, parent):
         curr_node = Node() 
@@ -186,22 +220,22 @@ class DecisionTree():
         best_greater_than = pd.DataFrame(columns=x_train.columns)
         # for all the features
         for i in feature_names:
-            # only use features that we have not split on
-            # if i in self.used:
-            #    continue
+            # current feature we are comparing
             datarow = data[i]
 
             # the threshold for the partition will be the average 
             # value of the data field. Maybe some other way?
-            threshold = st.median(datarow)
+            threshold, less_than, greater_than = self.best_split_on_feature(datarow, data)
+            print(f"best thresh for {i}: {threshold}\t{less_than.shape[0]}\t{greater_than.shape[0]}")
             curr_node.threshold = threshold
 
             # here, store values greater and lesser than threshold
-            less_than  = pd.DataFrame(columns=x_train.columns)
-            greater_than = pd.DataFrame(columns=x_train.columns)
+            # less_than  = pd.DataFrame(columns=x_train.columns)
+            # greater_than = pd.DataFrame(columns=x_train.columns)
              
             
             # partition the nodes if the value is lesser or greater
+            """
             for j in range(datarow.shape[0]):
                 if datarow.iloc[j]  <=  threshold:
                     less_than.loc[less_count] = data.iloc[j] 
@@ -209,6 +243,7 @@ class DecisionTree():
                 else:
                     greater_than.loc[great_count] = data.iloc[j] 
                     great_count += 1 
+            """
             # print(f"less_than.shape: {less_than.shape}, greater_than.shape :{greater_than.shape}")
             tmp_purity = self.branch_purity(less_than, greater_than)
             tmp_purity = purity - tmp_purity
