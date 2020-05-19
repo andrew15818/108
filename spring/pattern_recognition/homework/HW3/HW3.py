@@ -42,9 +42,9 @@ def gini_sequence(sequence):
 
 
 def entropy_sequence(sequence):
-    c1 = len([i for i in sequence if i == 1])
-    c2 = len([i for i in sequence if i == 2])
-
+    c1 = sum(sequence == 1)
+    c2 = sum(sequence == 2)
+ 
     p1 = c1 / len(sequence)
     p2 = c2 / len(sequence)
 
@@ -56,19 +56,19 @@ def gini(sequence):
    
     #sequence = np.array(sequence)
     #print(sequence[0,-1])
-    c1 = len(sequence['label'] == 0)
-    c2 = len(sequence['label'] == 1)
+    c1 = sum(sequence['label'] == 0)
+    c2 = sum(sequence['label'] == 1)
 
 
     # if either one is empty, return maximum mixing value
     if c1 == 0 or c2 == 0:
-        return 1
+        return 0
 
     impurity = (c1 / (c1 + c2) ) ** 2 + (c2 / (c1 + c2)) ** 2
 
     return  1 - impurity 
 
-print(gini(x_train))
+
 def entropy(sequence):
     
     sequence = np.array(sequence)
@@ -78,8 +78,10 @@ def entropy(sequence):
     p1 = len(c1) / len(sequence) # probability of point being in class 1
     p2 = len(c2) / len(sequence) # probability of point being in class 2
     # print(f"p1: {p1} \t p2:{p2} ")
+    ent1 = p1 * math.log(p1, 2) if p1 != 0 else 0
+    ent2 = p2 * math.log(p2, 2) if p2 != 0 else 0
 
-    ent = p1 * math.log(p1, 2) + p2 * math.log(p2, 2)
+    ent =  ent1 + ent2
     return -ent
 
 
@@ -88,7 +90,7 @@ def entropy(sequence):
 # 2 = class 2
 
 data = np.array([1,2,1,1,1,1,2,2,1,1,2])
-# print(f"gini of sample data: {gini_sequence(data)} and entropy: {entropy_sequence(data)}")
+print(f"gini of sample data: {gini_sequence(data)} and entropy: {entropy_sequence(data)}")
 
 
 # print("Gini of data is ", gini(data))
@@ -142,27 +144,43 @@ class DecisionTree():
         
         self.print_tree_helper(self.root)
 
-    # just to avoid having an if-else every time we want the purity
-    def purity(self, data):
-        if data.shape[0] == 0:
-            return 0
-        return gini(data) if self.criterion == 'gini' else entropy(data)
 
     # get the purity of the split using this feature, weight it using the number of elements
+    # it's more efficient to use it only with the 
     def split_purity(self, feature_column, threshold, data):
         # purity for values lower than thresh
         c1 = sum((feature_column <= threshold ) & (data['label'] == 0))
         c2 = sum((feature_column <= threshold) &(data['label'] == 1))
-        tmp = (c1 / (c1 + c2)) ** 2 + (c2 /  (c1 + c2) ) ** 2 if (c1 + c2 != 0) else 0
-        tmp *= ((c1 + c2) / (data.shape[0]))
+        p1 = c1 / (c1 + c2) if (c1 + c2 != 0) else 0
+        p2 = c2 / (c1 + c2) if (c1 + c2 != 0) else 0
 
         # purity for splitting values greater than thresh 
         c3 = sum((feature_column > threshold ) & (data['label'] == 0))
-        c4 = sum((feature_column > threshold ) & (data['label'] == 1))
-        tmp2 = (c3 / (c3 + c4)) ** 2 + (c4 / (c3 + c4)) ** 2 if (c3 + c4 != 0) else 0
+        c4 = sum((feature_column > threshold ) & (data['label'] == 1)) 
+        p3 = c3 / (c3 + c4) if (c3 + c4 != 0) else 0
+        p4 = c4 / (c3 + c4) if (c3 + c4 != 0) else 0
+
+        # applying the gini and entropy formulas for both branches of split
+        if self.criterion == 'entropy':
+            try:
+                tmp = -((p1 * math.log(p1, 2)) + (p2 * math.log(p2, 2)))
+            except:
+                tmp = 0
+            try:
+                tmp2 = -((p3 * math.log(p3, 2)) + (p4 * math.log(p4, 2)))
+            except:
+                tmp2 = 0
+
+        else:
+            tmp = p1 ** 2 + p2 ** 2 
+            tmp2 = p3 ** 2 + p4 ** 2 
+
+        # to get the weighted value
+        tmp *= ((c1 + c2) / (data.shape[0]))
         tmp2 *= ((c3 + c4) / (data.shape[0]))
 
-        return 1 - tmp - tmp2
+        # return the value according to the criterion
+        return 1 - tmp - tmp2 if self.criterion == 'gini' else tmp + tmp2
 
     def best_split_on_feature(self, feature, feature_column, data):
 
@@ -172,45 +190,37 @@ class DecisionTree():
         best_right = None
 
         #checking if every value in a given column splits the dataset better
+        for i in feature_column: 
 
-        for i in feature_column: #range(feature_column.shape[0]):
-
-            right = []
-            # curr_thresh = feature_column[i] 
             curr_thresh = i 
-
 
             curr_purity = self.split_purity(feature_column, curr_thresh, data)
 
             # if split leads to lower impurity, do the split to save time
-            if curr_purity < best_purity:
-
-                #best_left = [data.iloc[row] for row in range(0, feature_column.shape[0]) if feature_column[row] <= curr_thresh]
-                #best_right = [data.iloc[row] for row in range(0, feature_column.shape[0]) if feature_column[row] > curr_thresh]
+            if curr_purity < best_purity: 
                 best_left = data[data[feature] <= curr_thresh]
                 best_right = data[data[feature] > curr_thresh]
                 best_thresh = curr_thresh
                 best_purity = curr_purity
         
-        #best_left = pd.DataFrame(best_left, columns=data.columns)
-        #best_right = pd.DataFrame(best_right, columns=data.columns)
-
         return best_purity, best_thresh, best_right, best_left
 
     # maybe build the tree here?
     def tree(self, data, parent):
         curr_node = Node() 
         curr_node.count =  parent.count + 1
-        print(f"node at depth: {curr_node.count}")
+        # print(f"node at depth: {curr_node.count}")
 
         # if reached the depth limit, add a node based on which class has most nodes in data 
         if curr_node.count > self.max_depth:
-            class1_count = len([ i for i in data['label'] if i == 0])
-            class2_count = len([i for i in data['label'] if i == 1])
+            class1_count = sum(data['label'] == 0)
+            class2_count = sum(data['label'] == 1)
 
-            print(f"\t\tReached the count limit: {class1_count}, {class2_count}")
+            # print(f"\t\tReached the count limit: {class1_count}, {class2_count}")
+
             curr_node.label = 0 if class1_count >= class2_count else 1
             curr_node.is_leaf = True 
+            # print(f"\t\tthis node's label is : {curr_node.label}")
             return curr_node
 
         elif data.shape[0] == 0:
@@ -218,14 +228,14 @@ class DecisionTree():
 
 
         purity = gini(data) if self.criterion == 'gini' else entropy(data)
-        print(f"\tdata shape : {data.shape} purity: {purity}")
+
 
         #all nodes belong to onlly one class
         if purity == 0:
             curr_node.is_leaf = True
             curr_node.label = data['label'].iloc[0] # since all nodes are from same class, assign the first data label
-            print(f" \tlabel once we reach the end of the node:{ curr_node.label}")
-            print('\tpurity is 0, returning')
+            # print(f" \tlabel once we reach the end of the node:{ curr_node.label}")
+            # print('\tpurity is 0, returning')
             return  curr_node
         
         best_feature = " "
@@ -241,8 +251,6 @@ class DecisionTree():
             datarow = data[i]
             tmp_purity, threshold, less_than, greater_than = self.best_split_on_feature(i, datarow, data)
 
-
-
             # checking for value with best purity
             if tmp_purity <= best_purity: 
                 best_purity = tmp_purity
@@ -251,13 +259,12 @@ class DecisionTree():
                 best_less_than = less_than # make sure these values are actually the ones we want to assign
                 best_greater_than = greater_than
 
-
         curr_node.feature = best_feature
         curr_node.threshold = best_threshold
         curr_node.count = parent.count + 1
 
-        print(f"\tbest feature is : {best_feature} with threshold: {best_threshold}")
-        print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}") 
+        # print(f"\tbest feature is : {best_feature} with threshold: {best_threshold}")
+        # print(f"\tbest_less_than shape: {best_less_than.shape} best_greater_than shape: {best_greater_than.shape}") 
 
         # recurse on the children
         curr_node.right = self.tree(best_greater_than, curr_node)
@@ -275,12 +282,12 @@ class DecisionTree():
 
         # recurse on children node
         if data[feature] <= node.threshold:
-            return self.classify_node(node.left, data)
-
-        elif data[feature] > node.threshold:
             return self.classify_node(node.right, data)
 
-    # classify all the nodes in the test sequence
+        elif data[feature] > node.threshold:
+            return self.classify_node(node.left, data)
+
+    # classify all the nodes in the test sequence individually
     def classify(self, data):
         print(f"roots' feature: {self.root.feature}")
         classification = []
@@ -299,21 +306,27 @@ class DecisionTree():
 # Using Criterion=‘gini’, showing the accuracy score of test data by Max_depth=3 and Max_depth=10, respectively.
 # 
 # testo = DecisionTree(criterion='gini', max_depth=None)
+
 clf_depth3 = DecisionTree(criterion='gini', max_depth=3)
 class_predictions = clf_depth3.classify(x_test)
-print(f"accuracy: {accuracy_score(y_test, class_predictions)}")
-clf_depth3.print_tree()
-#clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
+print(f"accuracy clf_depth3: {accuracy_score(y_test, class_predictions)}")
 
+clf_depth10 = DecisionTree(criterion='gini', max_depth=10)
+class_predictions = clf_depth10.classify(x_test)
+print(f"accuracy clf_depth10: {accuracy_score(y_test, class_predictions)}")
 
 # ### Question 2.2
 # Using Max_depth=3, showing the accuracy score of test data by Criterion=‘gini’ and Criterion=’entropy’, respectively.
 # 
 
+clf_gini = DecisionTree(criterion='gini', max_depth=3)
+class_predictions = clf_gini.classify(x_test)
+print(f"accuracy clf_gini: {accuracy_score(y_test, class_predictions)}")
 
-#clf_gini = DecisionTree(criterion='gini', max_depth=3)
-#clf_entropy = DecisionTree(criterion='entropy', max_depth=3)
 
+clf_entropy = DecisionTree(criterion='entropy', max_depth=3)
+class_predictions = clf_entropy.classify(x_test)
+print(f"accuracy clf_entropy: {accuracy_score(y_test, class_predictions)}")
 
 # - Note: All of your accuracy scores should over 0.9
 # - Note: You should get the same results when re-building the model with the same arguments,  no need to prune the trees
