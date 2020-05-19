@@ -18,7 +18,7 @@ Decision Trees and Random Forests}
 \maketitle
 
 
-\section{Questions}
+\section{Coding}
 	\subsection{Gini index or Entropy is often used for meaasuring the ``best" splitting of the 
 		data. Please compute the entropy and Gini Index of the provided data by the formula below.
 			\[ Gini = 1 - \sum_{j}^{}p^{2}_{j}\]
@@ -37,10 +37,20 @@ Decision Trees and Random Forests}
 
 		\subsubsection{Using criterion='gini', show the accuracy score of the test data by 
 				max\_depth=3 and max\_depth = 10, respectively.}
+				On the testing data, we were able to achieve the following accuracy\footnote{These tests used 'gini' as their purity function}:
+
+				\begin{center} 
+					\begin{tabular}{|c |c |c |}
+						\hline
+							clf\_depth3 & 0.9370629370629371\\\hline
+							clf\_depth10 & 0.9370629370629371\\
+						\hline
+					\end{tabular}
+				\end{center}
 
 		\subsubsection{Using max\_depth=3, show the accuracy score of test data by criterion='gini' 
 						and criterion='entropy'.}
-\section{Coding}
+\section{Theory}
 	\subsection{Consider a dataset comprising 400 data points from Class $C_{1}$ and 400 data points 
 		from class $C_{2}$. Supose that a tree model A splits these into (300, 100) at the first leaf
 		node and (100,300) at the second leaf node, where $(n,m)$ denotes that n points are assigned 
@@ -58,7 +68,7 @@ Decision Trees and Random Forests}
 		}
 		The calculations for entropy and the Gini index for the two trees are as follows
 
-		\begin{centering}
+		\begin{center}
 		\begin{tabular}{|c | c | c |}
 			\hline
 			 & Gini & Entropy\\\hline
@@ -66,7 +76,7 @@ Decision Trees and Random Forests}
 			Tree B & $0.556$ & 0.91 \\
 			\hline
 		\end{tabular}
-		\end{centering}
+		\end{center}
 
 
 \end{document}
