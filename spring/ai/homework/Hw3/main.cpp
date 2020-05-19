@@ -3,7 +3,8 @@
 
 int main(){
 	Board board;
-	board.setup();
+
 	board.print();
+	board.solve();
 	return 0;
 }
