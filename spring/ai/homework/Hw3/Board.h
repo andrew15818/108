@@ -21,8 +21,11 @@ class Board{
 
 	public:
 		Board();
-		int query(int row, int col);// return hint value and change status to marked  
+		int query_hint(int row, int col);// return hint value and change status to marked  
+		int query_type(const Clause& clause); // return status of first node in the clause
 		void solve();				// play the game and mark the cells as safe or mined
 		void print();
+		bool check_subsumption(Clause& c1, Clause& c2); // check if one clause is stricter than the other
+		void match_clause(Clause& clause); //try to find a match for clause in KB
 };
 #endif 

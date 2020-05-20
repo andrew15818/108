@@ -5,7 +5,6 @@
 #include "Util.h"
 
 Board::Board(){
-	printf("hola\n");
 	setup();
 }
 // set the mines at random locations
@@ -32,13 +31,13 @@ void Board::calculate_hints()
 		if(board[x][y].type == mine){
 			continue;
 		}
-		board[x][y].type = hint;
+		board[x][y].type = safe;
 
 		// adding a single literal clause
 		Clause tmp;
-		tmp.n1 = &board[x][y];
-		tmp.assigned = 1;
-		printf("pushing back: (%d, %d)\n", tmp.n1->x, tmp.n1->y);
+		tmp.insert_literal(board[x][y]);
+		tmp.size = 1;
+
 		KB.push_back(tmp);
 		int currx, curry;
 
@@ -79,11 +78,35 @@ void Board::print()
 		}
 	}
 }
-/*TODO: Since we moved the clause to another file, update 
- * the ways we call and treat clauses in this function.*/
+int Board::query_type(const Clause& clause)
+{
+	Node* tmp = clause.literals.front();
+	return tmp->type;
+}
+//check if there is a stricter phrase in teh two nodes
+bool Board::check_subsumption(Clause& c1, Clause& c2)
+{
+	std::list<Node*>::iterator it1;
+	std::list<Node*>::iterator it2;
+	int match_c1 = 0, match_c2 = 1; //how many literals in each class we've matched
+
+	for(it1 = c1.literals.begin(); it1 != c1.literals.end(); it1++){
+		printf("%d\n", (*it1)->x);
+
+		for(it2 = c2.literals.begin(); it2 != c2.literals.end(); it2++){
+			if((*it1)->x == (*it2)->x && (*it1)->y == (*it2)->y){
+				printf("matched: (%d, %d)",(*it1)->x, (*it2)->y);	
+				match_c1++; match_c2++;
+			}
+		}
+	}
+	if(c1.literals.size() == match_c1 || c2.literals.size() == match_c2){
+		printf("There is actual subsumption going on :D\n");	
+	}
+}
 void Board::solve()
 {
-	printf("KB size: %d\n", KB.size());
+
 	//all the nodes are assigned
 	if(KB.size() == 0){return;}
 
@@ -92,31 +115,30 @@ void Board::solve()
 	Clause single;
 	for(it; it != KB.end(); it++)
 	{
-		if(it->assigned == 1){
+		if(it->size == 1){
 			single = (*it);
 			break;
 		}
 	}
+	
+	// if a single-valued literal
+	if(single.size == 1){
+		printf("%d\n", query_type(single));		
+	}
 
-	//checking if actually found value
-	if(single.assigned == 1){
-		printf("Found (%d, %d)\n", single.n1->x, single.n1->y);
-		// mark the node as either safe or mined
-		if(single.n1->type == unassigned)
-		{
-			single.n1->type = hint; // mined nodes
-			KB0.push_back(single);  // move it to list of assigned nodes
+
+
 			/* TODO: 
 			 *	 1. Process the matching of clauses to others in KB. Should we do a clause class file?
 			 *	 	1.a Insert new clauses into KB
 			 *	 2. If safe, query the board for hint at cell, insert unmarked neighbors into KB.
 			 * */
-		}
+		
 		/*TODO: If there are no single clauses in KB:
 		 * 	1. Apply "pairwise mathcing" to all the  other clauses in KB
 		 * 		1.a Insert new clauses into KB. Match clauses where one node has at most two literals.
 		 *
 		 * */
-	}
+	
 
 }

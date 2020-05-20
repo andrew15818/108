@@ -1,6 +1,8 @@
 #include "Clause.h"
-
-bool Clause::match(const Clause& clause)
+void Clause::insert_literal(Node& node)
 {
-
+	Node* tmp = &node;
+	this->literals.push_back(tmp);
+	this->size++;
 }
+

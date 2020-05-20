@@ -4,7 +4,8 @@
 int main(){
 	Board board;
 
-	board.print();
+
 	board.solve();
+	board.print();
 	return 0;
 }
