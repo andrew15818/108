@@ -15,4 +15,6 @@ y_test = (pd.read_csv("y_test.csv"))
 
 clf = tree.DecisionTreeClassifier(criterion='gini', max_depth=3)
 clf = clf.fit(x_train, y_train)
+
+print(accuracy_score(y_train, ))
 tree.export_graphviz(clf, out_file='tree_test.dot')
