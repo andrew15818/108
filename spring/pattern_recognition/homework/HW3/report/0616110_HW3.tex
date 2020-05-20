@@ -42,14 +42,22 @@ Decision Trees and Random Forests}
 				\begin{center} 
 					\begin{tabular}{|c |c |c |}
 						\hline
-							clf\_depth3 & 0.9370629370629371\\\hline
-							clf\_depth10 & 0.9370629370629371\\
+							clf\_depth3 & 0.9812206572769953\\\hline
+							clf\_depth10 & 1.0\\
 						\hline
 					\end{tabular}
 				\end{center}
 
 		\subsubsection{Using max\_depth=3, show the accuracy score of test data by criterion='gini' 
 						and criterion='entropy'.}
+				The results for use of gini and entropy on the testing data are as follows:
+				\begin{center}
+						\begin{tabular}{|c |c |c |}
+							\hline
+							clf\_gini & 0.9370629370629371\\\hline	
+							clf\_entropy & 0.9370629370629371\\\hline
+						\end{tabular}
+				\end{center}
 \section{Theory}
 	\subsection{Consider a dataset comprising 400 data points from Class $C_{1}$ and 400 data points 
 		from class $C_{2}$. Supose that a tree model A splits these into (300, 100) at the first leaf
@@ -74,7 +82,7 @@ Decision Trees and Random Forests}
 			 & Gini & Entropy\\\hline
 			Tree A & $0.25$ & 0.81\\\hline
 			Tree B & $0.556$ & 0.91 \\
-			\hline
+
 		\end{tabular}
 		\end{center}
 
