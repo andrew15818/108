@@ -27,6 +27,18 @@ way to solve a Minesweeper board, it does provide a useful insight into the area
 as applied to game-playing agents.
 
 \section{Program}
+The program is organized in a player module and a board module. The board module contains the information 
+contained in every cell, the hint values and the types of the cells. The board module is just a container
+for the array containing the nodes.
+
+We also maintain a clause class which, we use to store a list of nodes and their status. This is the main
+data structure we check when we want to compare the states two different cells. When the program starts, 
+we initially insert the nodes marked as ``safe", which are chosen at random from the board. There are
+then other considerations we make when mathing clauses or generating clauses from hints.
+
+The player module is the one playing the game. This module is repsonsible for maintaining the knowledge
+base of the unassigned and the nodes whose status we have already determined. To do the matching, we 
+try to match the node that is being checked with the other clauses that we have in our knowledge base.
 
 \section{Further Discussion}
 	\subsection{How could we use first-order logic here?}
@@ -50,4 +62,14 @@ as applied to game-playing agents.
 	\subsection{How could we imporve the success rate of ``guessing" when you want to proceed from a
 			``stuck" game.}
 	\subsection{How could we modify the method of Assignment 2 to solve the current problem?}
+		We could modify the main algorithm from Assignment 2 to work in this assignment. For assignment
+		2, after checking if the board is solved, we checked if assigning the node to be a mine was a 
+		valid assignment based on the checking the adjacent nodes. In this assignment, we could attempt
+		to select nodes and instead of checking its constraints, we could match it with our knowledge base
+		to derive it's truth value. If we can do this for the current node, we can safely recurse on the
+		adjacent nodes. If we cannot clearly match the node, we attempt to assign TRUE and FALSE to the 
+		current node and see which assignment leads to a solved board.
+
+		An approach resembling the above would still carry the same structure as the previous assignment,
+		while using the techniques learned in this assignment involving propositional logic.
 \end{document}
