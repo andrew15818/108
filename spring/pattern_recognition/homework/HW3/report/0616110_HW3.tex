@@ -3,7 +3,7 @@
 \usepackage{helvet} % to change the main font
 \usepackage[margin=1in]{geometry} % basically to set the margins
 \usepackage{xeCJK} % to allow Chinese input
-
+\usepackage{graphicx}
 % handling the fonts and languages
 \renewcommand{\familydefault}{\sfdefault}
 \setCJKmainfont{FandolKai-Regular.otf}
@@ -58,6 +58,30 @@ Decision Trees and Random Forests}
 							clf\_entropy & 0.9370629370629371\\\hline
 						\end{tabular}
 				\end{center}
+		\subsection{Plot the feature importance of your Decision Tree model. You can use the model
+			from question 2.1, max\_depth=10. }
+			By using the somewhat complicated formula given in the reference within the sample code,
+			we could arrive at the following graph for feature importance of \texttt{clf\_depth10}.
+
+			\begin{center}
+			\begin{figure}
+				\includegraphics[scale=0.3]{Figure_1}
+				\caption{Importance of the features used in tree with depth of 10.}
+			\end{figure}
+			\end{center}
+		\subsection{Implement the Random Forest algorithm by using CART, implemented in question 2.}
+			\subsubsection{Using Criterion='gini', Max\_depth=None, Max\_features=sqrt(n\_features), 
+			Bootstrap=True, show the accuracy score of test data by n\_estimators = 10.}
+
+			Using \texttt{sklearn.accuracy\_score()}, an accuracy of $1.0$ was achieved for the tree
+			with Max\_depth$=10$.
+
+			\subsubsection{Using Criterion='gini', Max\_depth=None, N\_estimators=10,Bootstrap=True,
+			show the accuracy score of test data by Max\_features=sqrt(n\_features) and Max\_features
+			=n\_features, respectively.}
+
+			Again, using \texttt{sklearn.accuracy\_score()}, using Max\_Depth=None, we were able to 
+			achieve approximately $0.93$ accuracy.
 \section{Theory}
 	\subsection{Consider a dataset comprising 400 data points from Class $C_{1}$ and 400 data points 
 		from class $C_{2}$. Supose that a tree model A splits these into (300, 100) at the first leaf
@@ -66,7 +90,9 @@ Decision Trees and Random Forests}
 		splits them into (200, 400) and (200, 0). Evaluate the misclassification rate for the two trees
 		and hence show that they are equal.}
 		
-		The misclassification rate involves calculating 
+		The misclassification rate involves calculating how often elements are misclassified. Therefore, 
+		if we still classify the two classes into sets containing 400 elements each, then the rate that
+		at which any two elements are misclassified will be the same, barring any extra information.
 	\subsection{Similarly, evaluate the cross-entropy 
 		\[ Entropy = - \sum_{k = 1}^{K}p_{k}log_{2}p_{k}\]
 		and the Gini index
@@ -81,10 +107,7 @@ Decision Trees and Random Forests}
 			\hline
 			 & Gini & Entropy\\\hline
 			Tree A & $0.25$ & 0.81\\\hline
-			Tree B & $0.556$ & 0.91 \\
-
+			Tree B & $0.556$ & 0.91 \\\hline
 		\end{tabular}
 		\end{center}
-
-
 \end{document}
