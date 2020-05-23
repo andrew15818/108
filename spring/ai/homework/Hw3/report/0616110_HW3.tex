@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{helvet}
+\usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{xeCJK}
@@ -55,6 +56,8 @@ Only if it is a safe cell do we query the board for the hints at that spot.
 This approach to solving the board is more complicated than constrain satisfaction 
 approach from the previous assignment. Thus, it was quite hard to even think of how 
 to generate clauses from hints, even given the help in the \texttt{.pdf} file.
+
+The player and the board module are only iteracting to query, all the logic occurs in the player module.
 \section{Further Discussion}
 	\subsection{How could we use first-order logic here?}
 		First order logic differs from propositional logic in its power at expressing propositions. For 
@@ -87,6 +90,12 @@ to generate clauses from hints, even given the help in the \texttt{.pdf} file.
 		chaining.
 	\subsection{How could we imporve the success rate of ``guessing" when you want to proceed from a
 			``stuck" game.}
+		Currently, we are only guessing that we are stuck when we do not make any moves for a couple
+		turns. However, if we analyze the conditions on which the games get stuck, we could be able
+		to perform a check every time we select a clause or every time we mark a node. This way, 
+		if we are not going anywhere, we could detect a stuck game before spending several turns
+		without making any moves.
+
 	\subsection{How could we modify the method of Assignment 2 to solve the current problem?}
 		We could modify the main algorithm from Assignment 2 to work in this assignment. For assignment
 		2, after checking if the board is solved, we checked if assigning the node to be a mine was a 
@@ -98,4 +107,12 @@ to generate clauses from hints, even given the help in the \texttt{.pdf} file.
 
 		An approach resembling the above would still carry the same structure as the previous assignment,
 		while using the techniques learned in this assignment involving propositional logic.
+\section{Code Images}
+\includegraphics[scale=0.5]{s1.png}
+
+\includegraphics[scale=0.5]{s2.png}
+
+\includegraphics[scale=0.5]{s3.png}
+
+\includegraphics[scale=0.5]{s4.png}
 \end{document}
