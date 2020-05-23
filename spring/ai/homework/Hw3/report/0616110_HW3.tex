@@ -40,6 +40,21 @@ The player module is the one playing the game. This module is repsonsible for ma
 base of the unassigned and the nodes whose status we have already determined. To do the matching, we 
 try to match the node that is being checked with the other clauses that we have in our knowledge base.
 
+The issues in this assignment come from the complexity of matching different propositions composed of nodes in our board. This introduced an extra layer of
+complexity at the moment checking a valid move. We have to match nodes based on 
+interpreting them as logical propositions, which is not the most intuitive way
+of looking at a problem.
+
+The main function takes a look at whether the board requirements are fulfilled, so we 
+check if our board is actually completed. After that, we take different actions based 
+on if the node we are checking is a single literal or not. If it is, we apply the 
+pairwise matching proces with all the other elements in our knowledge base. When in this
+process, we generate new clauses and add them to our knowledge base to check later. 
+Only if it is a safe cell do we query the board for the hints at that spot.
+
+This approach to solving the board is more complicated than constrain satisfaction 
+approach from the previous assignment. Thus, it was quite hard to even think of how 
+to generate clauses from hints, even given the help in the \texttt{.pdf} file.
 \section{Further Discussion}
 	\subsection{How could we use first-order logic here?}
 		First order logic differs from propositional logic in its power at expressing propositions. For 
@@ -59,6 +74,17 @@ try to match the node that is being checked with the other clauses that we have 
 		objects. If we choose appropriate relations to check, maybe such to check a valid assignment 
 		or the number of adjacent objects, may be a more intuitive approach to this problem.
 	\subsection{Is forward chaining or backward chaining applicable to this problem?}
+		Yes, there are ways we could use chaining in this problem. To arrive at a conclusion $c$, we could recursively check all the propositions whose values
+		we can infer. Special attention would be gven to inferring the value of 
+		the literals is $c$'s premises. Backward chaining might be harder to implement
+		since we would already need a solution to implement before inferring the 
+		values of its premises.
+
+		For forward chaining, the recursion tree would eventually encompass all the 
+		values that can be reached if we recurse. Once we build the tree, we could 
+		merely query the truth value of a literal whenever we required it. Thus 
+		recursively inferring values might prove a possible way to utilize forward 
+		chaining.
 	\subsection{How could we imporve the success rate of ``guessing" when you want to proceed from a
 			``stuck" game.}
 	\subsection{How could we modify the method of Assignment 2 to solve the current problem?}

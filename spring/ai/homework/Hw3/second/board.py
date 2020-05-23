@@ -1,4 +1,5 @@
 import math
+import player
 from random import randint
 status = {
 	"mine": 0,
@@ -69,19 +70,6 @@ class Board:
     		adjacent = 0
     		i += 1
 
-    		"""
-    		for i in range(-1, 1):
-    			for j in range(-1, 1):
-    				if i == 0 and j == 0:
-    					continue
-    				x += i
-    				y += j
-    				if(is_valid(x, y, self.rows, self.cols) and 
-    					board[x][y].status == status["mine"]):
-    					current += 1
-
-    		board[row][col].adjacent = current
-    		"""	
 
     def print(self):
     	for i in range(self.rows):
