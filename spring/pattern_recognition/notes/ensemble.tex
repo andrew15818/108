@@ -153,4 +153,31 @@ for example. We can measure the uncertainty and impurity by the following formul
 the probability of class $C_{k}$}
 \[ I_{m} = - \sum_{k = 1}^{K} p_{m}^{k} \log p_{m}^{k}\]
 
+At every decision node, we have a decision to make based on a \textbf{threshold}. In practice, decision trees
+might sometimes tend to overfit the training data. However, \textbf{bagging} and \textbf{random forests}
+might help make decision trees more robust and easier to compute.
+
+\section{Bagging}
+With \textbf{bagging}, we take a sample set of size $D$, and we further split it into $m$ subsets by 
+randomly sampling the original dataset \textbf{with replacement}. We then create separate classifiers
+with the different datasets and combine them in some way during the final stage to make our final 
+classifier.
+
+\section{Random Forests}
+When using random forests, we have to introduce two new sources of randomness: \textbf{bagging} and
+\textbf{random vectors}. The latter refers to calculating a randomly selected subset of points 
+and calculating the best split for each of those random vectors. How do we create a decision node?
+There are a few methods:
+\begin{itemize}
+		\item Choose $m$ attributes randomly and calculate the one with the biggest possible \textbf{gain}
+		\item If $M$ remains small, then we can choose $L$ attributes and calculate a linear combination of 
+				those attributes that fall within $[1, -1]$.
+		\item Compute the information gain of all the $M$ attributes and select the top $m$ by their information
+				gain. Then randomly select one from within those $m$.
+\end{itemize}
+Where there are $M$ data dimensions, and $m < M$, $L\leq M$.
+
+For the first method, we would have to for each number in $B$\footnote{The number of datasets we want to split 
+$D$ into.} grow a decision tree based on the	best attribute at each node. Then we split the dataset into two
+new child nodes.
 \end{document}
