@@ -114,4 +114,40 @@ dimensional inputs.
 
 		If the latter is true and $t_{n}(x_{n}) - 1 -0$, then this point lies on the maximum margin and 
 		is called a \textbf{support vector}. We only keep the support vectors.
+
+		So far, what we have seen assumes the data are lienarly separable, that is, we can actually 
+		find a line that cleanly splts the dataset. But what if this is not the case?
+		\subsection{Overlapping class distributions}
+
+		To allow the possible misclassification of data, we can introduce a new variable called the \textbf{slack
+		variable} $\xi$, such that for each data point $x_{n}$, $\xi \geq 0$. We then can modify one of
+		the constraints mentioned above and write 
+		\[ t_{n}y(x_{n}) \geq 1 - \xi_{n}\]
+
+		This slack variable can tell us a couple things about the data point, for example:
+		\begin{enumerate}
+				\item $\xi_{n} = 0$: The point is on the correct side of the decision boundary (could be in the
+						margin).
+				\item $0 < \xi_{n} < 1$: The point is in the margin, but still in the correct side of the 
+						boundary.
+				\item $\xi_{n} = 1$: The data point is on the decision boundary.
+				\item $\xi_{n} > 1$: The data point was classified incorrectly.
+		\end{enumerate}
+		So $\xi_{n}$ tells us how \textbf{misclassified} a certain data point is. We also use the KKT criteria
+		mentioned above to calculate the parameters of the functions.
+
+		\subsection{Summary of SVMs}
+		Support Vector Machines are a linear model for classification or regression that use a form of
+		sum of squares. We use a dual representation of the data, one usually described by a linear
+		combination of the data. We use dual representation because the decision function $J(w)$ is
+		calculated in terms of kernel functions.
+
+		SVMs try to maximize the margin between the decision boundary and the closest data point of either set.
+		The function we try to maximize is of the form 
+		\[ \textrm{arg min}\frac{1}{2}\|w\|^{2}\]
+		To do this, we introduce a new slack variable $\xi_{n}$ for each data point $x_{n}$. We use this 
+		variable whenever the dataset is not cleanly able to be partitioned in two.  This slack variable 
+		tells us how misclassified a variable is. That is, we can know whether it is on the correct side
+		of the decision boundary and by how much.
+		\subsection{Multiclass SVMs}
 \end{document}
