@@ -1,5 +1,6 @@
 \documentclass{tufte-handout}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \graphicspath{ {./images/} }
 
 \title{Kernel Methods}
@@ -149,5 +150,63 @@ dimensional inputs.
 		variable whenever the dataset is not cleanly able to be partitioned in two.  This slack variable 
 		tells us how misclassified a variable is. That is, we can know whether it is on the correct side
 		of the decision boundary and by how much.
-		\subsection{Multiclass SVMs}
+
+	\section{Multiclass SVMs}
+	Since SVMs are fundamentally a two-class identifier, we need some extra mechanisms to adapt them 
+	to work with classes $k > 2$. We can have several different methods.
+		\subsection{One-versus-the-rest}
+		For the kth classifier, we make it so that it can distinguish between classes $C_{k}$ and those 
+		points who are not in this class. We use data from $C_{k}$ as positive data and the rest as
+		data that does not belong in the class. One potential issue with this approach is that 
+		the symmetry of data points that belong in a class, i.e. the positive training data, might be lost.
+		If we only have a small fraction of positive test cases, and an equal amount of all the other classes
+		to use as negative examples, then the amount of data we will use as positive examples might not 
+		adequately serve the training data.
+		
+		\subsection{One-versus-one}
+		With these kinds of classifiers, we compare each of them with another of the classes. This means
+		we have $\frac{k(k-1)}{2}$ different SVM classifiers, which will make it much more computationally
+		hard to classify the data. There is a classifier for classes $i$ and $j$. This approach might remove
+		the data inbalance issue with the previous classifier type, however the computational requirement
+		might pose a downside.
+
+		\subsection{DAGSVM}
+		Alternatively, we can construct a DAG to act as a tree, again with $\frac{K(K-1)}{2}$ SVMs. Then,
+		at each node we also make a decision, and as we follow the path down the tree to the leaf node,
+		we at most evaluate $K-1$ nodes.
+		\begin{marginfigure}
+				\includegraphics[scale=0.4]{dagsvm}
+				\caption{At each internal node we train a 1-v-1 SVM classifer, and as the point
+				moves down the tree we eventually end up at a leaf node where the point is then
+				classified.}
+		\end{marginfigure}
+
+		\subsection{ECOC}
+		We can train an SVM again for the $K$ classes, maybe using one-versus-one approach. Given a sutiable
+		decoding scheme, we can then measure the robustness of errors and classifying should prove a bit easier.
+
+\section{Regression with SVMs}
+	To use SVMs with regression, we first have to define an error function. Using $\xi$, we can define the
+	error function as
+	\[ E_{\epsilon}(y(x) - t) = 
+		\begin{cases}
+			0 & \textrm{if} |y(x) -t |<\xi \\
+			|y(x)-t | & \textrm{otherwise} \\
+		\end{cases}
+	\]
+	Similar to before, we can calculate the decision function for a regression version of SVMs as
+	\[ y(x) = w^{T}\phi(x) + b\]
+	The next question then should be: how do we calculate $w$ and $b$?
+	For $w$, we can again use a dual representation such that 
+	\[ w = \sum_{n=1}^{N}(a_{n} - \hat{a}_{n})\phi(x_{n})\]
+	Then the prediction for a new point will be 
+	\[y(x) = \sum_{n=1}^{N}(a_{n} - \hat{a}_{n})k(x, x_{n}) + b\]
+
+\section{Summary of SVR}
+	\begin{enumerate}
+		\item Choose a kernel function.
+		\item Solve for the Lagrange multipliers $a_{n}$ and $\hat{a}_{n}$ with quadratic programming or SMO.
+		\item Optimize $b$ via KKT conditions
+		\item Make the prediction using formula for $y(x)$
+	\end{enumerate}
 \end{document}
