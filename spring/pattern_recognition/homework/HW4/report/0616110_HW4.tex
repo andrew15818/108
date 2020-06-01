@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{helvet}
+\usepackage{xeCJK}
+\usepackage[margin=1.0in]{geometry}
+\setCJKmainfont{FandolKai-Regular.otf}
+\renewcommand{\familydefault}{\sfdefault}
+
+\title{Introduction to Pattern Recognition Assignment 4 Report}
+\author{ Andr\'es Ponce(彭思安) \\
+\and
+0616110
+}
+
+\begin{document}
+\maketitle
+\section{Coding}
+
+\section{Questions}
+	\subsection{Given a valid kernel $k_{1}(x, x')$, prove that 1)
+		$k(x, x') = ck_{1}(x, x')$ and 2) $k(x, x') = f(x)k_{1}(x, x')f(x)$ are 
+		valid kernels, where $c > 0$ is a positive constant and $f(\cdot)$ is any 
+		real-valued function.}
+	A valid kernel function $k_{1}(x, x')$ has to have a positive semi-definite \textbf{Gram matrix}
+		$\mathbf{K} = [k(\mathbf{x}_{n}, \mathbf{x}_{m})]_{nm}$.
+	A positive semi-definite matrix is one whose eigenvalues are all positive. 
+	We are given that $k_{1}(x, x')$ is a valid kernel, so at the start it meets this condition.
+	We thus have to show that multiplying $k_{1}$ by a constant also produces a valid kernel,
+		i.e. multiplying the kernel by a constant also produces a positive semi-definite Gram matrix.
+\end{document}
+
