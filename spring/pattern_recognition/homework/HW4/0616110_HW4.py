@@ -22,15 +22,22 @@ print(np.unique(y_train))
 # a list of lists (len(list) should equal to K), which contains K elements. Each element is a list contains two parts, the first part contains the index of all training folds, 
 # e.g. Fold 2 to Fold 5 in split 1. The second part contains the index of validation fold, e.g. Fold 1 in  split 1
 
+# 1. First we split the dataset into K parts
+# 2. Take one of the K parts as validation, the rest as testing data
+#   2.1 The validation one is used as "testing" to test the tmp model parameters
+# 3. Choose the one that yields the best performance
 def cross_validation(x_train, y_train, k=5):
+    fold_size = x_train.shape[0] % k 
+
     return NotImplementedError
 
 
 kfold_data = cross_validation(x_train, y_train, k=10)
+"""
 assert len(kfold_data) == 10 # should contain 10 fold of data
 assert len(kfold_data[0]) == 2 # each element should contain train fold and validation fold
 assert kfold_data[0][1].shape[0] == 55 # The number of data in each validation fold should equal to training data divieded by K
-
+"""
 
 # ## example
 from sklearn.model_selection import KFold
