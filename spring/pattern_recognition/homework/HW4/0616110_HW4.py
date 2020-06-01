@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.svm import SVC, SVR
 from sklearn.metrics import accuracy_score
-
+from sklearn.model_selection import KFold # using this to split data
 
 # ## Load data
 x_train = np.load("x_train.npy")
@@ -27,21 +27,24 @@ print(np.unique(y_train))
 #   2.1 The validation one is used as "testing" to test the tmp model parameters
 # 3. Choose the one that yields the best performance
 def cross_validation(x_train, y_train, k=5):
-    fold_size = x_train.shape[0] % k 
 
+    kf = KFold(n_splits=k, shuffle=True)
+    # splitting the data k times
+    for count in range(k): 
+        # getting the 
+        for i, (train_index, val_index) in enumerate(kf.split(x_train)):
+            print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
     return NotImplementedError
 
 
 kfold_data = cross_validation(x_train, y_train, k=10)
-"""
+
 assert len(kfold_data) == 10 # should contain 10 fold of data
 assert len(kfold_data[0]) == 2 # each element should contain train fold and validation fold
 assert kfold_data[0][1].shape[0] == 55 # The number of data in each validation fold should equal to training data divieded by K
-"""
+
 
 # ## example
-from sklearn.model_selection import KFold
-
 X = np.arange(20)
 kf = KFold(n_splits=5, shuffle=True)
 kfold_data= []
