@@ -31,12 +31,18 @@ print(np.unique(y_train))
 def cross_validation(x_train, y_train, k=5):
 
     kf = KFold(n_splits=k, shuffle=True)
-    kfold_data = []
+    
     # split the dataset into k folds, and select each one to be a validation set
     # Then choose the best one
+    kfold_data = [] 
     for i, (train_index, val_index) in enumerate(kf.split(x_train)):
-        print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
+        #print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
         kfold_data.append([train_index, val_index])
+        
+        # splitting the validation set
+        # validation_sample = x_train[kfold_data[i][1]] 
+        # testing_sample = x_train[kfold_data[i][1]]
+    return kfold_data
     return NotImplementedError
 
 
@@ -64,7 +70,9 @@ assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fo
 # Using sklearn.svm.SVC to train a classifier on the provided train set and conduct the grid search of “C”, “kernel” and “gamma” to find the best parameters by cross-validation.
 
 clf = SVC(C=1.0, kernel='rbf', gamma=0.01)
-
+# Have to search for best combination of parameters
+C = [0.1, 1, 10] 
+gamma = [0.01, 0.1, 1, 10]
 print(best_parameters)
 
 
