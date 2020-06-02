@@ -18,8 +18,10 @@ print(np.unique(y_train))
 
 
 # ## Question 1
-# K-fold data partition: Implement the K-fold cross-validation function. Your function should take K as an argument and return 
-# a list of lists (len(list) should equal to K), which contains K elements. Each element is a list contains two parts, the first part contains the index of all training folds, 
+# K-fold data partition: Implement the K-fold cross-validation function. 
+# Your function should take K as an argument and return 
+# a list of lists (len(list) should equal to K), which contains K elements. 
+# Each element is a list contains two parts, the first part contains the index of all training folds, j
 # e.g. Fold 2 to Fold 5 in split 1. The second part contains the index of validation fold, e.g. Fold 1 in  split 1
 
 # 1. First we split the dataset into K parts
@@ -29,11 +31,12 @@ print(np.unique(y_train))
 def cross_validation(x_train, y_train, k=5):
 
     kf = KFold(n_splits=k, shuffle=True)
-    # splitting the data k times
-    for count in range(k): 
-        # getting the 
-        for i, (train_index, val_index) in enumerate(kf.split(x_train)):
-            print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
+    kfold_data = []
+    # split the dataset into k folds, and select each one to be a validation set
+    # Then choose the best one
+    for i, (train_index, val_index) in enumerate(kf.split(x_train)):
+        print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
+        kfold_data.append([train_index, val_index])
     return NotImplementedError
 
 
