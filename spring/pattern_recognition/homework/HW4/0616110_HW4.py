@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib as plt
 from sklearn.svm import SVC, SVR
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import KFold # using this to split data
@@ -16,6 +17,9 @@ print(x_train.shape)
 # It's a binary classification problem 
 print(np.unique(y_train))
 
+# use the mean square error to evaluate the performance of a given model
+def mean_square_error():
+    pass
 
 # ## Question 1
 # K-fold data partition: Implement the K-fold cross-validation function. 
@@ -54,6 +58,7 @@ assert kfold_data[0][1].shape[0] == 55 # The number of data in each validation f
 
 
 # ## example
+'''
 X = np.arange(20)
 kf = KFold(n_splits=5, shuffle=True)
 kfold_data= []
@@ -64,7 +69,7 @@ for i, (train_index, val_index) in enumerate(kf.split(X)):
 assert len(kfold_data) == 5 # should contain 5 fold of data
 assert len(kfold_data[0]) == 2 # each element should contains index of training fold and validation fold
 assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fold should equal to training data divieded by K
-
+'''
 
 # ## Question 2
 # Using sklearn.svm.SVC to train a classifier on the provided train set and conduct the grid search of “C”, “kernel” and “gamma” to find the best parameters by cross-validation.
@@ -72,7 +77,28 @@ assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fo
 clf = SVC(C=1.0, kernel='rbf', gamma=0.01)
 # Have to search for best combination of parameters
 C = [0.1, 1, 10] 
-gamma = [0.01, 0.1, 1, 10]
+Gamma = [0.01, 0.1, 1, 10]
+# testing all the parameters of C and gamma and getting the ones that give a best fit
+best_C = 0
+best_gamma = 0
+for c_test in C:
+    for gamma_test in Gamma:
+            clf = SVC(C=c_test, gamma=gamma_test)
+            clf.fit(x_train, y_train)
+            #print(clf)
+            # get the performance using c and gamma of every fold, choose one with lowest MSE
+            for row in range(len(kfold_data)):
+
+                # the class labels of the elements in validation set
+                class_indices = y_train[kfold_data[row][1]]
+
+                # getting the predictions for the validation set based on decision function
+                validation_results = clf.decision_function(
+                        x_train[kfold_data[row][0]] 
+                )
+                validation_predictions = []
+                print(accuracy score(class_indicex))
+
 print(best_parameters)
 
 
