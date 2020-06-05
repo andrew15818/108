@@ -18,16 +18,14 @@ print(x_train.shape)
 print(np.unique(y_train))
 
 # use the mean square error to evaluate the performance of a given model
-def mean_square_error():
-    pass
+def performance_measure(data):
+    sum = 0
+    for value in data:
+        sum += value
+    return (sum / len(data))
+    
 
 # ## Question 1
-# K-fold data partition: Implement the K-fold cross-validation function. 
-# Your function should take K as an argument and return 
-# a list of lists (len(list) should equal to K), which contains K elements. 
-# Each element is a list contains two parts, the first part contains the index of all training folds, j
-# e.g. Fold 2 to Fold 5 in split 1. The second part contains the index of validation fold, e.g. Fold 1 in  split 1
-
 # 1. First we split the dataset into K parts
 # 2. Take one of the K parts as validation, the rest as testing data
 #   2.1 The validation one is used as "testing" to test the tmp model parameters
@@ -78,37 +76,69 @@ clf = SVC(C=1.0, kernel='rbf', gamma=0.01)
 # Have to search for best combination of parameters
 C = [0.1, 1, 10] 
 Gamma = [0.01, 0.1, 1, 10]
+overall_accuracy = []
 # testing all the parameters of C and gamma and getting the ones that give a best fit
 best_C = 0
+best_performance = 0
 best_gamma = 0
 for c_test in C:
     for gamma_test in Gamma:
             clf = SVC(C=c_test, gamma=gamma_test)
             clf.fit(x_train, y_train)
-            #print(clf)
+
+            # keep track of the performance of each fold
+            fold_performance = [] 
             # get the performance using c and gamma of every fold, choose one with lowest MSE
             for row in range(len(kfold_data)):
 
                 # the class labels of the elements in validation set
                 class_indices = y_train[kfold_data[row][1]]
 
-                # getting the predictions for the validation set based on decision function
-                validation_results = clf.decision_function(
-                        x_train[kfold_data[row][0]] 
-                )
-                validation_predictions = []
-                print(accuracy score(class_indicex))
+                # getting the testing set data
+                testing_fold = x_train[kfold_data[row][1]]
+
+                # getting class predictions for given set
+                validation_predictions = clf.predict(testing_fold)
+                accuracy = accuracy_score(class_indices, validation_predictions) 
+                fold_performance.append(accuracy)
+
+                # print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
+
+            performance = performance_measure(fold_performance)
+            # print(f"perfomrance for ({c_test}, {gamma_test}): {performance}")
+
+            if performance >= best_performance:
+                best_performance, best_C, best_gamma = performance, c_test, gamma_test
+
+best_parameters = [best_performance, best_C, best_gamma]
 
 print(best_parameters)
 
-
+# How to plot the image?
 # ## Question 3
 # Plot the grid search results of your SVM. The x, y represents the hyperparameters of “gamma” and “C”, respectively. And the color represents the average score of validation folds
 # You reults should be look like the reference image ![image](https://miro.medium.com/max/1296/1*wGWTup9r4cVytB5MOnsjdQ.png) 
-
+# TODO: figure out how to map the table with the different hyper parameters
+'''
+table = plt.table(
+            colLabels=C,
+            rowLabels=gamma
+        )
+plt.show()
+'''
+def mock_predict(C, gamma):
+    for c in C:
+        for g in gamma:
+            modelino = SVC(C=c, gamma=g)
+            modelino.fit(x_train, y_train)
+            predictorino = modelino.predict(x_train)
+            print(f"Model with C={c}, gamma={g}\t accuracy score: {accuracy_score(y_train, predictorino)}")
 # ## Question 4
 # Train your SVM model by the best parameters you found from question 2 on the whole training set and evaluate the performance on the test set. **You accuracy should over 0.85**
+# mock_predict(C, Gamma)
 
+best_model = SVC(C=best_parameters[1], gamma=best_parameters[2])
+best_model.fit(x_test, y_test)
 y_pred = best_model.predict(x_test)
 print("Accuracy score: ", accuracy_score(y_pred, y_test))
 
