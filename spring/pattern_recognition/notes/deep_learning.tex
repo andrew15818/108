@@ -1,0 +1,68 @@
+\documentclass{tufte-handout}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\title{Deep Learning and CNNs}
+\author{Andr\'es Ponce}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Deep Learning methods allow us to perform other functions such as 
+object recognition obtained from image datasets.
+\end{abstract}
+
+\section{Conventional Approach to Object Recognition}
+The key steps in object recognition involve \textbf{feature extraction}
+from several images. However, features may look different when recognizing 
+different types of objects.
+
+We could have a mdoel with \textbf{hand-crafted} feature detection. Here, we could
+define by hand the kind of features we would like to see in our model. After we go through
+the feature extractor we could have a simple classifier. 
+
+Another approach is instead to have a \textbf{trainable feature extractor}, 
+along with a trainable classifier.
+
+\section{Neural Networks}
+If we recall, \textbf{neural networks} are a series of layers, composed of individual 
+\textbf{neurons} and which connect and communicate to neurons the layer before or after it.
+
+\begin{marginfigure}
+	\includegraphics[scale=0.3]{NNs}
+	\caption{In neural networks, we have a set $\mathbf{s}$ of input values, which are then 
+		summed up through the different layers. Afterwards, we pass it through an 
+	\textbf{activation function} $\sigma(a)$, which then leads to the class we predict it into.
+	}
+\end{marginfigure}
+
+\textbf{Training} the neural network consists in trying to minimzize the loss function. 
+For classification, the loss function might be the distance between the correct classification
+	and our predicted values.
+The formula might look something like:
+\[ L(\theta) = \sum_{i=1}^{N}\|\mathbf{y}_{i} -  g_{w}(\mathbf{x_{i}})\|^{2}\]
+
+To minimize it, we use the technique called \textbf{gradient descent}. 
+This technique involves finding the values for which the \textbf{derivative} of the loss function decreases. 
+Even within gradient descent, there are some different types we might wish to use. 
+For example, \textbf{steepest descent} uses batch processing to change the parameter vector $\mathbf{w}$.
+\footnote{Remember batch methods operate on the whole training set to modify weights.}
+
+Another method for gradient descent involves selecting a subset of the dataset to use when measuring 
+	error.
+This is called \textbf{stochastic} gradient descent. 
+Here we use a formula such as 
+\[E(w) = \frac{1}{2}\sum_{n=1}^{N}\{y(x_{n}, w) - t_{n}\}^{2}\]
+also known as \textbf{sum of squares}.
+\footnote{Sum of squares errors are more useful for problems resembling regression.}
+\begin{marginfigure}
+	\includegraphics[scale=0.3]{gradient_descent}
+	\caption{Visual representation of gradient descent. We are trying to find the global
+		minimum of the error function, by following the gradient ``down" into the global 
+		minimum.}
+\end{marginfigure}
+
+Calculating the error at every single node each iteration may be too intensive to repeat at every step,
+	so insted we can calculate the error via an algorithm called \textbf{backpropagation}.
+\end{document}
