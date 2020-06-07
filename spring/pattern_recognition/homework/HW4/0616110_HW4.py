@@ -29,14 +29,17 @@ def find_best_parameters(x_data, y_data, type="classification"):
     if type == "classification":
         clf = SVC(C=1.0, kernel='rbf', gamma=0.01) 
     else: 
-        SVR(C=1.0, kernel='rbf', gamma=0.01)
+        clf = SVR(C=1.0, kernel='rbf', gamma=0.01)
     
     best_C = 0
     best_performance = 0
     best_gamma = 0
     for c_test in C:
         for gamma_test in Gamma:
-                clf = SVC(C=c_test, gamma=gamma_test)
+                if type == "classification":
+                    clf = SVC(C=c_test, kernel='rbf' ,gamma=gamma_test)
+                else:
+                    clf = SVR(C=c_test, kernel='rbf',  gamma=gamma_test)
                 clf.fit(x_train, y_train)
 
                 # keep track of the performance of each fold
@@ -97,7 +100,7 @@ assert kfold_data[0][1].shape[0] == 55 # The number of data in each validation f
 
 
 # ## example
-'''
+
 X = np.arange(20)
 kf = KFold(n_splits=5, shuffle=True)
 kfold_data= []
@@ -108,7 +111,7 @@ for i, (train_index, val_index) in enumerate(kf.split(X)):
 assert len(kfold_data) == 5 # should contain 5 fold of data
 assert len(kfold_data[0]) == 2 # each element should contains index of training fold and validation fold
 assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fold should equal to training data divieded by K
-'''
+
 
 # ## Question 2
 # Using sklearn.svm.SVC to train a classifier on the provided train set and conduct the grid search of “C”, “kernel” and “gamma” to find the best parameters by cross-validation.
@@ -135,13 +138,6 @@ table = plt.table(
         )
 plt.show()
 """
-def mock_predict(C, gamma):
-    for c in C:
-        for g in gamma:
-            modelino = SVC(C=c, gamma=g)
-            modelino.fit(x_train, y_train)
-            predictorino = modelino.predict(x_train)
-            print(f"Model with C={c}, gamma={g}\t accuracy score: {accuracy_score(y_train, predictorino)}")
 # ## Question 4
 # Train your SVM model by the best parameters you found from question 2 on the whole training set and evaluate the performance on the test set. **You accuracy should over 0.85**
 # mock_predict(C, Gamma)
@@ -159,7 +155,7 @@ print("Accuracy score: ", accuracy_score(y_pred, y_test))
 train_df = pd.read_csv("../HW1/train_data.csv")
 x_train = train_df['x_train'].to_numpy().reshape(-1,1)
 y_train = train_df['y_train'].to_numpy().reshape(-1,1)
-print(x_train)
+
 clf = find_best_parameters(x_train, y_train, type="regression")
 
 test_df = pd.read_csv("../HW1/test_data.csv")
