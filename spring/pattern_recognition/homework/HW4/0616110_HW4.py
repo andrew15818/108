@@ -25,11 +25,14 @@ def performance_measure(data):
     return (sum / len(data))
 
 # Find best C and gamma for either classification or regression
+# TODO: Use Mminimum Square Error to get the error for regression instead of accuracy_score()
 def find_best_parameters(x_data, y_data, type="classification"):
     if type == "classification":
         clf = SVC(C=1.0, kernel='rbf', gamma=0.01) 
+
     else: 
         clf = SVR(C=1.0, kernel='rbf', gamma=0.01)
+
     
     best_C = 0
     best_performance = 0
@@ -40,7 +43,7 @@ def find_best_parameters(x_data, y_data, type="classification"):
                     clf = SVC(C=c_test, kernel='rbf' ,gamma=gamma_test)
                 else:
                     clf = SVR(C=c_test, kernel='rbf',  gamma=gamma_test)
-                clf.fit(x_train, y_train)
+                clf.fit(x_data, y_data)
 
                 # keep track of the performance of each fold
                 fold_performance = [] 
@@ -48,13 +51,14 @@ def find_best_parameters(x_data, y_data, type="classification"):
                 for row in range(len(kfold_data)):
 
                     # the class labels of the elements in validation set
-                    class_indices = y_train[kfold_data[row][1]]
+                    class_indices = y_data[kfold_data[row][1]]
 
                     # getting the testing set data
-                    testing_fold = x_train[kfold_data[row][1]]
+                    testing_fold = x_data[kfold_data[row][1]]
 
                     # getting class predictions for given set
                     validation_predictions = clf.predict(testing_fold)
+
                     accuracy = accuracy_score(class_indices, validation_predictions) 
                     fold_performance.append(accuracy)
 
@@ -89,8 +93,6 @@ def cross_validation(x_train, y_train, k=5):
         # validation_sample = x_train[kfold_data[i][1]] 
         # testing_sample = x_train[kfold_data[i][1]]
     return kfold_data
-    return NotImplementedError
-
 
 kfold_data = cross_validation(x_train, y_train, k=10)
 
@@ -156,6 +158,9 @@ train_df = pd.read_csv("../HW1/train_data.csv")
 x_train = train_df['x_train'].to_numpy().reshape(-1,1)
 y_train = train_df['y_train'].to_numpy().reshape(-1,1)
 
+
+
+kfold_data = cross_validation(x_train, y_train, k=10)
 clf = find_best_parameters(x_train, y_train, type="regression")
 
 test_df = pd.read_csv("../HW1/test_data.csv")
