@@ -2,8 +2,16 @@ import numpy as np
 import pandas as pd
 import matplotlib as plt
 from sklearn.svm import SVC, SVR
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.model_selection import KFold # using this to split data
+
+
+# Constants for HW1 model
+ITERATIONS = 1000
+LEARNING_RATE = 1e-2
+SLOPE_GRADIENT = 1
+INT_GRADIENT = 2
+
 
 # ## Load data
 x_train = np.load("x_train.npy")
@@ -24,6 +32,30 @@ def performance_measure(data):
         sum += value
     return (sum / len(data))
 
+# Model function from Homework 1
+def model(xtrain, ytrain):
+    #values we try to maximize
+    slope = 0
+    intercept = 0 
+
+    #turning the two original objects into 
+    #numpy arrays
+    X = np.array(xtrain)
+    Y_original = np.array(ytrain)
+    num_points = X.shape[0] #number of testing points
+
+    for i in range(0,ITERATIONS):
+        Y_predict = slope * X + intercept
+        slope_gradient = (-2/num_points) * np.sum(X * (Y_original - Y_predict))
+        int_gradient = (-2/num_points) * np.sum(Y_original - Y_predict)
+        
+        slope = slope - slope_gradient * LEARNING_RATE
+        intercept = intercept - int_gradient * LEARNING_RATE
+ 
+
+    return Y_predict, slope, intercept 
+
+
 # Find best C and gamma for either classification or regression
 # TODO: Use Mminimum Square Error to get the error for regression instead of accuracy_score()
 def find_best_parameters(x_data, y_data, type="classification"):
@@ -43,7 +75,7 @@ def find_best_parameters(x_data, y_data, type="classification"):
                     clf = SVC(C=c_test, kernel='rbf' ,gamma=gamma_test)
                 else:
                     clf = SVR(C=c_test, kernel='rbf',  gamma=gamma_test)
-                clf.fit(x_data, y_data)
+                clf.fit(x_data, y_data.ravel())
 
                 # keep track of the performance of each fold
                 fold_performance = [] 
@@ -58,8 +90,14 @@ def find_best_parameters(x_data, y_data, type="classification"):
 
                     # getting class predictions for given set
                     validation_predictions = clf.predict(testing_fold)
+    
+                    
+                    if type == "classification":
+                        accuracy = accuracy_score(class_indices, validation_predictions)  
+                    else:
+                        
+                        accuracy = mean_squared_error(class_indices, validation_predictions) 
 
-                    accuracy = accuracy_score(class_indices, validation_predictions) 
                     fold_performance.append(accuracy)
 
                     # print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
@@ -159,14 +197,19 @@ x_train = train_df['x_train'].to_numpy().reshape(-1,1)
 y_train = train_df['y_train'].to_numpy().reshape(-1,1)
 
 
-
+clf = SVR(C=C[0], kernel='rbf', gamma=Gamma[0])
 kfold_data = cross_validation(x_train, y_train, k=10)
-clf = find_best_parameters(x_train, y_train, type="regression")
+best_parameters = find_best_parameters(x_train, y_train, type="regression")
+
+print(mean_square_error(
 
 test_df = pd.read_csv("../HW1/test_data.csv")
 x_test = test_df['x_test'].to_numpy().reshape(-1,1)
 y_test = test_df['y_test'].to_numpy().reshape(-1,1)
 
-print("Square error of Linear regression: ")
+# Comparing the results from Homework 1 to the current one
+svr_test_predictions = model(x_test, y_test)
+
+print(f"Square error of Linear regression: ")
 print("Square error of SVM regresssion model: ")
 
