@@ -65,4 +65,40 @@ also known as \textbf{sum of squares}.
 
 Calculating the error at every single node each iteration may be too intensive to repeat at every step,
 	so insted we can calculate the error via an algorithm called \textbf{backpropagation}.
+The backpropagation algorithm serves us to calculate the error in the nodes. Remember the value of
+the activaiton function is a function of the weights of the layers incoming, so something like:
+\[ a_{j} = \sum_{i=1}^{D}w^{(1)}_{ji}x_{i} + w_{j0}^{(1)}\]
+
+There are a couple of steps for calculating the error:
+\begin{enumerate}
+	\item Calculate the error for each of the $k$ classes. This is done for each output layer.
+			\[ \delta_{k} = y_{k} - t_{k}\]
+	\item Calculate the error for the \textbf{hidden layers}. We use the formula
+			\[ \delta_{j} = h'(a_{j})\sum_{k}^{}w_{kj}^{(2)}\delta_{k}\]
+				Remember $h(a)$ is the function which further modifies the activation function $a$ of
+				each neuron in the hidden layer.
+				\footnote{Still have some steps missing.}
+\end{enumerate}
+\subsection{What is a Deep Neural Network?}
+Essentially it is a neural network with many hidden layers.
+\footnote{Deep, get it?}
+
+We have multiple different possible architectures for neural networks.
+\begin{centering}
+\begin{figure}
+		\includegraphics[scale=0.3]{obj_recognition}
+		\caption{Architecure of deep learning for object recognition.}
+\end{figure}
+\end{centering}
+For object recognition such as pictured above, we can model an image just as a grid of pixel values.
+Then we can use the values as input to the neural network. 
+However, for a $n x m$ image, we would need to have $(n x m)^{l}$ total connetions, where $l$ is
+	the number of layers in our network
+Thus we can use \textbf{Convolutional Neural Networks} for help with this.
+
+\subsection{Convolutional Neural Networks}
+A convolutional neural network is a multi-layer neural network with \textbf{local connectivity}
+	and \textbf{weight-sharing}.
+	\subsubsection{Local Connectivity}
+
 \end{document}
