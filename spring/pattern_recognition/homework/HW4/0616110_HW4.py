@@ -46,7 +46,7 @@ def model(xtrain, ytrain):
 
     for i in range(0,ITERATIONS):
         Y_predict = slope * X + intercept
-        slope_gradient = (-2/num_points) * np.sum(X * (Y_original - Y_predict))
+        slope_gradient = (-2/num_points) * np.sum(X * (Y_original - Y_predict)) 
         int_gradient = (-2/num_points) * np.sum(Y_original - Y_predict)
         
         slope = slope - slope_gradient * LEARNING_RATE
@@ -196,20 +196,25 @@ train_df = pd.read_csv("../HW1/train_data.csv")
 x_train = train_df['x_train'].to_numpy().reshape(-1,1)
 y_train = train_df['y_train'].to_numpy().reshape(-1,1)
 
-
+# Training a new regression model
 clf = SVR(C=C[0], kernel='rbf', gamma=Gamma[0])
 kfold_data = cross_validation(x_train, y_train, k=10)
 best_parameters = find_best_parameters(x_train, y_train, type="regression")
+clf = SVR(C=best_parameters[1], kernel='rbf', gamma=best_parameters[2])
 
-print(mean_square_error(
+# Re=running the model from HW1
+hw1_y_predict, hw1_slope, hw1_intercept = model(x_train, y_train)
+hw1_error = np.square(np.subtract(y_train, hw1_y_predict)).mean()
 
 test_df = pd.read_csv("../HW1/test_data.csv")
 x_test = test_df['x_test'].to_numpy().reshape(-1,1)
 y_test = test_df['y_test'].to_numpy().reshape(-1,1)
 
 # Comparing the results from Homework 1 to the current one
-svr_test_predictions = model(x_test, y_test)
+clf.fit(x_train, y_train)
+svr_test_predictions = clf.predict(x_test)
+svr_error = mean_squared_error(y_test, svr_test_predictions)
 
-print(f"Square error of Linear regression: ")
-print("Square error of SVM regresssion model: ")
+print(f"Square error of Linear regression: {hw1_error}")
+print(f"Square error of SVM regresssion model: {mean_squared_error(y_test, svr_test_predictions)}")
 
