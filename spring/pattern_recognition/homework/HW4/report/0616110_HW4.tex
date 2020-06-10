@@ -14,6 +14,18 @@
 \begin{document}
 \maketitle
 \section{Coding}
+\subsection{K-fold data partition: Implement the K-fold cross-validation function.
+	Your function should take K as an argument and return a list of lists which 
+	contains K elements.
+	Each element in a list contains two parts, the first part contains the index of all
+		training folds.
+	The second part contains the indeces of the validation fold.}
+
+The \texttt{kfold\_data} array contains the indices of the training and validation sets
+		that will be used during grid search. 
+To do this, we divide the number of elements in our training set by $k$.
+We create a \texttt{KFold} model named \texttt{kf}, and add the index and validation indices
+	returned by \texttt{kf.split(x)} to our \texttt{kfold\_data} list.
 
 \section{Questions}
 	\subsection{Given a valid kernel $k_{1}(x, x')$, prove that 1)

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
+import seaborn as sb
 from sklearn.svm import SVC, SVR
 from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.model_selection import KFold # using this to split data
@@ -12,6 +13,12 @@ LEARNING_RATE = 1e-2
 SLOPE_GRADIENT = 1
 INT_GRADIENT = 2
 
+# Have to search for best combination of parameters
+C = [0.1, 1, 10] 
+Gamma = [0.01, 0.1, 1, 10]
+
+# Store the accuracy of using C[i] and Gamma[j] for plotting 
+plot_values = [[0] * len(Gamma)] * len(C)
 
 # ## Load data
 x_train = np.load("x_train.npy")
@@ -57,7 +64,6 @@ def model(xtrain, ytrain):
 
 
 # Find best C and gamma for either classification or regression
-# TODO: Use Mminimum Square Error to get the error for regression instead of accuracy_score()
 def find_best_parameters(x_data, y_data, type="classification"):
     if type == "classification":
         clf = SVC(C=1.0, kernel='rbf', gamma=0.01) 
@@ -69,43 +75,49 @@ def find_best_parameters(x_data, y_data, type="classification"):
     best_C = 0
     best_performance = 0
     best_gamma = 0
-    for c_test in C:
-        for gamma_test in Gamma:
+    for i, c_test in enumerate(C):
+        for j, gamma_test in enumerate(Gamma):
                 if type == "classification":
                     clf = SVC(C=c_test, kernel='rbf' ,gamma=gamma_test)
                 else:
                     clf = SVR(C=c_test, kernel='rbf',  gamma=gamma_test)
-                clf.fit(x_data, y_data.ravel())
+
 
                 # keep track of the performance of each fold
                 fold_performance = [] 
                 # get the performance using c and gamma of every fold, choose one with lowest MSE
                 for row in range(len(kfold_data)):
 
-                    # the class labels of the elements in validation set
-                    class_indices = y_data[kfold_data[row][1]]
+                    # class indices of testing and validation sets
+                    class_indices_training = y_data[kfold_data[row][0]]
+                    class_indices_validation = y_data[kfold_data[row][1]]
+                   
 
-                    # getting the testing set data
-                    testing_fold = x_data[kfold_data[row][1]]
+                    # Getting the actual input data from validation and testing indices
+                    data_indices_training= x_data[kfold_data[row][0]]
+                    data_indices_validation = x_data[kfold_data[row][1]]
+
+                    clf.fit(data_indices_training, class_indices_training) 
 
                     # getting class predictions for given set
-                    validation_predictions = clf.predict(testing_fold)
-    
-                    
+                    validation_predictions = clf.predict(data_indices_validation)
+                     
+                    #print(f"ground truth:{class_indices}")
+                    #print(f"predicitons:{validation_predictions}\n")
                     if type == "classification":
-                        accuracy = accuracy_score(class_indices, validation_predictions)  
-                    else:
-                        
-                        accuracy = mean_squared_error(class_indices, validation_predictions) 
+                        accuracy = accuracy_score(class_indices_validation, validation_predictions)  
+                    else:                        
+                        accuracy = mean_squared_error(class_indices_validation, validation_predictions) 
 
                     fold_performance.append(accuracy)
 
-                    # print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
+                    print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
 
                 performance = performance_measure(fold_performance)
-                # print(f"perfomrance for ({c_test}, {gamma_test}): {performance}")
+                print(f"fold_performance: {performance}")
+                plot_values[i][j] = performance
 
-                if performance >= best_performance:
+                if performance > best_performance:
                     best_performance, best_C, best_gamma = performance, c_test, gamma_test
 
 
@@ -157,10 +169,6 @@ assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fo
 # Using sklearn.svm.SVC to train a classifier on the provided train set and conduct the grid search of “C”, “kernel” and “gamma” to find the best parameters by cross-validation.
 
 
-# Have to search for best combination of parameters
-C = [0.1, 1, 10] 
-Gamma = [0.01, 0.1, 1, 10]
-overall_accuracy = []
 # testing all the parameters of C and gamma and getting the ones that give a best fit
 best_parameters = find_best_parameters(x_train, y_train, type="classification")
 
@@ -170,20 +178,17 @@ print(best_parameters)
 # ## Question 3
 # Plot the grid search results of your SVM. The x, y represents the hyperparameters of “gamma” and “C”, respectively. And the color represents the average score of validation folds
 # You reults should be look like the reference image ![image](https://miro.medium.com/max/1296/1*wGWTup9r4cVytB5MOnsjdQ.png) 
-# TODO: figure out how to map the table with the different hyper parameters
-"""
-table = plt.table(
-            colLabels=C,
-            rowLabels=gamma
-        )
+print(f"plot values: {plot_values}")
+table = sb.heatmap(data=plot_values)
 plt.show()
-"""
+
+# TODO: figure out how to map the table with the different hyper parameters
 # ## Question 4
 # Train your SVM model by the best parameters you found from question 2 on the whole training set and evaluate the performance on the test set. **You accuracy should over 0.85**
 # mock_predict(C, Gamma)
 
 best_model = SVC(C=best_parameters[1], gamma=best_parameters[2])
-best_model.fit(x_test, y_test)
+best_model.fit(x_train, y_train)
 y_pred = best_model.predict(x_test)
 print("Accuracy score: ", accuracy_score(y_pred, y_test))
 
