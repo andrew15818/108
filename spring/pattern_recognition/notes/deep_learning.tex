@@ -65,7 +65,8 @@ also known as \textbf{sum of squares}.
 
 Calculating the error at every single node each iteration may be too intensive to repeat at every step,
 	so insted we can calculate the error via an algorithm called \textbf{backpropagation}.
-The backpropagation algorithm serves us to calculate the error in the nodes. Remember the value of
+The backpropagation algorithm serves us to calculate the error in the nodes. 
+Remember the value of
 the activaiton function is a function of the weights of the layers incoming, so something like:
 \[ a_{j} = \sum_{i=1}^{D}w^{(1)}_{ji}x_{i} + w_{j0}^{(1)}\]
 
@@ -84,12 +85,14 @@ Essentially it is a neural network with many hidden layers.
 \footnote{Deep, get it?}
 
 We have multiple different possible architectures for neural networks.
-\begin{centering}
-\begin{figure}
-		\includegraphics[scale=0.3]{obj_recognition}
-		\caption{Architecure of deep learning for object recognition.}
-\end{figure}
-\end{centering}
+%\begin{centering}
+%
+%\begin{figure}
+%		\includegraphics[scale=0.3]{obj_recognition}
+%		\caption{Architecure of deep learning for object recognition.}
+%\end{figure}
+%\end{centering}
+
 For object recognition such as pictured above, we can model an image just as a grid of pixel values.
 Then we can use the values as input to the neural network. 
 However, for a $n x m$ image, we would need to have $(n x m)^{l}$ total connetions, where $l$ is
@@ -99,6 +102,47 @@ Thus we can use \textbf{Convolutional Neural Networks} for help with this.
 \subsection{Convolutional Neural Networks}
 A convolutional neural network is a multi-layer neural network with \textbf{local connectivity}
 	and \textbf{weight-sharing}.
-	\subsubsection{Local Connectivity}
+	\subsection{Local Connectivity}
+The main idea of a CNN is that a normal neural network does not scale that well when applied to
+	larger and larger inputs such as images.
+So we instead map a \textit{region} of the input image to a given neuron in a convolution layer.
+This is due to the fact that a given pixel in an image will likely be of use in its local region rather
+	than in the entire image. 
+Thus having a fully connected network would most likely have a lot of overfitting or simply unimportant weights.
+This would reduce the number of parameters we need in our model.
 
+Once we take a section of the image as a neuron, we have what's called a \textbf{convolutional layer}.
+\subsection{Weight Sharing}
+We can usually calculate the weight over several layers of information. 
+
+\begin{marginfigure}
+		\includegraphics[scale=0.2]{weight_sharing}
+	\caption{Weight sharing among various small regions of the input image.}
+\end{marginfigure}
+
+We have a couple aspects we want to focus on:
+\begin{itemize}
+	\item \textbf{Input layer}: The input layer contains $n$ rows and $m$ columns. The input also contains 
+			\textbf{depth} information, maybe like pixel color values.
+	\item \textbf{Convolutional Layer}: We compute the dot product between the image values and the weights 
+			in the connected region. 
+	\item \textbf{Pool Layer}: The pool layer performs downsampling along some of the dimensions of the 
+			input.
+	\item \textbf{Fully Connected Layer}: The final layer which is used to determine the class output. 
+			Similar to a regular NN, every node in layer $j$ is connected to every node in the previous
+					layer.
+\end{itemize}
+Once we take the image and pass it through the convolutional layer, we can pass it through several 
+	\textbf{filters}. 
+These filters can apply a different weight to particular portions of the image. 
+\footnote{A \textbf{convolution} is a type of function that describes how two different functions are to 
+be applied.}
+A convolutional layer will then perform convolution and then pass the output through an activation function.
+For a map of size $nxn$, and a filter of size $fxf$, we will have a resulting matrix of size $n-f+1$.
+\footnote{Since we lose information around the border of the input matrix when performing this process,
+	we can do \textbf{zero-padding} aroundt the border to preserve the dimensions.}
+
+Apart from the convolutional layer, we also have the \textbf{pooling layer}.
+The pooling layer helps make the dimensions more manageable, and they operate on the feature representatinons
+	individually.
 \end{document}
