@@ -26,7 +26,16 @@ The \texttt{kfold\_data} array contains the indices of the training and validati
 To do this, we divide the number of elements in our training set by $k$.
 We create a \texttt{KFold} model named \texttt{kf}, and add the index and validation indices
 	returned by \texttt{kf.split(x)} to our \texttt{kfold\_data} list.
-
+\subsection{Use \texttt{sklearn.svm.SVC} to train a classifier on teh provided train set and 
+	conduct the grid search of ``C" and ``gamma", ``kernel=rbf" to find the best hyperparameters
+	by cross-validation. Print the best hyperparameters you found.}
+To find the best hyperparameters using grid search, we need to evaluate all the possible combinations
+of $C$ and gamma. 
+We then train the model on a subset of the original testing data. 
+During this training phase, we reserve one of the $K$ folds to perform  validation on our estimated
+	dataset.
+Our main algorithm consists of trying each of the $K$ folds with each of the different $C$ and gamma 
+	combinations, for a combined complexity of $O(\textrm{gamma x C x K})$.
 \section{Questions}
 	\subsection{Given a valid kernel $k_{1}(x, x')$, prove that 1)
 		$k(x, x') = ck_{1}(x, x')$ and 2) $k(x, x') = f(x)k_{1}(x, x')f(x)$ are 
