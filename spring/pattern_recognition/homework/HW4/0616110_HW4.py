@@ -75,6 +75,7 @@ def find_best_parameters(x_data, y_data, kfold, type="classification"):
     best_C = 0
     best_performance = 0
     best_gamma = 0
+    best_training, best_validation = [], []
     for i, c_test in enumerate(C):
         for j, gamma_test in enumerate(Gamma):
                 if type == "classification":
@@ -87,7 +88,11 @@ def find_best_parameters(x_data, y_data, kfold, type="classification"):
                 fold_performance = [] 
                 # get the performance using c and gamma of every fold, choose one with lowest MSE
                 for row in range(len(kfold)):
-
+                    if row >= 1:
+                        # debugging the previous values
+                        prev = x_data[kfold[row-1][0]]
+                        curr = x_data[kfold[row][0]]
+                        print(f"is the current row index equal to the previous one: {curr == prev}")
                     # class indices of testing and validation sets
                     class_indices_training = y_data[kfold[row][0]]
                     class_indices_validation = y_data[kfold[row][1]]
@@ -111,7 +116,7 @@ def find_best_parameters(x_data, y_data, kfold, type="classification"):
 
                     fold_performance.append(accuracy)
 
-                    #print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
+                    print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
 
                 performance = performance_measure(fold_performance)
                 print(f"fold_performance: {performance}")
