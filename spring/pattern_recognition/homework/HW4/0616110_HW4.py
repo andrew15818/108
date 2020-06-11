@@ -64,7 +64,7 @@ def model(xtrain, ytrain):
 
 
 # Find best C and gamma for either classification or regression
-def find_best_parameters(x_data, y_data, type="classification"):
+def find_best_parameters(x_data, y_data, kfold, type="classification"):
     if type == "classification":
         clf = SVC(C=1.0, kernel='rbf', gamma=0.01) 
 
@@ -86,24 +86,24 @@ def find_best_parameters(x_data, y_data, type="classification"):
                 # keep track of the performance of each fold
                 fold_performance = [] 
                 # get the performance using c and gamma of every fold, choose one with lowest MSE
-                for row in range(len(kfold_data)):
+                for row in range(len(kfold)):
 
                     # class indices of testing and validation sets
-                    class_indices_training = y_data[kfold_data[row][0]]
-                    class_indices_validation = y_data[kfold_data[row][1]]
+                    class_indices_training = y_data[kfold[row][0]]
+                    class_indices_validation = y_data[kfold[row][1]]
                    
-
+                    #print(f"dataset we will use for training: {kfold[row][1].shape}{kfold[row][1]}")
                     # Getting the actual input data from validation and testing indices
-                    data_indices_training= x_data[kfold_data[row][0]]
-                    data_indices_validation = x_data[kfold_data[row][1]]
-
+                    data_indices_training = x_data[kfold[row][0]]
+                    data_indices_validation = x_data[kfold[row][1]]
+                    
                     clf.fit(data_indices_training, class_indices_training) 
 
                     # getting class predictions for given set
                     validation_predictions = clf.predict(data_indices_validation)
                      
-                    #print(f"ground truth:{class_indices}")
-                    #print(f"predicitons:{validation_predictions}\n")
+
+                    #print(f"validation dataset shape: {data_indices_training.shape}")
                     if type == "classification":
                         accuracy = accuracy_score(class_indices_validation, validation_predictions)  
                     else:                        
@@ -111,7 +111,7 @@ def find_best_parameters(x_data, y_data, type="classification"):
 
                     fold_performance.append(accuracy)
 
-                    print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
+                    #print(f"\taccuracy for C={c_test} and gamma={gamma_test}\t{accuracy}")
 
                 performance = performance_measure(fold_performance)
                 print(f"fold_performance: {performance}")
@@ -138,21 +138,22 @@ def cross_validation(x_train, y_train, k=5):
     for i, (train_index, val_index) in enumerate(kf.split(x_train)):
         #print("Split: %s, Training index: %s, Validation index: %s" % (i+1, train_index, val_index))
         kfold_data.append([train_index, val_index])
-        
+         
         # splitting the validation set
         # validation_sample = x_train[kfold_data[i][1]] 
         # testing_sample = x_train[kfold_data[i][1]]
-    return kfold_data
+   # print(f"k-folderino: {kfold_data[0][1]}")
+    return (kfold_data)
 
 kfold_data = cross_validation(x_train, y_train, k=10)
-
+#print(f"As soon as we return from cross-validaton, kfold is {kfold_data}")
 assert len(kfold_data) == 10 # should contain 10 fold of data
 assert len(kfold_data[0]) == 2 # each element should contain train fold and validation fold
 assert kfold_data[0][1].shape[0] == 55 # The number of data in each validation fold should equal to training data divieded by K
 
 
 # ## example
-
+'''
 X = np.arange(20)
 kf = KFold(n_splits=5, shuffle=True)
 kfold_data= []
@@ -163,14 +164,15 @@ for i, (train_index, val_index) in enumerate(kf.split(X)):
 assert len(kfold_data) == 5 # should contain 5 fold of data
 assert len(kfold_data[0]) == 2 # each element should contains index of training fold and validation fold
 assert kfold_data[0][1].shape[0] == 4 # The number of data in each validation fold should equal to training data divieded by K
-
+'''
 
 # ## Question 2
 # Using sklearn.svm.SVC to train a classifier on the provided train set and conduct the grid search of “C”, “kernel” and “gamma” to find the best parameters by cross-validation.
 
 
 # testing all the parameters of C and gamma and getting the ones that give a best fit
-best_parameters = find_best_parameters(x_train, y_train, type="classification")
+
+best_parameters = find_best_parameters(x_train, y_train, kfold=kfold_data, type="classification")
 
 print(best_parameters)
 
@@ -191,7 +193,7 @@ best_model = SVC(C=best_parameters[1], gamma=best_parameters[2])
 best_model.fit(x_train, y_train)
 y_pred = best_model.predict(x_test)
 print("Accuracy score: ", accuracy_score(y_pred, y_test))
-
+'''
 
 # ## Question 5
 # Compare the performance of each model you have implemented from HW1
@@ -222,4 +224,4 @@ svr_error = mean_squared_error(y_test, svr_test_predictions)
 
 print(f"Square error of Linear regression: {hw1_error}")
 print(f"Square error of SVM regresssion model: {mean_squared_error(y_test, svr_test_predictions)}")
-
+'''
