@@ -145,4 +145,12 @@ For a map of size $nxn$, and a filter of size $fxf$, we will have a resulting ma
 Apart from the convolutional layer, we also have the \textbf{pooling layer}.
 The pooling layer helps make the dimensions more manageable, and they operate on the feature representatinons
 	individually.
+
+Starting from an input image as input, we first might perform several \textbf{convolutions} using different
+\textbf{filters}. 
+These convolutions are \textit{learned parameters}. 
+Then, we perform some spatial pooling by analyzing similar groups of pixels in the image.
+Remember that it does not make much sense to have a whole bunch of fully connected layers, since closer 
+	pixels don't have that  much relation with faraway pixels.
+Thus, if we want to compare general areas of the images, then we could filter the image several times.
 \end{document}
