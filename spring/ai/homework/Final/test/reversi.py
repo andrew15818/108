@@ -6,7 +6,8 @@ board = [[-1, 0, 0, 0, 0, 0, 0, -1],
         [0, 0, 0, 1, 0, 0, 0, 0], 
         [0, 0, 1, 2, 1, 1, 0, 0], 
         [0, 0, 0, 1, 0, 0, 0, 0], 
-        [-1, 0, 0, 0, 0, 0, 0, -1]]
+        [-1, 0, 0, 0, 0, 0, 0, -1],
+        [0, 0, 0, 0, 0, 0, 0, 0]]
 
 tiles =  {
     "corner": -1,
@@ -31,21 +32,7 @@ def is_valid(row, col):
         if col == row:
             return False
     return True 
-'''
-# Get the valid coordinates of current node's next moves
-def get_children(node):
-    children = []
-    for i in range(-1, 1):
-        for j in range(-1, 1):
-            if i == 0 &l& j == 0:
-                continue
-            x = node[0] + i 
-            y = node[1] + j
 
-            if is_valid(x, y):
-                children.append((row, col))
-    return children
-'''
 # Get the amount of nodes we can turn by selecting this node
 def heuristic(node):
     
@@ -63,40 +50,54 @@ def heuristic(node):
         for j in range(-1, 2):
             row = node[0] + i
             col = node[1] + j
-            #print(f"Checking ({i},{j})")
             
             # Check if adjacent tile is of different color
-            if board[row][col] == opponent:
-                print(f"\t({row},{col}) is to be checked")
+            if is_valid(row, col): 
+                if board[row][col] == opponent:
+                    while (is_valid(row, col) 
+                        and board[row][col] == opponent):
+                        row += i
+                        col += j
+                        print(f"\tChecking: ({row},{col})")
+                        can_turn += 1  
 
-                while (is_valid(row, col) 
-                    and board[row][col] == opponent):
-                    row += i
-                    col += j
-                    print(f"\tChecking: ({row},{col})")
-                    can_turn += 1  
-    print(f"can turn: {can_turn}")
+
+                    print(f"\tcan turn: {can_turn}")
     return can_turn
 
-def minmax(node, depth, is_maximizing):
+def minmax(node, depth, is_maximizing, currsum=0):
+    # End of the recursion
     if depth == 0:
         return heuristic(node)
+
     val = -1000 if is_maximizing else 1000
+
+
     # Recursing on the min/max values for all the curr node's children
     for i in range(-1, 2):
        for j in range(-1, 2):
+           if i == 0 and j == 0:
+               continue
            x = node[0] + i
            y = node[1] + j
+           # Get the maximum value available at a given node
            if is_valid(x, y):
                if is_maximizing:
-                   val = max(val, minmax((x, y), depth-1, False))
+                   #val = max(val, minmax((x, y), depth-1, False))
+                   currsum += minmax((x, y), depth-1, False, currsum=currsum)
+                   print(f"Maximum value: {val}")
+
                elif not is_maximizing:
-                   val = min(val, minmax((x, y), depth-1, True))
+                   tmp = minmax((x, y), depth-1, True, currsum=currsum)
+                   currsum -= tmp
+                   print(f"Minimum value: {val}")
             
 
-    return False
+    return currsum
 def GetStep():
     pass
 
-minmax((1,2), 2, False)
-print(heuristic((4, 3)))
+for row in range(len(board) - 1):
+    for col in range(len(board) - 1):
+        print(f"Minmax value for {row}, {col}: {minmax((row, col), 2, False)}")
+#print(heuristic((4, 3)))
