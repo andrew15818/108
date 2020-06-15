@@ -1,5 +1,5 @@
 
-board = [[-1, 0, 0, 2, 0, 0, 0, -1],
+board = [[-1, 0, 0, 0, 0, 0, 0, -1],
         [0, 0, 0, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 0], 
@@ -87,23 +87,57 @@ def heuristic(node):
 
             can_eat += check_opponent_line(node[0], node[1], row_dir, col_dir)
     return can_eat
+#TODO: Check the value of the implemented move on the copy of the board
 def minmax(node, depth, is_black, alpha, beta):
-
+    print(f"Currently getting the minmax at ({node[0]}, {node[1]})")
     if depth == 0:
-        return heuristic(node)
+        heu = heuristic(node)
+        return heu 
 
+    # Alpha-Beta Implementation
     if is_black:
         best_val = -1000
 
-        opponent = tiles["white"]
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                x = node[0] + i
+                y = node[1] + j
 
-        for row in range(len(board)):
-            for col in range(len(board)):
+                if not is_valid(x, y):
+                    continue
+                value = minmax((x, y), depth=depth-1, is_black=False, alpha=alpha, beta=beta)
+                print(f"max recursion value: {value}")
+                best_val = max(value, best_val)
+                alpha = max(alpha, best_val)
+                if beta <= alpha:
+                    break
+                return best_val
+
+    elif not is_black:
+        best_val = 1000
+
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                x = node[0] + i
+                y = node[1] + j
+                if not is_valid(x, y):
+                    continue
+
                 
-
-
-
-        
+                value = minmax((x, y), depth=depth-1, is_black=True, alpha=alpha, beta=beta) 
+                best_val = min(value, best_val)
+                beta = min(beta, best_val)
+                if beta <= alpha:
+                    break
+                return best_val
+    
+#TODO: Possible way to modify this
+# 1. Look for unoccupied slots.
+# 2. Make a copy of the board.
+# 3. Get the heurisitic/minmax value on that copy of the board
+#   3.1 If we dont make a modified copy, then we can't measure exactly
+#       How placing a tile on the board will affect the minmax calculation.
+    
 def GetStep(board, is_black=False):
 
     best_row = 0 
@@ -128,4 +162,5 @@ def GetStep(board, is_black=False):
 
     return (best_row, best_col) 
 
-print(GetStep(board, False))
+#print(GetStep(board, False))
+print(minmax((4, 3), depth=10, is_black=True, alpha=-1000, beta=1000))
