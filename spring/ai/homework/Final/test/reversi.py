@@ -87,39 +87,23 @@ def heuristic(node):
 
             can_eat += check_opponent_line(node[0], node[1], row_dir, col_dir)
     return can_eat
-'''
-# Simple greedy algo to get the best piece             
-def minmax(node, depth=2, is_maximizing=True, currsum=0):
-    # End of the recursion
+def minmax(node, depth, is_black, alpha, beta):
+
     if depth == 0:
-        value = heuristic(node)
-        print(f"\theuristic for ({node[0]},{node[1]}):{value}")
-        return value
+        return heuristic(node)
 
-    val = -1000 if is_maximizing else 1000
+    if is_black:
+        best_val = -1000
 
-    # Recursing on the min/max values for all the curr node's children
-    for i in range(-1, 2):
-       for j in range(-1, 2):
-           if i == 0 and j == 0:
-               continue
-           x = node[0] + i
-           y = node[1] + j
-           # Get the maximum value available at a given node
-           if is_valid(x, y):
-               if is_maximizing:
-                   #val = max(val, minmax((x, y), depth-1, False))
-                   currsum += minmax((x, y), depth-1, False, currsum=currsum)
-                   print(f"\tMaximum value: {currsum}")
+        opponent = tiles["white"]
 
-               elif not is_maximizing:
-                   tmp = minmax((x, y), depth-1, True, currsum=currsum)
-                   currsum -= tmp
-                   print(f"\tMinimum value: {currsum}")
-            
+        for row in range(len(board)):
+            for col in range(len(board)):
+                
 
-    return currsum
-'''
+
+
+        
 def GetStep(board, is_black=False):
 
     best_row = 0 
