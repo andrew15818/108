@@ -1,18 +1,19 @@
 import copy
-'''
-board = [[-1, 0, 0, 0, 0, 0, 0, -1],
-        [0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0], 
-        [0, 0, 1, 2, 1, 2, 0, 0], 
-        [0, 0, 0, 1, 0, 0, 0, 0], 
+
+board = [[-1, 0, 0, 2, 0, 0, 0, -1],
         [0, 0, 0, 2, 0, 0, 0, 0],
+        [0, 0, 0, 2, 0, 0, 0, 0],
+        [0, 0, 0, 2, 0, 0, 0, 0], 
+        [2, 1, 1, 2, 1, 2, 0, 0], 
+        [0, 1, 0, 1, 0, 2, 0, 0], 
+        [1, 0, 0, 2, 0, 0, 0, 0],
         [-1, 0, 0, 0, 0, 0, 0, -1]]
 '''
-board = [[0, 0, 0],
+board = [[-1, 0, -1],
         [ 2, 1, 2],
         [ 0, 1, 1],
-        [ 0, 0, 2]]
+        [ -1, 0, -1]]
+'''
 
 BOARD_ROWS = len(board)
 BOARD_COLS = len(board[0])
@@ -55,7 +56,7 @@ def check_opponent_line(row, col, board, rowdir, coldir, is_black=False):
         # Traveling along the direction
         row += rowdir
         col += coldir
-        print(f"\tchecking ({row}, {col})")
+        #print(f"\t\tchecking ({row}, {col})")
         # Out of bounds
         if not is_valid(row, col) or board[row][col] == tiles["unoccupied"]:
             break
@@ -70,6 +71,7 @@ def check_opponent_line(row, col, board, rowdir, coldir, is_black=False):
 
     # If we reach the end, then can't change pieces along this route
     return 0
+
 # Get the amount of nodes we can turn by selecting this node
 # TODO: May have to severely change this heuristic function
 def heuristic(node, board):
@@ -105,15 +107,15 @@ def modify_board(node, board, assign_black=False):
 
 #TODO: Check the value of the implemented move on the copy of the board
 def minmax( node, board, depth, is_black, alpha, beta):
-    #print(f"Currently getting the minmax at ({node[0]}, {node[1]})")
+    ##print(f"Currently getting the minmax at ({node[0]}, {node[1]})")
 
     if depth == 0:
         heu = heuristic(node, board)
-        print(f"\t\tHeur value for ({node[0]},{node[1]}): {heu}")
+        #print(f"\t\tHeur value for ({node[0]},{node[1]}): {heu}")
         return heu 
 
     board_copy = copy.deepcopy(board)
-    print_board(board)
+    #print_board(board)
     # Alpha-Beta Implementation
     if is_black:
         best_val = -1000
@@ -161,18 +163,25 @@ def GetStep(board, is_black=False):
     best_row = 0 
     best_col = 0
     curr_best_heur = -1
+    curr_node_value = tiles["black"] if is_black else tiles["white"]
     
     for row in range(len(board)):
         for col in range(len(board[0])):
-            
+            '''            
             if not is_valid(row, col):
                 continue
             elif board[row][col] == tiles["corner"]:
                 continue
-
+            elif board[row][col] != curr_node_value:
+                continue
+            '''
+            if not board[row][col] == tiles["unoccupied"]:
+                continue
             tmp = heuristic((row, col), board=board)
+            #tmp = minmax((row, col), board, depth=7, is_black=is_black, alpha=-1000, beta=1000)
+            #print(f"Minmax value for ({row},{col}): {tmp}")
             if tmp > curr_best_heur:
-                print(f"Found a new best path through: ({row},{col}): {tmp}")
+                #print(f"Found a new best path through: ({row},{col}): {tmp}")
                 curr_best_heur = tmp
                 best_row = row
                 best_col = col
@@ -180,5 +189,14 @@ def GetStep(board, is_black=False):
 
     return (best_row, best_col) 
 
-print(GetStep(board, True))
-#print(minmax((4, 3), board=board, depth=2, is_black=True, alpha=-1000, beta=1000))
+i = 0
+is_black = True 
+while(i < 10):
+    hola = GetStep(board, is_black)
+    print(f"black: {is_black}: {hola}")
+    is_black = True if not is_black else False 
+    modify_board(hola, board, assign_black=is_black)
+
+    i += 1
+#print(GetStep(board, False))
+##print(minmax((4, 3), board=board, depth=2, is_black=True, alpha=-1000, beta=1000))

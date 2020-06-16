@@ -93,6 +93,13 @@ it can be better than even the worst $\beta$.
 
 By using a traditional approach, we can model this problem by using a constraint-satisfaction approach
 	when determining the best place to put our next tile.
+
+Issues with the current implementation exist, due to time constraints in the final days of the project 
+	implementation.
+For example, the current implementation will make moves that are located in the first row, which is not
+	allowed, only in the inner 6x6 rectangle.
+Also, it will decide moves that are not adjacent to any other tiles, rather due to the minmax algorithm
+	it might try to look ahead and place the piece in the tile where it might try to predict the best move.
 \section{Conclusion}
 While doing this project, one of the things that most drew my attention was the new(to me) game of reversi,
 	which is also called Othello.
