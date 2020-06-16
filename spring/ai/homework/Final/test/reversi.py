@@ -1,4 +1,5 @@
-
+import copy
+'''
 board = [[-1, 0, 0, 0, 0, 0, 0, -1],
         [0, 0, 0, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 0],
@@ -12,7 +13,7 @@ board = [[0, 0, 0],
         [ 2, 1, 2],
         [ 0, 1, 1],
         [ 0, 0, 2]]
-'''
+
 BOARD_ROWS = len(board)
 BOARD_COLS = len(board[0])
 
@@ -41,7 +42,7 @@ def is_valid(row, col):
     return True 
 # Given the direction of an opponent, check if there is a friendly piece at the end of the 
 # sequence of opponent pieces
-def check_opponent_line(row, col, rowdir, coldir, is_black=False):
+def check_opponent_line(row, col, board, rowdir, coldir, is_black=False):
     if not is_valid(row, col):
         return 0
 
@@ -49,7 +50,7 @@ def check_opponent_line(row, col, rowdir, coldir, is_black=False):
     can_move =  0
     opponent_team = tiles["black"] if board[row][col]  == tiles["white"] else tiles["white"]
     player_team = tiles["white"] if board[row][col] == tiles["white"] else tiles["black"]
-
+    
     while True:
         # Traveling along the direction
         row += rowdir
@@ -71,7 +72,7 @@ def check_opponent_line(row, col, rowdir, coldir, is_black=False):
     return 0
 # Get the amount of nodes we can turn by selecting this node
 # TODO: May have to severely change this heuristic function
-def heuristic(node):
+def heuristic(node, board):
 
     # How many nodes we can turn starting from this node in total 
     can_eat = 0
@@ -85,19 +86,38 @@ def heuristic(node):
             if not is_valid(x, y):
                 continue
 
-            can_eat += check_opponent_line(node[0], node[1], row_dir, col_dir)
+            can_eat += check_opponent_line(node[0], node[1], board,row_dir, col_dir)
     return can_eat
+# Helper function
+def print_board(board):
+    for row in range(len(board)):
+        print(board[row])
+    print("\n")
+# Assign the value of the color to the copy of the board
+def modify_board(node, board, assign_black=False): 
+
+    # Take the copy of the board and assign a value to the node
+    assign_value = tiles["black"] if assign_black else tiles["white"]
+    board[node[0]][node[1]] = assign_value
+
+    return board 
+
+
 #TODO: Check the value of the implemented move on the copy of the board
-def minmax(node, depth, is_black, alpha, beta):
-    print(f"Currently getting the minmax at ({node[0]}, {node[1]})")
+def minmax( node, board, depth, is_black, alpha, beta):
+    #print(f"Currently getting the minmax at ({node[0]}, {node[1]})")
+
     if depth == 0:
-        heu = heuristic(node)
+        heu = heuristic(node, board)
+        print(f"\t\tHeur value for ({node[0]},{node[1]}): {heu}")
         return heu 
 
+    board_copy = copy.deepcopy(board)
+    print_board(board)
     # Alpha-Beta Implementation
     if is_black:
         best_val = -1000
-
+        board_copy = modify_board(node=node, board=board, assign_black=True)
         for i in range(-1, 2):
             for j in range(-1, 2):
                 x = node[0] + i
@@ -105,8 +125,7 @@ def minmax(node, depth, is_black, alpha, beta):
 
                 if not is_valid(x, y):
                     continue
-                value = minmax((x, y), depth=depth-1, is_black=False, alpha=alpha, beta=beta)
-                print(f"max recursion value: {value}")
+                value = minmax((x, y), board=board_copy, depth=depth-1, is_black=False, alpha=alpha, beta=beta)
                 best_val = max(value, best_val)
                 alpha = max(alpha, best_val)
                 if beta <= alpha:
@@ -115,7 +134,7 @@ def minmax(node, depth, is_black, alpha, beta):
 
     elif not is_black:
         best_val = 1000
-
+        board_copy = modify_board(node=node, board=board, assign_black=False)
         for i in range(-1, 2):
             for j in range(-1, 2):
                 x = node[0] + i
@@ -124,35 +143,34 @@ def minmax(node, depth, is_black, alpha, beta):
                     continue
 
                 
-                value = minmax((x, y), depth=depth-1, is_black=True, alpha=alpha, beta=beta) 
+                value = minmax((x, y), board=board_copy, depth=depth-1, is_black=True, alpha=alpha, beta=beta) 
                 best_val = min(value, best_val)
                 beta = min(beta, best_val)
                 if beta <= alpha:
                     break
                 return best_val
-    
+
 #TODO: Possible way to modify this
 # 1. Look for unoccupied slots.
 # 2. Make a copy of the board.
 # 3. Get the heurisitic/minmax value on that copy of the board
 #   3.1 If we dont make a modified copy, then we can't measure exactly
-#       How placing a tile on the board will affect the minmax calculation.
-    
+#       How placing a tile on the board will affect the minmax calculation.    
 def GetStep(board, is_black=False):
 
     best_row = 0 
     best_col = 0
     curr_best_heur = -1
-
+    
     for row in range(len(board)):
         for col in range(len(board[0])):
-
+            
             if not is_valid(row, col):
                 continue
             elif board[row][col] == tiles["corner"]:
                 continue
 
-            tmp = heuristic((row, col))
+            tmp = heuristic((row, col), board=board)
             if tmp > curr_best_heur:
                 print(f"Found a new best path through: ({row},{col}): {tmp}")
                 curr_best_heur = tmp
@@ -162,5 +180,5 @@ def GetStep(board, is_black=False):
 
     return (best_row, best_col) 
 
-#print(GetStep(board, False))
-print(minmax((4, 3), depth=10, is_black=True, alpha=-1000, beta=1000))
+print(GetStep(board, True))
+#print(minmax((4, 3), board=board, depth=2, is_black=True, alpha=-1000, beta=1000))
