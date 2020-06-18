@@ -1,0 +1,129 @@
+\documentclass{tufte-handout}
+\usepackage{graphicx}
+%\usepackage{equation}
+
+\title{Final Notes for Intro to Artificial Intelligence Final Exam}
+\author{Andr\'es Ponce}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Topics covered in this final exam include search algorithms, constraint satisfaction, 
+and logical satisfiability.
+\end{abstract}
+
+\section{Search Algorithms}
+\subsection{Breadth-First Search}
+With this algorithm, remember we have to search for the \textit{shallowest unexpanded node}.
+This means that we will check the tree/graph layer by layer before moving on to the next 
+	yet unexpanded node.
+The data structure used for this algorithm will probably just be a FIFO structure, since we 
+	first want to examine the nodes that are shallower than the current one, so we should pop
+	the node that has been the longest in the structure.
+
+\begin{enumerate}
+	\item \textbf{Completeness}: Yes, on finite graphs. 
+	\item \textbf{Time Complexity}: $O(b^{d})$
+	\item \textbf{Space Complexity}: $O(bd)$
+	\item \textbf{Optimality}: Yes, for unit costs. Why? If there is a unit cost, then the first time
+			we encounter the node, its value will be guaranteed to have the lowest value. If it did not
+			have the lowest value, we would have encountered it previously, right?
+\end{enumerate}
+\subsection{Depth-First Search}
+Depth-First Search works quite differently than Breadth-First search. With DFS, we expand the deepest,
+	unexpanded node. 
+What this means is that we traverse the tree/graph in a single path, following the children of the current
+	child until we can do so no more.
+Once this happens, we then backtrack up to the deepest unexpanded node, possibly along the same general
+	path that we were travelling before.
+
+\begin{enumerate}
+	\item \textbf{Completeness}: Nope. Might repeat given loops in the state space.
+	\item \textbf{Time Complexity}: $O(b^{m})$, because we could potentially reach the maximum state space
+		distance before finding the target node.
+	\item \textbf{Space Complexity}: $O(bm)$, since we have to sotre all nodes in memory
+	\item \textbf{Optimality}:Nope, it may search other paths, which might cause it to terminate before
+		actually reaching the best solution.
+\end{enumerate}
+It is complete for finite state spaces, probably becuase it searches all the nodes eventually, thus finding
+	a solution if there is one.
+
+\subsection{Depth-Limited Search}
+This algorithm is essentially DFS but having a maximum depth be $l$. What does this avoid? 
+The so-called loops which may result are avoided, however we would need to be careful to not limit
+	ourselves to not finding the wrong answer if we set a small $l$.
+
+\subsection{Iterative Deepening Search}
+Here, we consistently run depth-limited search on several of the nodes.
+We increase the maximum depth $l$ every time we run the algorithm.
+
+\begin{enumerate}
+	\item \textbf{Completeness}: Yes, for finite $d$.
+	\item \textbf{Time complexity}: $O(b^{d})$
+		\footnote{Remember $d$ is the length of the maximum length of the solution.} 
+	\item \textbf{Space Complexity}: $O(bd)$
+	\item \textbf{Optimality}: Yes.
+\end{enumerate}
+
+\subsection{Uniform-Cost Search}
+With this algorithm, we expand the least-cost unexpanded node. 
+This means that as we get closer to the target node, we might also see a reduction in the value of the 
+	node.
+\begin{enumerate}
+	\item \textbf{Completeness}: Yes, if cost $\geq\epsilon$
+	\item \textbf{Time Complexity}:
+	\item \textbf{Space Complexity}
+	\item \textbf{Optimality}: Yes
+\end{enumerate}
+\subsection{Informed Search Strategies}
+If we remember, \textit{un}-informed search strategies would use the 
+With informed search, we can use more information at each stage other than just the parent and children,
+	for example, we can have an idea of how much we still have to go until the target node, for example.
+
+With this new ability, we have a couple more tools to use:
+\begin{enumerate}
+	\item \textbf{Best-First Search}: Now, we can expand the node that looks to lead us to the 
+		best solution (e.g. the node whose heuristic value is the lowest).
+	\item \textbf{Evaluation Function}: We now can have a function $f(n)$ which tells us which node
+		to choose for expansion. (Useful in A*, for example).
+	\item \textbf{Heuristic Function}: We can now have an educated guess of how much we have to reach the 
+		
+\end{enumerate}
+
+For example, the first algorithm we can study is a simple \textbf{Greedy Best First} algorithm. 
+Using this algorithm, we merely select the node that has the best heuristic value out of the bunch.
+However, this method is neither complete nor optimal, why?
+\footnote{I guess there might be a scenario where at one stage $n$, we choose the one with the lowest
+	heuristic value, but at a lager stage $n+j$ it turns out the combined sum was lower for a second path.}
+
+\subsection{A* Search}
+Here, the algorithm relies on one formula
+\begin{equation}
+	f(n) = g(n) + h(n)
+\end{equation}
+The $f(n)$ value, as mentioned, represents the total combined value for the node.
+This value is the sum of $g(n)$, i.e. the cost of moving from the starting node to the current node,
+	and $h(n)$, which is the cost of going from the current node's children to the target node.
+\begin{enumerate}
+	\item \textbf{Completeness}: Yes, unless there are infinitely many nodes with cost $f(n)<C$, where C is the 
+		optimal cost to goal state.
+	\item \textbf{Time Complexity}: Exponential
+	\item \textbf{Space Complexity}: Keeps all the nodes in memory, so not pretty efficient
+	\item \textbf{Optimality}: Yes, given some conditions on the heuristic:
+\end{enumerate}
+For A* to really live up to its potential, we need an \textbf{admissible} heuristic. 
+An admissible heuristic is one which does not overestimate the true cost of the node to the target.
+\footnote{Ohterwise, if it overestimated sometimes, we could choose a less efficient route by accident?}
+
+Another condition for A* optimality is a \textbf{consistent} heuristic. A consistent heuristic is one which
+satisfies the \textbf{triangle inequality}:
+\begin{equation}
+	 h(n) \leq c(n,a,n') + h(n)'
+\end{equation}
+In this equation, $c(n,a,n')$ is the cost of going from the current node $n$ 
+	to the next one in the path $n'$ by using action $a$.
+\footnote{Consistent Heuristics are always admissible, not so the other way around.}
+
+\subsection{Iterative Deepening A* Search}
+We can also apply an increasing limit to A* in order to reduce the amount of nodes stored in memory at once.
+\end{document}
