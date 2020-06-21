@@ -126,5 +126,77 @@ If the result is indeed greater than zero, it means that both the target $\vec{t
 
 For the perceptron, to get the error we add up all the values that were misclassified, and then add it to the 
 	values of the perceptron.
+\section{Ensemble Methods}
+The main idea of using ensemble methods is to combine several weak classifiers, and to in the end have a 
+	\textit{strong classifier}.
+For input points with multiple features, we can have multiple classifiers which individually learn 
+	a single feature, and then combine the classifiers with a single feature.
 
+\subsection{AdaBoost}
+	With the \textbf{AdaBoost} algorithm, we continuosly draw simple classifiers, and for the inputs that we
+		mistakenly classify, we increase their weight values so that they are ``taken more seriously" the
+		next times.
+	The way the algorithm works is that we take the first classifier(with an initial weak distribution estimation)
+		, then we update the estimation for time $\tau + 1$.
+	The weight classifier is related to the \textbf{weight classifier} $\alpha$, which is 
+	\[ \alpha_{t} = \frac{1}{2}ln\frac{1-\epsilon_{t}}{\epsilon_{t}}\]
+
+	The final decision made by the \textbf{strong classifier} is the combined result of the weak classifiers.
+	\[ \textrm{sign}(H(x) = \sum_{t=1}^{T}\alpha_{t}h_{t}(x))\]
+
+	Similar to when we did classification, whenever we had the product of our prediction and the actual 
+	class value,we can check the prodct of the calss value $y_{i}$ with our prediction. 
+	If the value is positive, then it means our classification to class -1 or 1 was indeed correct.
+
+\subsection{Face Detection with AdaBoost}
+
+When we try to perform face detection, we might try to have some sliding windows, which move and then try 
+	to detect some faces in the images. 
+Since we are comparing several sub-areas of the image, the amount of times we have to perform face detection 
+	can be computationally too expensive. 
+Since most of the regions in the image will not contain faces, we can focus only on the regions which contain
+	the possibility for faces.
+
+\subsection{Viola-Jones Face Detection}
+	Viola Jones is the most used way to do face-detection in almost real-time.
+	We have several \textbf{integral images}. At a coordinate $(x,y)$, we store the sum of the pixel values above
+		and to the left of the pixel. 
+	This way, performing value calculations on a range of pixels can be done with a couple of additions and 
+		subtractions.
+	\begin{marginfigure}
+			\includegraphics[scale=0.3]{rect_features}
+			\caption{There are four patterns of rectangles available in Viola Jones. To find the value of a
+				feature, we calculate the difference between the light and dark areas.}
+	\end{marginfigure}
+
+	The complexity of Viola Jones is $O(MNK)$, where $M$ is the number of iterations, $N$ is the number of 
+		training examples, and $K$ is the number of feature rectangles (could be a lot!).
+
+\subsection{Attentional Cascade}
+The idea behind \textbf{Attentional cascades} is to chain progressively more strict classifiers which 
+	each provide less false positives.
+The error rate of all the classifiers is found by multiplying the errors of each one. 
+Since the first classifier	will not be quite that computationally complex, the features it throws
+	out will definitely not be part of a face. 
+This means that the only features the more strict classifiers will check actually come from the features that
+	have a chance of being a feature in a face.
+
+\subsection{Decision Trees}
+With decision trees, we implement a tree where at each node we split the dataset according to a certain feature.
+For each feature we can split on, we have to calculate which one results in a more \textbf{pure}.
+
+We have two criteria for trees:
+\begin{enumerate}
+		\item \textbf{Entropy}:
+				\[ I_{m} = -\sum_{k=1}^{K}p^{k}_{m}\textrm{log}p^{k}_{m}\]
+
+				The measure of entropy is how the data are distributed along the splits.
+				With a lower entropy, it means the data is more ``messed up", the distribution 
+					is not as uniform and the data is mixed in the split.
+
+		\item \textbf{Gini Index}:
+				The Gini index
+
+\end{enumerate}
+	
 \end{document}
