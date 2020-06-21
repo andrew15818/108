@@ -1,0 +1,68 @@
+\documentclass{tufte-handout}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\title{Introduction to Neural Networks}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Neural Networks try to resemble the way humans make decisions and the 
+way neurons in the human brain take in data and act on input.
+\end{abstract}
+
+\section{Introduction}
+A neuron usually has a couple parts to it. There are the \textbf{dendrites}, which are in charge of
+	receiving incoming signals from other neurons. 
+The signals then travel through the cell body and the \textbf{axons} all the way to the connections at the 
+	end of the axons.
+These neurons are all connected to many other neurons each, so any attempt to model these connections will
+	necessarily use up a lot of connections.
+
+In computer science, we hae something resembling a neuron, except that the way we model decisions is a bit 
+	different. 
+
+\begin{marginfigure}
+	\includegraphics[scale=0.3]{nn_diagram}
+	\caption{We take a set of inputs $x_{1}\dots x_{n}$ and pass each of these through a corresponding 
+		\textbf{weight function} $w_{1}\dots w_{n}$. In the actual node body, we take the sum of the weight
+		functions connecting the current neuron to the ones in the previous layer. This sum $\Sigma$ is then 
+		passed through the final \textbf{activation function} $\varphi$, which gives the final output for this
+		neuron.}
+\end{marginfigure}
+
+Neural networks are usually represented by a connected graph of neurons, usually organized in layers. 
+There are a couple types:
+\begin{enumerate}
+	\item \textbf{Feedforward}: In these types, the signals only flow in one direction.
+	\item \textbf{Recurrent}: In recurrent neural networks, there is feed forward functionality, but 
+			there can also be feedback to the neurons.
+\end{enumerate}
+
+In a neural network, we would usually have $k$ output layers, which might represent the confidence with which 
+	we classify or predict a certain value for our model.
+Let the final value of our model ve $y(x)$ for some input vector $x$. The error value for a neural network
+	would then be
+\[ e = d- y\]
+
+	which we of course want to minimize.
+
+\subsection{Perceptron Algorithm}
+The perceptron algorithm is an algorithm which can learn the classification from the data. 
+How does it do this?
+It only updates the set of weights when it makes a mistake in classifying or regressing(?) the testing data.
+
+Originally, with a single neuron, the algorithm could only handle the cases that were 
+\textbf{linearly separable}. 
+For example, training a model to learn the behavior of the XOR function is not possible with 
+	only a single neuron, again since the training data is not linearly separable.
+However, with a simple two-layer network we can easily model the behavior of XOR.
+
+So, for a single neuron, updating the values of $\mathbf{w}$  is quite easy, since we only have a single value
+	to update once we have estimated the model. 
+How do we do this when we have multiple values in $\mathbf{w}$? 
+We have to use \textbf{Back-Propagation}.
+
+\textbf{Back-Propagation} tries to maximize the values starting at the output nodes. 
+The error value then moves back through the layers, and we calculate the error for the individual neurons 
+	in a backward fashion.
+\end{document}
