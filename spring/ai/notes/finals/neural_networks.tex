@@ -65,4 +65,48 @@ We have to use \textbf{Back-Propagation}.
 \textbf{Back-Propagation} tries to maximize the values starting at the output nodes. 
 The error value then moves back through the layers, and we calculate the error for the individual neurons 
 	in a backward fashion.
+An iteration in which all the testing samples are seen at least once is called an \textbf{epoch}.
+
+Once we do the back-propagation, how do we know when to stop?
+We can have several criteria:
+\begin{enumerate}
+		\item Stop when the cost function is lower than a trheshold (when it's ``good enough")
+		\item Also can stop when the gradient is lower than a certain function.
+		\item When the \textbf{learning curve} over several iterations remains stable.
+\end{enumerate}
+
+Remember the \textbf{activation function} tells us how confident we are in our prediction, and it lies 
+	between 0 and 1, for not confident and confident, respectively.
+What functions can map the entire number interval into 0 and 1? 
+The old standard was the \textbf{sigmoidal function}, which is
+\[ f(v) = \frac{1}{1 + e^{-av}}\]
+There appears to be some issues with this function. 
+Although it is \textbf{continuously differentiable}, the gradients apparently go to infinity pretty quickly?
+This function used to be the standard, but not so much anymore.
+
+Now, the standard for activation functions has become \textbf{REctified Linear Units (RELU)}. 
+This function takes the form
+\[ f(v) = tanh(\alpha v)\]
+
+Both of these functions are \textbf{non-linear}.
+
+Another question remains: What should our learning rate be?
+We could either choose to make it larger or smaller, and there are consequences for both.
+If we make it smaller, then the algorithm will take slower, since to find the global maximum it 
+	will have to be adjusted several times. However, the learning rate $\varphi$ will proceed along
+	a smoother trajectory to the final learning rate.
+
+For a larger $\varphi$,  the effects are the opposite: there is a faster training cycle but more
+	oscillation from the different epochs.
+
+\begin{marginfigure}
+		\includegraphics[scale=0.4]{momentum}
+		\caption{ The \textbf{momentum} is a technique for speeding up the training. When multiple
+			gradients lie in the same direction, we increase them with a multiplier. The update 
+			to the learning rate is smaller when the gradients are in different directions.}
+\end{marginfigure}
+
+Historically, neural networks only used one layer due to computational constraints.
+However, in the recent years \textbf{Deep Neural Networks} have become more popular. 
+These networks merel contain more than one hidden layer.
 \end{document}
