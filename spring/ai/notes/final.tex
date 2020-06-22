@@ -126,4 +126,54 @@ In this equation, $c(n,a,n')$ is the cost of going from the current node $n$
 
 \subsection{Iterative Deepening A* Search}
 We can also apply an increasing limit to A* in order to reduce the amount of nodes stored in memory at once.
+
+\section{Constraint Satisfaction Problems(CSP)}
+We can model problems as those involving some sort of logical inference. 
+The necessary logical rules can also be modeled in the  program. 
+
+An important concept in logic is \textbf{entailment}. 
+Entailment refers to when we have statements $a$ and $b$, whenever $a$ is true, then $b$ is true.
+This is written as $a\models b$.
+
+We then have \textbf{inference}, where we can draw new conclusions from logical statements that we 
+	already know.
+This is written as $KB\vdash \alpha$.
+We have two types of inference algorithms: \textbf{sound} and \textbf{complete} algorithms.
+Sound inference algorithms are ones that
+\footnote{Soundess here means that if there we can get $\alpha$ from our knowledge base with an algorithm,
+	then $\alpha$ is always true whenever the KB is true.}
+\[ KB\vdash\alpha\Rightarrow KB\models\alpha\]
+Then, we have a complete inference algorithm:
+\footnote{Here, we mean that if $\alpha$ is true whenever our KB is true, then there exists an algorithm
+	to derive it from the knowledge base.}
+
+\[KB\models\alpha\Rightarrow KB\vdash_{i}\alpha\]
+\subsection{Propositional Logic}
+In this type of logic we just have simple sentences, and we evaluate the truth, validity and soundness of
+	the clauses based on the \textbf{truth value} of the statements.
+Here are some useful terms in propositional logic.
+\begin{itemize}
+		\item \textbf{logical equivalence}: Two statements that are equivalent in all the same 
+				set of models.
+		\item \textbf{valid}: A sentence that is valid in \textit{all} models.
+		\item \textbf{satisfiable}: A sentence that is true in \textit{some} models.
+\end{itemize}
+
+\textbf{Conjunctive Normal Form} refers to a set of clauses that are joined together with an and.
+
+\subsection{Resolution Algorithm}
+To show that  $KB \land \alpha$ is true, we have to show that $KB \land \neg \alpha$ is unsatisfiable.
+
+\subsection{First Order Logic}
+With First Order Logic, we have statements that use variables and can be represented by a subset of the 
+	domain.
+We have \textbf{functions} that apply a relation between the \textbf{domain} the environment. 
+
+Two important tools in first-order logic are \textbf{universal} and \textbf{existential} quantification.
+The former applies to every possible object in the model.
+\[ \forall AtNCTU(x) \Rightarrow Smart(x)\]
+says that every student at NCTU is smart.
+The same example using existential quantification is
+\[ \exists AtNCTU(x) ^ Smart(x)\]
+which says that there is an x such that x is a student at NCTU and x is smart.
 \end{document}
