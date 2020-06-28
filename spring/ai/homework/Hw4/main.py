@@ -25,10 +25,13 @@ x_train, x_test, y_train, y_test = train_test_split(x_data, x_data["class"], tes
 
 # Get the Gini impurity by seeing how many elements are in each set
 def Gini(dataset):
+    if len(dataset) == 0:
+        return 1
+
     class_prob = 0
     for label in classes:
         tmp = sum(dataset["class"] == label)
-        class_prob += ((tmp) / len(dataset)) ** 2
+        class_prob += ((tmp) / len(dataset)) ** 2 
         # print(class_prob)
     # print(1 - class_prob) 
     return 1 - class_prob
@@ -46,6 +49,11 @@ def split_purity_given_thresh(dataset, attribute, threshold):
 # Build the tree according to best features given a dataset
 def build_tree(data):
     node = Node()
+    # print(f"SIZE OF THE DATASET: {len(data)}")
+    # Handling the base cases
+    if Gini(data) == 0 or data.shape[0] == 0:
+        print("REACHED THE END OF THE RECURSION")
+
     best_gini = 1.0
     best_right, best_left = None, None
     best_feature = ""
@@ -55,18 +63,24 @@ def build_tree(data):
 
         # TODO: Make sure the values are being sorted correctly
         feature_col.sort_values(ascending=True) 
-        for value in range(0, len(feature_col) - 1):
+        for value in range(0, len(feature_col) - 2):
 
             # Threshold is the average of two adjacent sorted values
-           thresh = (feature_col[value] + feature_col[value + 1]) / 2
+           try:
+                thresh = (feature_col[value] + feature_col[value + 1]) / 2
+           except:
 
+               thresh = 0
+
+           #thresh = feature_col[value] if feature_col[value] != 0 else 0.01
            split_gini = split_purity_given_thresh(data, attr, thresh)
            if split_gini < best_gini:
                 best_feature = attr
                 best_right = data[data[attr] <= thresh]
                 best_left  = data[data[attr] > thresh]
                 best_gini = split_gini
-                print(f"\tNew best_gini: {best_gini}") 
+                print(f"\tNew best_gini: {best_gini}, left of size: {len(best_left)}\tbest right {len(best_right)}") 
+
     node.feature_name = attr
     node.threshold = thresh
     print(f"RECURSING with right data{best_right.shape}\tbest left: {best_left.shape}")
