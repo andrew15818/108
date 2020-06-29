@@ -9,6 +9,7 @@ import numpy as np
 
 import keras
 from keras.models import Sequential
+from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D
 from sklearn.metrics import accuracy_score
 
@@ -18,7 +19,7 @@ from sklearn.metrics import accuracy_score
 # In[5]:
 
 
-x_train = np.load("x_train.npy")
+x_train = np.load("x_train.npy", allow_pickle=True)
 y_train = np.load("y_train.npy")
 
 x_test = np.load("x_test.npy")
@@ -54,7 +55,13 @@ num_classes = 10
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-
+''' TODO: 
+    Should we modify and expand x_train with augmented data directly? Maybe just create another
+    dataset and fit it to the model? How to use the regularization?
+'''
+# Create an image transformation
+train_datagen = ImageDataGenerator()
+it = train_datagen.flow(x_train, y_train)
 # ## Build model & training (Keras)
 
 # In[9]:
@@ -84,14 +91,20 @@ model.compile(loss='categorical_crossentropy',optimizer=opt,metrics=['accuracy']
 
 
 batch_size = 32
-epochs = 10
+epochs = 15 # Originally this was 10 epochs
 # Fit the data into model
+
 model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
           validation_data=(x_test, y_test),
           shuffle=True)
 
+model.fit(it,
+          batch_size=batch_size,
+          epochs=epochs,
+          validation_data=(x_test, y_test),
+          shuffle=True)
 
 # In[10]:
 
