@@ -91,7 +91,7 @@ model.compile(loss='categorical_crossentropy',optimizer=opt,metrics=['accuracy']
 
 
 batch_size = 32
-epochs = 15 # Originally this was 10 epochs
+epochs = 30 # Originally this was 10 epochs
 # Fit the data into model
 
 model.fit(x_train, y_train,
