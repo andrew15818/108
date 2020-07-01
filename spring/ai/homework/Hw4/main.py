@@ -14,6 +14,7 @@ class Node:
     def __init__(self):
         feature_name = ""
         threshold = 0
+        is_leaf = False
         # Children
         right = None
         Left = None
@@ -49,12 +50,21 @@ def split_purity_given_thresh(dataset, attribute, threshold):
 # Build the tree according to best features given a dataset
 def build_tree(data):
     node = Node()
-    print(f"Entering build_tree function with data of length: {data.shape}")
+    
+
     # Handling the base cases
-    if Gini(data) == 0 or '''data.shape[0] == 0''':
+    data_purity = Gini(data)
+    if data.shape[0] == 0:
+        return None
+
+    if data_purity == 0:
         node.is_leaf = True
+        node.feature_name = data['class'].iloc[0]    
+        print("SHOULD BE RECURSING NOW")
+        return node
 
 
+    print(f"Data shape :{data.shape}\tpurity: {data_purity}")
     best_gini = 1.0
     best_right, best_left = None, None
     best_feature = ""
@@ -74,21 +84,23 @@ def build_tree(data):
 
                thresh = 0
 
-           #thresh = feature_col[value] if feature_col[value] != 0 else 0.01
+           thresh = feature_col[value] if feature_col[value] != 0 else 0.01
            split_gini = split_purity_given_thresh(data, attr, thresh)
+           split_gini = 1 - split_gini
            if split_gini <= best_gini:
                 best_feature = attr
                 best_thresh = thresh
                 best_gini = split_gini
-                print(f"best_thresh: {best_thresh}")
+                print(f"\t\tbest_thresh: {best_thresh}")
 
     # Split the dataset according to the best threshold
     best_right = data[data[attr] <= best_thresh]
     best_left = data[data[attr] > best_thresh]
     node.feature_name = attr
-    node.threshold = thresh
+    node.threshold = best_thresh
     print(f"RECURSING with right data{best_right.shape}\tbest left: {best_left.shape}")
-    #node.left = build_tree(best_left)
+
+    node.left = build_tree(best_left)
     node.right = build_tree(best_right)
     
 
