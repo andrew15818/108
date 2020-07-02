@@ -46,63 +46,49 @@ def split_purity_given_thresh(dataset, attribute, threshold):
 
     return (Gini(lower_than) + Gini(greater_than))
     
+# Find the best threshold and purity for a given attribute
+def get_best_split_on_feature(data, attr):
+    datarow = data[attr]
+    datarow = datarow.sort_values(ascending=True)
+
+    for index in range(len(datarow)-1):
+        thresh = (datarow[index] + datarow[index+1]) / 2
+        # Split the dataset according to the threshold
+        for label in classes:
+            # TODO: Continue getting the Gini values
+            # Compute Gini for each class value lower than threshold
+            lower_than = sum((datarow <= thresh) & (data['class'] == label))
+            lower_than_num = 
+
+            # Compute Gini for each class value greater  than threshold
+            greater_than = sum((datarow > thresh) & (data['class'] == label))
+        print(thresh)
+
+    return None
 
 # Build the tree according to best features given a dataset
 def build_tree(data):
     node = Node()
-    
 
-    # Handling the base cases
-    data_purity = Gini(data)
+    # Handling recursive cases
     if data.shape[0] == 0:
         return None
+    data_purity = Gini(data)
 
     if data_purity == 0:
+
         node.is_leaf = True
-        node.feature_name = data['class'].iloc[0]    
-        print("SHOULD BE RECURSING NOW")
+        node.feature_name = data['class'].iloc[0]
+        print(f"\tfeature name: {node.feature_name}")
         return node
 
-
-    print(f"Data shape :{data.shape}\tpurity: {data_purity}")
-    best_gini = 1.0
-    best_right, best_left = None, None
-    best_feature = ""
-    best_thresh = 1.0
+    # Loop for all classes and all values of each feature 
     for attr in attributes:
-        # Getting the column of every attribute in the dataset
-        feature_col = data[attr].copy()
+        # Get the column that containing the values of the feature
+        datarow = data[attr]
+        attr_purity = get_best_split_on_feature(data, attr)
 
-        # TODO: Make sure the values are being sorted correctly
-        feature_col.sort_values(ascending=True) 
-        for value in range(0, len(feature_col) - 2):
+        # TODO: Check if the purity for this attribute is lower than for others
 
-            # Threshold is the average of two adjacent sorted values
-           try:
-                thresh = (feature_col[value] + feature_col[value + 1]) / 2
-           except:
-
-               thresh = 0
-
-           thresh = feature_col[value] if feature_col[value] != 0 else 0.01
-           split_gini = split_purity_given_thresh(data, attr, thresh)
-           split_gini = 1 - split_gini
-           if split_gini <= best_gini:
-                best_feature = attr
-                best_thresh = thresh
-                best_gini = split_gini
-                print(f"\t\tbest_thresh: {best_thresh}")
-
-    # Split the dataset according to the best threshold
-    best_right = data[data[attr] <= best_thresh]
-    best_left = data[data[attr] > best_thresh]
-    node.feature_name = attr
-    node.threshold = best_thresh
-    print(f"RECURSING with right data{best_right.shape}\tbest left: {best_left.shape}")
-
-    node.left = build_tree(best_left)
-    node.right = build_tree(best_right)
-    
-
-    return node
+#build_tree(x_data[x_data['class'] == classes[0]])
 build_tree(x_data)
