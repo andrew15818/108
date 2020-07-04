@@ -50,21 +50,28 @@ def split_purity_given_thresh(dataset, attribute, threshold):
 def get_best_split_on_feature(data, attr):
     datarow = data[attr]
     datarow = datarow.sort_values(ascending=True)
-
+    
     for index in range(len(datarow)-1):
         thresh = (datarow[index] + datarow[index+1]) / 2
         # Split the dataset according to the threshold
+        prob_lower, prob_greater = 0,0
+        best_prob = 1
+        best_thresh = 1
         for label in classes:
             # TODO: Continue getting the Gini values
             # Compute Gini for each class value lower than threshold
-            lower_than = sum((datarow <= thresh) & (data['class'] == label))
-            lower_than_num = 
-
+            lower_than_thresh = sum((datarow <= thresh) & (data['class'] == label))
+            prob_lower += ((lower_than_thresh) / (sum(datarow <= thresh))) ** 2
+            
             # Compute Gini for each class value greater  than threshold
-            greater_than = sum((datarow > thresh) & (data['class'] == label))
-        print(thresh)
+            greater_than_thresh = sum((datarow > thresh) & (data['class'] == label))
+            prob_greater += ((greater_than_thresh) / sum(datarow > thresh)) ** 2
+            
+            if (prob_lower + prob_greater) <= best_prob:
+                best_prob = prob_lower + prob_greater
+                best_thresh = thresh
 
-    return None
+    return best_prob, best_thresh
 
 # Build the tree according to best features given a dataset
 def build_tree(data):
@@ -82,13 +89,26 @@ def build_tree(data):
         print(f"\tfeature name: {node.feature_name}")
         return node
 
+    best_purity, best_thresh = 1, 1
     # Loop for all classes and all values of each feature 
     for attr in attributes:
         # Get the column that containing the values of the feature
         datarow = data[attr]
-        attr_purity = get_best_split_on_feature(data, attr)
+        attr_purity, attr_thresh = get_best_split_on_feature(data, attr)
+        print(attr_purity)
 
         # TODO: Check if the purity for this attribute is lower than for others
+        if attr_purity < best_purity: 
+            best_purity = attr_purity
+            best_thresh = attr_thresh
+            best_attr = attr
+    lower_than = data[data[best_attr] <= best_thresh]
+    greater_than = data[data[best_attr] > best_thresh]
+    
+    # Recurse on the children
+    node.left = build_tree(lower_than)
+    node.right = build_tree(greater_than)
 
-#build_tree(x_data[x_data['class'] == classes[0]])
+
+    return node
 build_tree(x_data)
