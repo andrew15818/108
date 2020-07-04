@@ -50,26 +50,39 @@ def split_purity_given_thresh(dataset, attribute, threshold):
 def get_best_split_on_feature(data, attr):
     datarow = data[attr]
     datarow = datarow.sort_values(ascending=True)
-    
-    for index in range(len(datarow)-1):
-        thresh = (datarow[index] + datarow[index+1]) / 2
+
+    prob_lower, prob_greater = 0,0
+    best_prob = 1
+    best_thresh = 1
+
+
+    for index, row in data.iterrows():
+
+        try:
+            thresh = (datarow[index] + datarow[index+1]) / 2
+        except:
+            thresh = datarow[index]
+
         # Split the dataset according to the threshold
-        prob_lower, prob_greater = 0,0
-        best_prob = 1
-        best_thresh = 1
         for label in classes:
             # TODO: Continue getting the Gini values
             # Compute Gini for each class value lower than threshold
             lower_than_thresh = sum((datarow <= thresh) & (data['class'] == label))
-            prob_lower += ((lower_than_thresh) / (sum(datarow <= thresh))) ** 2
+            lower_than_count = sum(datarow <= thresh)
+            prob_lower += ((lower_than_thresh) / (lower_than_count)) ** 2 if lower_than_count > 0 else 0
             
             # Compute Gini for each class value greater  than threshold
             greater_than_thresh = sum((datarow > thresh) & (data['class'] == label))
-            prob_greater += ((greater_than_thresh) / sum(datarow > thresh)) ** 2
+            greater_than_count = sum(datarow > thresh)
+            prob_greater += ((greater_than_thresh) / (greater_than_count)) ** 2 if greater_than_count > 0 else 0
             
             if (prob_lower + prob_greater) <= best_prob:
                 best_prob = prob_lower + prob_greater
                 best_thresh = thresh
+
+
+
+            
 
     return best_prob, best_thresh
 
@@ -77,6 +90,7 @@ def get_best_split_on_feature(data, attr):
 def build_tree(data):
     node = Node()
 
+    print(f"\tLength of the dataset: {len(data)}")
     # Handling recursive cases
     if data.shape[0] == 0:
         return None
@@ -88,25 +102,30 @@ def build_tree(data):
         node.feature_name = data['class'].iloc[0]
         print(f"\tfeature name: {node.feature_name}")
         return node
-
+    
     best_purity, best_thresh = 1, 1
-    # Loop for all classes and all values of each feature 
+    lower_than = None
+    greater_than = None
+    # Loop for all classes and all values of each feature
     for attr in attributes:
         # Get the column that containing the values of the feature
         datarow = data[attr]
         attr_purity, attr_thresh = get_best_split_on_feature(data, attr)
-        print(attr_purity)
+        print(f"\t\t{type(attr_purity)}\t{type(attr_thresh)}") 
 
         # TODO: Check if the purity for this attribute is lower than for others
         if attr_purity < best_purity: 
             best_purity = attr_purity
             best_thresh = attr_thresh
             best_attr = attr
-    lower_than = data[data[best_attr] <= best_thresh]
-    greater_than = data[data[best_attr] > best_thresh]
+            lower_than = data[data[best_attr] <= best_thresh]
+            greater_than = data[data[best_attr] > best_thresh]
     
     # Recurse on the children
+    print(lower_than)
+    print("RECURSING ON THE LEFT CHILD")
     node.left = build_tree(lower_than)
+    print("RECURSING ON THE RIGHT CHILD")
     node.right = build_tree(greater_than)
 
 
